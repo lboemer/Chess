@@ -50,7 +50,7 @@ public class Move
     public static final int CHECK_STATUS                    = 13;    
     public static final int POSITION_STATUS                 = 14;    
     public static final int RATING                          = 15;
-    public static final int REPETITIVE_MOVE_COUNTER         = 16; 
+    public static final int REPETITIVE_POSITION_COUNTER         = 16; 
     public static final int FIFTY_MOVE_COUNTER              = 17;    
       
     
@@ -104,7 +104,7 @@ public class Move
     public static final int START                               = 1;
     public static final int STOP                                = 2;    
     
-    public static final int NUMBER_REPETIVE_MOVES_TO_CAUSE_DRAW = 3; 
+    public static final int NUMBER_REPETIVE_POSITIONS_TO_CAUSE_DRAW = 3; 
     public static final int PLYS_PER_REPETITIVE_MOVE            = 4;     
     
     public static final int PLY_PER_MOVE                        = 2;
@@ -515,8 +515,8 @@ public class Move
                 MoveTable[t] = MoveTable[t].concat(" 1/2-1/2 (Insufficient material)");     
                 break; 
                   
-           case Position.THREE_MOVE_REPETITION:
-                MoveTable[t] = MoveTable[t].concat(" 1/2-1/2 (Three move repeat)");
+           case Position.THREE_POSITION_REPETITION:
+                MoveTable[t] = MoveTable[t].concat(" 1/2-1/2 (Three position repeat)");
                 break;
                 
            case Position.FIFTY_MOVE:
@@ -718,8 +718,8 @@ public class Move
                 System.out.print(" 1/2-1/2 (Insufficient material)");
                 break; 
                 
-           case Position.THREE_MOVE_REPETITION:
-                System.out.print(" 1/2-1/2 (Three move repeat)");
+           case Position.THREE_POSITION_REPETITION:
+                System.out.print(" 1/2-1/2 (Three position repeat)");
                 break;
                 
            case Position.FIFTY_MOVE:
@@ -791,7 +791,7 @@ public class Move
         int i;
         int temp_ep;
         int[] CastlingLocal         = new int[4];    
-        int RepetitiveMoveCounterLocal;
+        int RepetitivePositionCounterLocal;
         int FiftyMoveCounterLocal;
         
         Figure_p            = Pos[row_n][col_n];
@@ -813,7 +813,7 @@ public class Move
             Position.StoreCastling(CastlingLocal, Pos);
         }                        
         temp_ep = Position.GetColumnPawnMovedTwoRows(Pos);                          // save previous column where pawn moved two steps in temp_ep
-        RepetitiveMoveCounterLocal = Position.GetNumberOfRepetitiveMoves(Pos);
+        RepetitivePositionCounterLocal = Position.GetNumberOfRepetitivePositions(Pos);
         FiftyMoveCounterLocal = Position.GetNumberOfMovesWithNoPawnMoveOrCapture(Pos);
         
         //System.out.println("In IfNoReceivingCheckAddMoveToMoveList() calling MakeMove()");
@@ -892,7 +892,7 @@ public class Move
         {
             Position.RestoreCastling(CastlingLocal, Pos);
         }
-        Position.SetNumberOfRepetitiveMoves(Pos, RepetitiveMoveCounterLocal);        
+        Position.SetNumberOfRepetitivePositions(Pos, RepetitivePositionCounterLocal);        
         Position.SetNumberOfMovesWithNoPawnMoveOrCapture(Pos, FiftyMoveCounterLocal);
     }
     
@@ -975,77 +975,48 @@ public class Move
         }
         return true;
     }   
-     
-    public static int RepetitiveMoves(int[][] MovePath)
+      
+    public static int IndexOfLastMove(int[][] MovePath)
     {
-        int p;
-        int RepetitiveMoveCounter = 0;
-        
-        //System.out.println("In RepetitiveMoveCounter ... RepetitiveMoveCounter = " + RepetitiveMoveCounter);
-        System.out.println("In RepetitiveMoveCounter ... before DisplayMoveList()");
-        DisplayMoveList(MovePath,  ALL, 0, TABLE, SHOW_NO_RATING);
-        //System.out.println("In RepetitiveMoveCounter ... after DisplayMoveList()");
-        //System.out.println("In RepetitiveMoveCounter ... RepetitiveMoveCounter = " + RepetitiveMoveCounter);
-        for(p = 0; MovePath[p][FIGURE] != Position.EMPTY; p++)                                                  //  Move to end of list
+        int i;
+          
+        for(i = 0; MovePath[i][FIGURE] != Position.EMPTY; i++)                                                  //  Move to end of list
         {
-            //System.out.println("l = " + l + "Figure = " + MovePath[l][FIGURE]);
-        }                                                                                                       // Total of l moves in move list
-        p--;     
-        
-        // Set l to index of last move 
-        System.out.println("In RepetitiveMoves p = " + p);        
-        for(RepetitiveMoveCounter = 0; (((p / PLYS_PER_REPETITIVE_MOVE) > RepetitiveMoveCounter) && (RepetitiveMoveCounter < NUMBER_REPETIVE_MOVES_TO_CAUSE_DRAW)); RepetitiveMoveCounter++)
+        }       
+        i--; 
+        return(i);                                                                                            // Total of i moves in move list  
+    }
+
+    public static int RepetitivePositions(int[][] MovePath)  
+    {
+        int RepetitivePositionCounter; 
+        int p = IndexOfLastMove(MovePath);                                                                                               // There can be more repetitive positions that what is covered here                                                                                                        
+    
+              
+        //System.out.println("In RepetitivePositions ... before DisplayMoveList()");
+        //DisplayMoveList(MovePath,  ALL, 0, TABLE, SHOW_NO_RATING);
+        //System.out.println("In RepetitivePositions ... after DisplayMoveList()");
+
+        for(RepetitivePositionCounter = 1; ((RepetitivePositionCounter < NUMBER_REPETIVE_POSITIONS_TO_CAUSE_DRAW) && ((RepetitivePositionCounter * PLYS_PER_REPETITIVE_MOVE) + 1 <= p)); RepetitivePositionCounter++)
         {
-            System.out.println("RepetitiveMoveCounter = " + RepetitiveMoveCounter);    
-            
-            if(RepetitiveMoveCounter == 0)                                                                          // Check if last 3 plys were reverse plys
+            if(!MovedToSamePosition(MovePath, p - ((RepetitivePositionCounter - 1) * PLYS_PER_REPETITIVE_MOVE)))
             {
-                if((!ReverseMove(MovePath, p - (RepetitiveMoveCounter * PLYS_PER_REPETITIVE_MOVE) - 0)) ||
-                   (!ReverseMove(MovePath, p - (RepetitiveMoveCounter * PLYS_PER_REPETITIVE_MOVE) - 1)) ||
-                   (!ReverseMove(MovePath, p - (RepetitiveMoveCounter * PLYS_PER_REPETITIVE_MOVE) - 2)))             
-                {
-                    break;                                                                                          // One of the plys is not a reverse ply, break for loop to stop counting repetive moves
-                }                
-            }
-            else                                                                                                    // Check if last 4 plys were reverse plys
-            {
-                if((!ReverseMove(MovePath, p - (RepetitiveMoveCounter * PLYS_PER_REPETITIVE_MOVE) - 0)) ||
-                   (!ReverseMove(MovePath, p - (RepetitiveMoveCounter * PLYS_PER_REPETITIVE_MOVE) - 1)) ||
-                   (!ReverseMove(MovePath, p - (RepetitiveMoveCounter * PLYS_PER_REPETITIVE_MOVE) - 2)) || 
-                   (!ReverseMove(MovePath, p - (RepetitiveMoveCounter * PLYS_PER_REPETITIVE_MOVE) - 3)))                
-                {
-                    break;                                                                                          // One of the plys is not a reverse ply, break for loop to stop counting repetive moves
-                }                
+                break;
             }
         }
-        System.out.println("In RepetitiveMoveCounter ... return RepetitiveMoveCounter = " + RepetitiveMoveCounter);
-        return RepetitiveMoveCounter;
-    }      
+        return(RepetitivePositionCounter);
+    }
     
-    public static boolean ReverseMove(int[][] MovePath, int p)                                                  // Check if this is a reverse move from the last move
+    public static boolean MovedToSamePosition(int[][] MovePath, int p)     
     {
-        Scanner scanner             = new Scanner(System.in);
-        
-        System.out.println("In ReverseMove p = " + p);  
-        if(p < 0)
-        {
-            System.out.println("In ReverseMove p = " + p);
-            scanner.nextLine(); 
-            
-        }
-        if((MovePath[p][FIGURE] == MovePath[p - PLY_PER_MOVE][FIGURE])  &&                                   // Same figure type e.g rook moved, need to check if it was the same figure that moved
-           (MovePath[p][COL]    == MovePath[p - PLY_PER_MOVE][COL_N])   &&                                   // Moved from previous column to ensure it is the same figure 
-           (MovePath[p][ROW]    == MovePath[p - PLY_PER_MOVE][ROW_N])   &&                                   // Moved from previous row to ensure it is the same figure 
-           (MovePath[p][COL_N]  == MovePath[p - PLY_PER_MOVE][COL])     &&                                   // Moved back to previous column to ensure move is reverted
-           (MovePath[p][ROW_N]  == MovePath[p - PLY_PER_MOVE][ROW]))                                         // Moved back to previous row to ensure move is reverted
-        {
-            System.out.println("In ReverseMove return = " + true);      
-            return true;
-        }
-        System.out.println("In ReverseMove return = " + false);   
-        return false;                                                                                           // No reverse move
-    }   
-    
+        return((MovePath[p    ][FIGURE] == MovePath[p -     PLYS_PER_REPETITIVE_MOVE][FIGURE])  &&                      // Same figure type moved to same field than two moves before
+               (MovePath[p    ][COL_N]  == MovePath[p -     PLYS_PER_REPETITIVE_MOVE][COL_N])   &&                      // Moved to same column than two moves before 
+               (MovePath[p    ][ROW_N]  == MovePath[p -     PLYS_PER_REPETITIVE_MOVE][ROW_N])   &&                         // Moved to same row than two moves before                  
+               (MovePath[p - 1][FIGURE] == MovePath[p - 1 - PLYS_PER_REPETITIVE_MOVE][FIGURE])  &&                      // Same figure type moved to same field than two moves before
+               (MovePath[p - 1][COL_N]  == MovePath[p - 1 - PLYS_PER_REPETITIVE_MOVE][COL_N])   &&                      // Moved to same column than two moves before 
+               (MovePath[p - 1][ROW_N]  == MovePath[p - 1 - PLYS_PER_REPETITIVE_MOVE][ROW_N]));   
+    }
+
     public static void CopyMoveList(int[][] FromMoveList, int CopyStart, int[][] ToMoveList)
     {
         int l;
@@ -1185,8 +1156,8 @@ public class Move
     }
     
     public static void MakeMove(int[][] Pos, int col, int row, int Figure_n, int col_n, int row_n, int[][] MovePath, int AddMoveToHistory)
-    {
-        int m;
+    {                                                                               // Makes the move by updating the position in Pos[][] 
+        int m;                                                                      // Is called by user makes move or by computer makes move and move is added to move path
         int Figure;
         int Figure_p;
         int EnPassantStatus;
@@ -1196,7 +1167,7 @@ public class Move
         int BlackLongCastlingPreviousPosition           = 0;
         int BlackShortCastlingPreviousPosition          = 0;
         int ColumnPawnMovedTwoStepsPreviousPosition     = 0;
-        int RepetitiveMoveCounterPreviousPosition       = 0;
+        int RepetitivePositionCounterPreviousPosition       = 0;
         int FifyMoveCounterPreviousPosition             = 0;
         
         //System.out.println("In MakeMove= ");
@@ -1208,7 +1179,7 @@ public class Move
             BlackLongCastlingPreviousPosition                       = Position.GetBlackLongCastling(Pos);
             BlackShortCastlingPreviousPosition                      = Position.GetBlackShortCastling(Pos);
             ColumnPawnMovedTwoStepsPreviousPosition                 = Position.GetColumnPawnMovedTwoRows(Pos);  
-            RepetitiveMoveCounterPreviousPosition                   = Position.GetNumberOfRepetitiveMoves(Pos);
+            RepetitivePositionCounterPreviousPosition               = Position.GetNumberOfRepetitivePositions(Pos);
             FifyMoveCounterPreviousPosition                         = Position.GetNumberOfMovesWithNoPawnMoveOrCapture(Pos);
         }
         
@@ -1301,12 +1272,7 @@ public class Move
         {
             Position.SetColumnPawnMovedTwoRows(Pos, 0);   
         } 
-                    
-        int c = RepetitiveMoves(MovePath);
-        System.out.println("in Make Move before adding move to history NumberOfRepetitiveMoves = " + c);
-        Position.SetNumberOfRepetitiveMoves(Pos,c);
-        
-        
+
         if((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN) || (Figure_p != Position.EMPTY))   // Pawn move or capture
         {
             Position.SetNumberOfMovesWithNoPawnMoveOrCapture(Pos,0);
@@ -1344,15 +1310,13 @@ public class Move
             MovePath[m][POSITION_STATUS]                = Position.GetPositionStatus(Pos, MovePath);       
             MovePath[m][CHECK_STATUS]                   = Position.GetCheckStatus(Pos, MovePath[m][POSITION_STATUS]);
             MovePath[m][RATING]                         = Rating.GetRating(Pos, MovePath[m][POSITION_STATUS]);  
-            MovePath[m][REPETITIVE_MOVE_COUNTER]        = RepetitiveMoveCounterPreviousPosition;
+            MovePath[m][REPETITIVE_POSITION_COUNTER]    = RepetitivePositionCounterPreviousPosition;
             MovePath[m][FIFTY_MOVE_COUNTER]             = FifyMoveCounterPreviousPosition;
                         
             Chess.Ply++;
         }
         
-        c = RepetitiveMoves(MovePath);
-        System.out.println("in Make Move after adding move to history NumberOfRepetitiveMoves = " + c);
-        Position.SetNumberOfRepetitiveMoves(Pos,c);
+        Position.SetNumberOfRepetitivePositions(Pos,RepetitivePositions(MovePath)); //
         
         
         
@@ -1515,7 +1479,7 @@ public class Move
         Position.SetBlackLongCastling(                      Pos, MovePath[m][BLACK_LONG_CASTLING]);
         Position.SetBlackShortCastling(                     Pos, MovePath[m][BLACK_SHORT_CASTLING]);
         Position.SetColumnPawnMovedTwoRows(                 Pos, MovePath[m][COLUMN_PAWN_MOVED_TWO_STEPS]);
-        Position.SetNumberOfRepetitiveMoves(                Pos, MovePath[m][REPETITIVE_MOVE_COUNTER]);   
+        Position.SetNumberOfRepetitivePositions(            Pos, MovePath[m][REPETITIVE_POSITION_COUNTER]);   
         Position.SetNumberOfMovesWithNoPawnMoveOrCapture(   Pos, MovePath[m][FIFTY_MOVE_COUNTER]);        
         
         for(e = 0; e < ENTRIES_MOVE_LIST; e++)              // Delete move

@@ -22,7 +22,7 @@ V1.4 2015-05-11
 
 V1.5 2015-05-21
 - introduced MoveBestFinishedIteration
-- inroduced Back variable to not not show last best move
+- introduced Back variable to not not show last best move
 
 V1.6 2015-06-01
 - introduced RatingFloat and SecondsUsedFloat to simplify System.out
@@ -535,7 +535,7 @@ public class Chess
         int ReturnValue             = 0;      
         int EnPassantStatus         = 0;
         boolean CheckForCanTakeKingOnly = false;
-        int RepetitiveMovesCounterLocal;
+        int RepetitivePositionsCounterLocal;
         int FiftyMoveCounterLocal;       
         int i;
         int p;
@@ -680,7 +680,7 @@ public class Chess
                     Position.StoreCastling(CastlingLocal, Pos);
                 }                 
                 temp_ep                     = Position.GetColumnPawnMovedTwoRows(Pos);                          // save previous column where pawn moved two steps in temp_ep
-                RepetitiveMovesCounterLocal = Position.GetNumberOfRepetitiveMoves(Pos);                
+                RepetitivePositionsCounterLocal = Position.GetNumberOfRepetitivePositions(Pos);                
                 FiftyMoveCounterLocal       = Position.GetNumberOfMovesWithNoPawnMoveOrCapture(Pos);                
                 
                 // Make move  
@@ -754,7 +754,7 @@ public class Chess
                 {
                     Position.RestoreCastling(CastlingLocal, Pos);
                 }            
-                Position.SetNumberOfRepetitiveMoves(Pos, RepetitiveMovesCounterLocal);                        
+                Position.SetNumberOfRepetitivePositions(Pos, RepetitivePositionsCounterLocal);                        
                 Position.SetNumberOfMovesWithNoPawnMoveOrCapture(Pos, FiftyMoveCounterLocal);
                 
             }

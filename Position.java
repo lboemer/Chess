@@ -119,8 +119,8 @@ public class Position
     public static final int COLUMN_STORE_FIFTY_MOVE             = 0;
     public static final int ROW_STORE_FIFTY_MOVE                = 6;    
       
-    public static final int COLUMN_STORE_NUMBER_OF_REPETITIVE_MOVES = 0;
-    public static final int ROW_STORE_NUMBER_OF_REPETITIVE_MOVES  = 7;
+    public static final int COLUMN_STORE_NUMBER_OF_REPETITIVE_POSITIONS = 0;
+    public static final int ROW_STORE_NUMBER_OF_REPETITIVE_POSITIONS  = 7;
 
     public static final int WHITE_MOVE                          = 1;
     public static final int BLACK_MOVE                          = -1;
@@ -156,7 +156,7 @@ public class Position
     public static final int CHECKMATE                           = 1;
     public static final int STALEMATE                           = 2;
     public static final int INSUFFICIENT_MATERIAL               = 3;
-    public static final int THREE_MOVE_REPETITION               = 4;    
+    public static final int THREE_POSITION_REPETITION           = 4;    
     public static final int FIFTY_MOVE                          = 5;
     
     public static final int NUMBER_OF_MOVES_WITH_NO_PAWN_MOVE_OR_CAPTURE_REQUIRED_TO_DECLARE_DRAW = 50;    
@@ -829,22 +829,21 @@ public class Position
                 System.out.println ("Black Short Castling possible since BRa8 and BKe8 have not moved yet");
             }
         }
-        System.out.println("in DisplayPosisiton() before ShowNumber ...");
-        
-        ShowNumberOfRepetitiveMoves(Pos);          
+        System.out.println();
+        ShowNumberOfRepetitivePositions(Pos);          
         ShowFiftyMoveCounter(Pos);
         Rating.ShowPositionType(Rating.GetPositionType(Pos));
         Rating.ShowGamePhase(Rating.GamePhase(Pos));
     }
     
-    public static void ShowNumberOfRepetitiveMoves(int[][] Pos)
+    public static void ShowNumberOfRepetitivePositions(int[][] Pos)
     {
-        System.out.println("Number of repetitive moves = " + GetNumberOfRepetitiveMoves(Pos));
+        System.out.println("RepetitivePsitionCounter: " + GetNumberOfRepetitivePositions(Pos));
     }        
     
     public static void ShowFiftyMoveCounter(int[][] Pos)
     {
-        System.out.println("FiftyMoveCounter = " + GetNumberOfMovesWithNoPawnMoveOrCapture(Pos));
+        System.out.println("FiftyMoveCounter: " + GetNumberOfMovesWithNoPawnMoveOrCapture(Pos));
     }
     
     public static void SetMoveColor(int[][] Pos, int color)
@@ -941,15 +940,15 @@ public class Position
         //System.out.println("set Set()= " + set);
     } 
     
-    public static void SetNumberOfRepetitiveMoves(int[][] Pos, int set)
+    public static void SetNumberOfRepetitivePositions(int[][] Pos, int set)
     {
-        Pos[ROW_STORE_NUMBER_OF_REPETITIVE_MOVES][COLUMN_STORE_NUMBER_OF_REPETITIVE_MOVES] = set;    
+        Pos[ROW_STORE_NUMBER_OF_REPETITIVE_POSITIONS][COLUMN_STORE_NUMBER_OF_REPETITIVE_POSITIONS] = set;    
         //System.out.println("set Set()= " + set);
     }       
     
-    public static int GetNumberOfRepetitiveMoves(int[][] Pos)
+    public static int GetNumberOfRepetitivePositions(int[][] Pos)
     {
-        return Pos[ROW_STORE_NUMBER_OF_REPETITIVE_MOVES][COLUMN_STORE_NUMBER_OF_REPETITIVE_MOVES];  
+        return Pos[ROW_STORE_NUMBER_OF_REPETITIVE_POSITIONS][COLUMN_STORE_NUMBER_OF_REPETITIVE_POSITIONS];  
     }     
     
     public static void IncrementNumberOfMovesWithNoPawnMoveOrCapture(int[][] Pos)
@@ -2312,9 +2311,9 @@ public class Position
             Status = INSUFFICIENT_MATERIAL;
         }    
         
-        if (ThreeMoveRepetition(Pos, MoveList))
+        if (ThreePositionRepetition(Pos, MoveList))
         {
-            Status = THREE_MOVE_REPETITION;
+            Status = THREE_POSITION_REPETITION;
         }        
         
         if (FiftyMove(Pos))
@@ -2392,7 +2391,7 @@ public class Position
     
     public static boolean Draw(int[][] Pos, int[][] MovePath, boolean show)
     {   
-        if (Stalemate(Pos, show) || InsufficientMaterial(Pos) || ThreeMoveRepetition(Pos, MovePath) || FiftyMove(Pos))
+        if (Stalemate(Pos, show) || InsufficientMaterial(Pos) || ThreePositionRepetition(Pos, MovePath) || FiftyMove(Pos))
         {
             if (show)
             {
@@ -2417,9 +2416,9 @@ public class Position
         return false;
     }
 
-    public static boolean ThreeMoveRepetition(int[][] Pos, int[][] MovePath)
+    public static boolean ThreePositionRepetition(int[][] Pos, int[][] MovePath)
     {   
-        if(Move.RepetitiveMoves(MovePath) >= Move.NUMBER_REPETIVE_MOVES_TO_CAUSE_DRAW)
+        if(Move.RepetitivePositions(MovePath) >= Move.NUMBER_REPETIVE_POSITIONS_TO_CAUSE_DRAW)
         {
             return true;
         }
