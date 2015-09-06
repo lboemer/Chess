@@ -50,7 +50,7 @@ public class Move
     public static final int CHECK_STATUS                    = 13;    
     public static final int POSITION_STATUS                 = 14;    
     public static final int RATING                          = 15;
-    public static final int REPETITIVE_POSITION_COUNTER         = 16; 
+    public static final int REPETITIVE_POSITION_COUNTER     = 16; 
     public static final int FIFTY_MOVE_COUNTER              = 17;    
       
     
@@ -283,33 +283,26 @@ public class Move
         int i = 0;
         int j;
         int begin = 0;
-        int end;
-        
-        for(end = 0; MoveList[end][FIGURE] != Position.EMPTY; end++)     
-        {
-        }
+        int end   = 0;
 
         switch(BoundryType)
         {
             case ALL: 
+                begin   = 0;
+                end     = IndexOfLastMove(MoveList);
                 break;
     
             case START:
-                begin = BoundryValue - 1;
-                break;
+                begin   = BoundryValue - 1;
+                end     = IndexOfLastMove(MoveList);
                 
             case STOP:
-                end = BoundryValue;
+                begin   = 0;
+                end     = BoundryValue -1;
                 break;       
         }        
         
-        for(l = begin; l < end; l++) 
-        
-        
-        
-        
-       
-        //for(l = 0; MoveList[l][FIGURE] != Position.EMPTY; l++)            
+        for(l = begin; l <= end; l++)           
         {
             switch(ListFormat)
             {
@@ -933,7 +926,7 @@ public class Move
         }
     }
     
-    public static void SetMove(int[][] Move, int m, int[][] MovePath, int l)
+    public static void SetMove(int[][] Move, int m, int[][] MovePath, int l)    // Copies Move[m] to MovePath[l]
     {
         int i;
         
@@ -943,7 +936,7 @@ public class Move
             //System.out.println("l =" + l + "Copy " + List[l][i]);
         }
        
-        for(l++; l < MovePath.length; l++)          // Set remainder of List to 0
+        for(l++; l < MovePath.length; l++)                                      // Sets remainder of MovePath to 0
         {
             for(i = 0; i < ENTRIES_MOVE_LIST; i++)
             {
