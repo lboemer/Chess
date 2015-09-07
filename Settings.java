@@ -1,24 +1,4 @@
-/**
- 
-V1.0 2015-03-29 
-
-V1.1 2015-04-21
-- updated menus
-
-V1.2 2015-04-25
-- move GetUserMove() from Chess to Settings
-- added ClearScreen();
-
-V1.3 2105-05-11
-- formatted GetUserMove() menue output
-- swapped col and row in Pos[][]
-
-V1.4 20150-07-25 
-- changed do while loop parameter in GetUserMove() to avoud while(true)
- 
-**/
-
-import java.util.*;      // For scanner
+import java.util.*;                                                             // For scanner
 
 public class Settings
 {
@@ -28,18 +8,18 @@ public class Settings
     public static final int HIGH                        = 3;
     public static final int VERYHIGH                    = 4;
     
-    public static final int ABSOLUTE_MAX_MOVES          = 2147483000;   // Java int:int is 32 bit signed type ranges from –2,147,483,648 to 2,147,483,647.
+    public static final int ABSOLUTE_MAX_MOVES          = 2147483000;           // Java int:int is 32 bit signed type ranges from –2,147,483,648 to 2,147,483,647.
     public static final int DEFAULT_MAX_MOVES           = 10000000; 
         
     public static final int ABSOLUTE_MAX_MOVE_DEPTH     = 50; 
     public static final int DEFAULT_MAX_MOVE_DEPTH      = 50;   
     
-    public static final long ABSOLUTE_MAX_SECONDS       = 60 * 60 * 24;     // 24 h 
-    public static final long DEFAULT_MAX_SECONDS        = 3;           // per computer move 
+    public static final long ABSOLUTE_MAX_SECONDS       = 60 * 60 * 24;         // 24 h 
+    public static final long DEFAULT_MAX_SECONDS        = 3;                    // per computer move 
     
     // Decision rule
-    public static final int MINMAX                      = 0;            // minmax
-    public static final int ALPHA_BETA                  = 1;            // alpha beta pruning
+    public static final int MINMAX                      = 0;                    // minmax
+    public static final int ALPHA_BETA                  = 1;                    // alpha beta pruning
     public static final int DEFAULT_DECISION_RULE       = ALPHA_BETA;
       
     // Play mode
@@ -61,7 +41,6 @@ public class Settings
     public static void Settings(int[][] Pos)
     {
         ShowPosition(HEADER);
-        
         ShowMaxMoves(HEADER);
         ShowMaxMoveDepth(HEADER);
         ShowMaxSeconds(HEADER);
@@ -73,16 +52,17 @@ public class Settings
     
     public static void InitiateSettings(int[][] Pos)
     {
-        Chess.ShowStatus        = LOW;                         // Show criteria, implemented ZERO, LOW, MEDIUM, HIGH
-        Chess.DebugLevel        = LOW;                          // Debug level, implemented ZERO, LOW, MEDIUM, HIGH  
-        
-        Position.SetPosition(Pos, Position.NEW_POSITION);       // Initiat starting postion        
-        Chess.MaxMoves          = DEFAULT_MAX_MOVES;            // Initiate MaxMoves
-        Chess.MaxMoveDepth      = DEFAULT_MAX_MOVE_DEPTH;       // Initiate MaxMoveDepth
-        Chess.MaxSeconds        = DEFAULT_MAX_SECONDS;          // Initiate Maxseconds
-        Chess.DecisionRule      = DEFAULT_DECISION_RULE;        // Initiate DecisionRule                                // Initiate MaxMoveDepth
-        Chess.PlayMode          = DEFAULT_PLAY_MODE;              // Initiate PlayMode
-        Chess.FirstMove         = DEFAULT_FIRST_MOVE;                       // Initiate FirstMove
+        Chess.ShowStatus        = LOW;                                          // Show criteria, implemented ZERO, LOW, MEDIUM, HIGH
+        Chess.DebugLevel        = LOW;                                          // Debug level, implemented ZERO, LOW, MEDIUM, HIGH  
+        Position.SetPosition(Pos, Position.NEW_POSITION);                       // Initiate starting postion        
+        Chess.MaxMoves          = DEFAULT_MAX_MOVES;                            // Initiate MaxMoves
+        Chess.MaxMoveDepth      = DEFAULT_MAX_MOVE_DEPTH;                       // Initiate MaxMoveDepth
+        Chess.MaxSeconds        = DEFAULT_MAX_SECONDS;                          // Initiate Maxseconds
+        Chess.DecisionRule      = DEFAULT_DECISION_RULE;                        // Initiate DecisionRule                          
+        Chess.PlayMode          = DEFAULT_PLAY_MODE;                            // Initiate PlayMode
+        Chess.FirstMove         = DEFAULT_FIRST_MOVE;                           // Initiate FirstMove 
+        Chess.WhiteBoard        = Chess.SetBoard(Pos);                          // Set WhiteBoard
+        Chess.ui.repaintWindow(Pos);                                            // Draw beginning position
     } 
 
     public static boolean GetUserInput(int[][] Pos)    
@@ -94,10 +74,6 @@ public class Settings
         
         do{
             ClearScreen(Pos);
-            //Position.DisplayPosition(Pos);
-            //System.out.println("Menue:\t\t\t\t Get User Input");            
-            //Settings.ShowMoveColor(Pos, HEADER);
-            //System.out.println();
             System.out.println("Enter \t Next Step");
             System.out.println("1 \t Get user input");
             System.out.println("2 \t Make move");
@@ -117,7 +93,6 @@ public class Settings
                     continue;
                    
                  case 'x':
-                    //System.out.println("Entered x: Exiting  program.");
                     return false;
             }
         } 
@@ -129,17 +104,11 @@ public class Settings
     public static boolean NewGame(int[][] Pos, int[][] MoveHistory)    
     {
         int i;
-        //char[] ch                   = new char[100];  
         char UserInput;
         String inputString;
         Scanner scanner             = new Scanner(System.in);
         
         do{
-            //Position.DisplayPosition(Pos);
-            //System.out.println("Menue:\t\t\t\t New Game");            
-            //Settings.ShowMoveColor(Pos);
-            
-            
             ClearScreen(Pos);
                                 
             Move.DisplayMoveList(MoveHistory, Move.ALL, 0, Move.TABLE, Move.SHOW_NO_RATING);
@@ -150,9 +119,7 @@ public class Settings
             System.out.println("x  \t\t\t Exit program");
 
             inputString = scanner.nextLine(); 
-            UserInput  = inputString.charAt(0);       
-
-            
+            UserInput  = inputString.charAt(0);         
              
             switch(UserInput)
             {
@@ -160,7 +127,6 @@ public class Settings
                     return true;
                     
                  case 'x':
-                    //System.out.println("Entered x: Exiting  program.");
                     return false;
             }
         } 
@@ -175,13 +141,8 @@ public class Settings
                 
         do 
         {            
-            //Runtime.getRuntime().exec("clear");
-            //ClearConsole();
             ClearScreen(Pos);
             
-            
-            //Position.DisplayPosition(Pos);  
-
             System.out.println("Enter\t Settings \t\t\t Current setting");
             System.out.print("1 \t Set Position\t\t\t ");               ShowPosition(NO_HEADER);
             System.out.print("2 \t Set Max Computer Moves\t\t ");       ShowMaxMoves(NO_HEADER);
@@ -247,11 +208,7 @@ public class Settings
             Move.EmptyMoveList(MoveHistory);
 
             ClearScreen(Pos);
-            //Position.DisplayPosition(Pos);
-                        
-            //System.out.print("Position\t ");
-            //ShowPosition(NO_HEADER);
-            //System.out.println();            
+          
             System.out.println("Enter \t\t Position");   
             System.out.println("1 \t\t New");
             System.out.println("2 \t\t Pawn");            
@@ -304,7 +261,7 @@ public class Settings
                     InputValid = false;
             }
             
-            if (Position.Check(Pos, Position.GIVING_CHECK) == true)               // Check if the oponent King could be taken in the next move         
+            if (Position.Check(Pos, Position.GIVING_CHECK) == true)             // Check if the opponent King could be taken in the next move         
             {         
                 System.out.println("Opponent can take");
                 Position.DisplayMoveColor(Pos);   
@@ -321,13 +278,13 @@ public class Settings
         
         if(Position.GetMoveColor(Pos) == Position.WHITE_MOVE)
         {
-            UserInterface.WhiteBoard = true;
-            System.out.println("UserInterface.WhiteBoard = " + UserInterface.WhiteBoard);
+            Chess.WhiteBoard = true;
+            System.out.println("Chess.WhiteBoard = " + Chess.WhiteBoard);
         }
         else
         {
-            UserInterface.WhiteBoard = false;
-            System.out.println("UserInterface.WhiteBoard = " + UserInterface.WhiteBoard);
+            Chess.WhiteBoard = false;
+            System.out.println("Chess.WhiteBoard = " + Chess.WhiteBoard);
         } 
         
         Chess.ui.repaintWindow(Pos); 
@@ -335,7 +292,6 @@ public class Settings
     
     public static void UserSetMaxMoves(int[][] Pos)
     {            
-        //int i;
         boolean InputValid = false;
         char[] ch                   = new char[100];  
         String inputString;
@@ -343,12 +299,7 @@ public class Settings
         do
         {       
             ClearScreen(Pos);
-            //Position.DisplayPosition(Pos);            
             
-            //System.out.print("Max Computer Moves\t ");
-            
-            //ShowMaxMoves(NO_HEADER);
-            //System.out.println();             
             System.out.println("Enter \t Max Computer Moves");
             System.out.print("Integer\t ");
             
@@ -361,7 +312,7 @@ public class Settings
             } 
             catch (NumberFormatException e) 
             {
-                System.out.println("Can't convert to integer. Please try again." );
+                System.out.println("Can't convert to integer. Please try again.");
                 continue;
             }
             if (Chess.MaxMoves > ABSOLUTE_MAX_MOVES){
@@ -376,7 +327,6 @@ public class Settings
             }
         }
         while(!InputValid);
-        
     }
     
     public static void UserSetMaxMoveDepth(int[][] Pos)
@@ -390,13 +340,7 @@ public class Settings
         do
         {  
             ClearScreen(Pos);
-            //Position.DisplayPosition(Pos);
-            //System.out.print("Max Move Depth\t ");
-            
-            //ShowMaxMoveDepth(NO_HEADER);
-            //System.out.println();              
-            
-            
+
             System.out.println("Enter \t Max Move Depth");
             System.out.print("Integer\t ");
 
@@ -410,7 +354,7 @@ public class Settings
             } 
             catch (NumberFormatException e) 
             {
-                System.out.println("Can't convert to integer. Please try again." );
+                System.out.println("Can't convert to integer. Please try again.");
                 continue;
             }
             
@@ -440,13 +384,6 @@ public class Settings
         do
         {   
             ClearScreen(Pos);
-            //Position.DisplayPosition(Pos);            
-
-            //System.out.print("Max Computer Seconds\t ");
-            
-            //ShowMaxSeconds(NO_HEADER);
-            //System.out.println();              
-            
             
             System.out.println("Enter \t Max Compputer Seconds");
             System.out.print("Integer\t ");
@@ -461,10 +398,11 @@ public class Settings
             } 
             catch (NumberFormatException e) 
             {
-                System.out.println("Can't convert to integer. Please try again." );
+                System.out.println("Can't convert to integer. Please try again.");
                 continue;
             }
-            if (Chess.MaxSeconds > ABSOLUTE_MAX_SECONDS || (Chess.MaxSeconds <= 0))            {
+            if (Chess.MaxSeconds > ABSOLUTE_MAX_SECONDS || (Chess.MaxSeconds <= 0))            
+            {
                 System.out.println("ABSOLUTE_MAX_SECONDS is = " + ABSOLUTE_MAX_SECONDS);
                 System.out.println("0 < Max Computer Seconds < " + ABSOLUTE_MAX_SECONDS);
                 continue;
@@ -486,28 +424,14 @@ public class Settings
         Scanner scanner             = new Scanner(System.in);
         
         do
-        {            
-            
+        {                
             ClearScreen(Pos);
-            //Position.DisplayPosition(Pos);            
-            //System.out.print("Decision Rule\t ");
-            
-            //ShowDecisionRule(NO_HEADER);
-            //System.out.println();  
-            
-            
+
             System.out.println("Enter \t Decision Rule");
             System.out.println("1 \t Minmax");
             System.out.println("2 \t Alpha Beta Pruning");
             
-            inputString = scanner.nextLine();     
-             
-            if (inputString.length() == 0)
-            {
-                //System.out.println("Did not enter a move.");
-                continue;
-            } 
-            
+            inputString = scanner.nextLine();      
             ch = inputString.charAt(0);   
             switch(ch)
             {
@@ -533,47 +457,32 @@ public class Settings
         Scanner scanner             = new Scanner(System.in);
         
         do
-        {     
-            
+        {           
             ClearScreen(Pos);
-            //Position.DisplayPosition(Pos);            
-            //System.out.print("Move color\t ");
-            
-            //ShowMoveColor(Pos, NO_HEADER);
-            //System.out.println();              
-            
-            
+    
             System.out.println("Enter \t Move color");
             System.out.println("1 \t White move");
             System.out.println("2 \t Black move");
             
             inputString = scanner.nextLine();     
-             
-            if (inputString.length() == 0)
-            {
-                //System.out.println("Did not enter a move.");
-                continue;
-            } 
-            
             ch = inputString.charAt(0);   
             switch(ch)
             {
                 case '1':
-                    Position.SetMoveColor(Pos, Position.WHITE_MOVE);
-                    UserInterface.WhiteBoard = true;
-                                Chess.ui.repaintWindow(Pos); 
+                    Position.SetMoveColor(Pos, Position.WHITE_MOVE); 
                     InputValid = true;
                     break;
                     
                 case '2':
                     Position.SetMoveColor(Pos, Position.BLACK_MOVE);
-                    UserInterface.WhiteBoard = false;
-                     Chess.ui.repaintWindow(Pos); 
                     InputValid = true;;
                     break;
             }
         }
         while (!InputValid);  
+        
+        Chess.WhiteBoard = Chess.SetBoard(Pos);                                 // Sets WhiteBoard to true or false;
+        Chess.ui.repaintWindow(Pos);                                            // Draws beginning position
     }
     
     public static void UserSetPlayMode(int[][] Pos)
@@ -585,15 +494,7 @@ public class Settings
         
         do
         {       
-            
             ClearScreen(Pos);
-            //Position.DisplayPosition(Pos);    
-            
-            //System.out.print("Paly Mode \t ");
-            
-            //ShowPlayMode(NO_HEADER);
-            //System.out.println();              
-            
             
             System.out.println("Enter \t Play Mode");
             System.out.println("1 \t Player against player");
@@ -601,13 +502,6 @@ public class Settings
             System.out.println("3 \t Computer against computer" );
             
             inputString = scanner.nextLine();     
-             
-            if (inputString.length() == 0)
-            {
-                //System.out.println("Did not enter a move.");
-                continue;
-            } 
-            
             ch = inputString.charAt(0);   
             switch(ch)
             {
@@ -640,20 +534,11 @@ public class Settings
         do
         {  
             ClearScreen(Pos);
-            //Position.DisplayPosition(Pos);      
-            //System.out.print("First Move\t ");
-            
-            //ShowFirstMove(NO_HEADER);
-            //System.out.println();              
-            
-            
-            
             System.out.println("Enter \t First Move");
             System.out.println("1 \t Player to make first move");
             System.out.println("2 \t Computer to make first move");
             
             inputString = scanner.nextLine();     
-
             ch = inputString.charAt(0);   
             switch(ch)
             {
@@ -669,9 +554,11 @@ public class Settings
             }
         }
         while (!InputValid);  
+        
+        Chess.WhiteBoard = Chess.SetBoard(Pos);                                 // Sets WhiteBoard to true or false;
+        Chess.ui.repaintWindow(Pos);                                            // Draws beginning position     
     }
     
-    //public static char GetUserMove(int[][] Pos, int[][] MoveIteration, int[][] MoveHistory, int[][] MoveBest, boolean Back) //throws java.io.IOException
     public static char GetUserMove(int[][] Pos, int[][] MovePath, int[][] MoveBest, boolean Back) //throws java.io.IOException
     {
         int col = 0;
@@ -685,8 +572,6 @@ public class Settings
 
         do
         {                   
-            //System.out.println();   
-            //System.out.println("Menue: \t\t\t\t User Move");
             Settings.ClearScreen(Pos);
             
             if(!Back)
@@ -695,11 +580,9 @@ public class Settings
             }
             
             System.out.println();
-            
-            //Move.DisplayMoveList(MoveHistory, Move.TABLE, Move.SHOW_NO_RATING);
+
             Move.DisplayMoveList(MovePath, Move.ALL, 0, Move.TABLE, Move.SHOW_NO_RATING);
             
-            //System.out.println();   
             System.out.print("\nEnter \t ");
            
             switch (Position.GetMoveColor(Pos))
@@ -707,6 +590,7 @@ public class Settings
                 case Position.WHITE_MOVE:
                     System.out.print("White");
                     break;
+                    
                 case Position.BLACK_MOVE:
                     System.out.print("Black");
                     break;
@@ -724,8 +608,7 @@ public class Settings
             char[] ch = new char[inputString.length()];  
             for(i = 0; i < inputString.length(); i++)  
             {  
-               ch[i] = inputString.charAt(i);  
-                //System.out.println("Entered characters ch[" + i + "] = " + ch[i]);             
+               ch[i] = inputString.charAt(i);      
             }  
 
             switch(ch[0])
@@ -910,8 +793,6 @@ public class Settings
                         break;                          
                 }
             }
-             
-        //}while(!Move.UserMoveSuccessful(Pos, col, row, Figure_n, col_p_n, row_p_n, MoveIteration, MoveHistory));
         }while(!Move.UserMoveSuccessful(Pos, col, row, Figure_n, col_p_n, row_p_n, MovePath));            
         Settings.ClearScreen(Pos);  
         return '0';
@@ -1023,6 +904,7 @@ public class Settings
             case Position.WHITE_MOVE:
                 System.out.println("White");
                 break;
+                
             case Position.BLACK_MOVE:
                 System.out.println("Black");
                 break;

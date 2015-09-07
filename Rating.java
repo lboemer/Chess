@@ -1,24 +1,4 @@
-/**
- 
-V1.0 2015-03-29 
-
-V1.1 2015-05-10
-- introduced PawnRating() 
-
-V1.2 2015-05-11
-- introduced GetRating2()
-- introduced PawnRating 
-
-V1.3 2015-05-31
-- introduced PositionType()
-
-V1.4 2015-06-14
-- itrodcued GamePhase()
-- introduced Front, Back, Connected_Two pawn
- 
-**/
-
-import java.lang.*;  // used for max()
+import java.lang.*;                                                             // used for max()
 
 public class Rating
 {
@@ -51,17 +31,11 @@ public class Rating
     public static final int MIDDLE_GAME                     = 1;
     public static final int END_GAME                        = 2;
         
-    /**
-     * Constructor for objects of class Rating
-     */
     public static void Rating()
     {
-        // initialise instance variables
-        //x = 0;
     }
     
-    //public static int GetRating(int[][] Pos)   
-    public static int GetRating1(int[][] Pos, int PositionStatus)   // Rating 1
+    public static int GetRating1(int[][] Pos, int PositionStatus)               // Rating 1
     {
         int col;
         int row;
@@ -90,7 +64,7 @@ public class Rating
                 
             case Position.STALEMATE:
             case Position.INSUFFICIENT_MATERIAL: 
-            case Position.THREE_MOVE_REPETITION:
+            case Position.THREE_POSITION_REPETITION:
             case Position.FIFTY_MOVE:
                 return DRAW_RATING;
         }
@@ -98,10 +72,10 @@ public class Rating
         for (row = 1; row <= Position.ROWS; row++)
         {
             for (col = 1; col <= Position.COLS; col++)              
-            {
-                switch(Pos[row][col])
+            {                                                                   // For now rating scheme just counts value of figures ...
+                switch(Pos[row][col])                                           // ...later rating scheme can be more sophisticated
                 {   
-                    case Position.WHITE_KING:                    // For now rating scheme just counts value of figures, later rating scheme can be more sophisticated
+                    case Position.WHITE_KING:                                   
                         Rating += KING_RATING;
                         break;
                             
@@ -154,15 +128,14 @@ public class Rating
         return(Rating);
     }   
 
-    public static int GetRating(int[][] Pos, int PositionStatus)   // Rating 2
+    public static int GetRating(int[][] Pos, int PositionStatus)                // Rating 2
     {
         int row;
         int col;
         int Rating = 0;
         int FinePawnRating;
-        
-        // Use centi pawn rating system
-        final int KING_RATING                     = 400;
+
+        final int KING_RATING                     = 400;                        // Use centi pawn rating system
         final int QUEEN_RATING                    = 880;
         final int ROOK_RATING                     = 510;
         final int KNIGHT_RATING                   = 320;
@@ -184,7 +157,7 @@ public class Rating
                 
             case Position.STALEMATE:
             case Position.INSUFFICIENT_MATERIAL:
-            case Position.THREE_MOVE_REPETITION:
+            case Position.THREE_POSITION_REPETITION:
             case Position.FIFTY_MOVE:            
                 return DRAW_RATING;
         }
@@ -195,7 +168,7 @@ public class Rating
             {
                     switch(Pos[row][col])
                     {   
-                        case Position.WHITE_KING:                    // For now rating scheme just counts value of figures, later rating scheme can be more sophisticated
+                        case Position.WHITE_KING:                    
                             Rating += KING_RATING;
                             break;
                             
@@ -343,65 +316,73 @@ public class Rating
 
         int PawnValueOpeningAndMiddleGame[][]   =
         {  //   A    B    C,   D,   E,   F,  G,   H      Rank  
-            {   0,   0,   0,   0,   0,   0,  0,    0 }, // 1    Extended Berliner table              
+            {   0,   0,   0,   0,   0,   0,  0,    0 }, // 1                    Extended Berliner table              
             {  90,  95, 105, 110, 110, 105,  95,  90 }, // 2     
             {  90,  95, 105, 115, 115, 105,  95,  90 }, // 3     
             {  90,  95, 110, 120, 120, 110,  95,  90 }, // 4      
             {  97, 103, 117, 127, 127, 117, 103,  97 }, // 5      
             { 106, 112, 125, 140, 140, 125, 112, 106 }, // 6     
-            { 116, 123, 135, 150, 150, 135, 123, 116 }, // 7    Extended Berliner table                
-            {   0,   0,   0,   0,   0,   0,   0,   0 }, // 8    Extended Berliner table                    
+            { 116, 123, 135, 150, 150, 135, 123, 116 }, // 7                    Extended Berliner table                
+            {   0,   0,   0,   0,   0,   0,   0,   0 }, // 8                    Extended Berliner table                    
         };    
         
         int PawnValueEndgame[][]   =
         {  //   A    B    C,   D,   E,   F,  G,   H      Rank              
-            {   0,   0,   0,   0,   0,   0,  0,    0 }, // 1    Extended Berliner table                   
+            {   0,   0,   0,   0,   0,   0,  0,    0 }, // 1                    Extended Berliner table                   
             { 120, 105,  95,  90,  90,  95, 105, 120 }, // 2     
             { 120, 105,  95,  90,  90,  95, 105, 120 }, // 3     
             { 125, 110, 100,  95,  95, 100, 110, 125 }, // 4     
             { 133, 117, 107, 100, 100, 107, 117, 133 }, // 5    
             { 145, 129, 116, 105, 105, 116, 129, 145 }, // 6    
-            { 164, 144, 126, 115, 115, 126, 144, 164 }, // 7   Extended Berliner table        
-            {   0,   0,   0,   0,   0,   0,  0,    0 }, // 8   Extended Berliner table                        
+            { 164, 144, 126, 115, 115, 126, 144, 164 }, // 7                    Extended Berliner table        
+            {   0,   0,   0,   0,   0,   0,  0,    0 }, // 8                    Extended Berliner table                        
         };         
         
         int MultiplierPawnAdvances[][]       =
-        // C_T =       C_O + (C_O - ISO) * 0.3                  Source: Leo         
-        // BAC = FRO = ISO + (C_O - ISO) * 0.5                  Source: Leo
-        // PCT =       PCO + (PCO - PAS) * 0.5                  Source: Leo
-        {  // ISO, BAC, FRO, C_O, C_T, PAS, PCO, PCT    Rank    ISO: Isolated, BAC: Back, C_O: Connected to one pawn, C_T: connected to two pawns, PAS: Passed, PCO: Passed and ConnectedOne, PCT: Passed and ConnectedTwo                       
-            { 100, 100, 100, 100, 100, 100, 100, 100 }, // 1    Extended Berliner table  
-            { 100, 102, 102, 103, 104, 108, 114, 117 }, // 2    Extended Berliner table
-            { 103, 105, 105, 107, 108, 115, 128, 135 }, // 3    Extended Berliner table
+        // C_T =       C_O + (C_O - ISO) * 0.3                                  // Source: Leo         
+        // BAC = FRO = ISO + (C_O - ISO) * 0.5                                  // Source: Leo
+        // PCT =       PCO + (PCO - PAS) * 0.5                                  // Source: Leo
+                                                                                // ISO: Isolated
+                                                                                // BAC: Back 
+                                                                                // C_O: Connected to one pawn
+                                                                                // C_T: connected to two pawns
+                                                                                // PAS: Passed 
+                                                                                // PCO: Passed and ConnectedOne 
+                                                                                // PCT: Passed and ConnectedTwo 
+         {  // ISO, BAC, FRO, C_O, C_T, PAS, PCO, PCT    Rank                     
+            { 100, 100, 100, 100, 100, 100, 100, 100 }, // 1                    //Extended Berliner table  
+            { 100, 102, 102, 103, 104, 108, 114, 117 }, // 2                    // Extended Berliner table
+            { 103, 105, 105, 107, 108, 115, 128, 135 }, // 3                    // Extended Berliner table
             { 105, 110, 110, 115, 118, 130, 155, 168 }, // 4                
             { 130, 133, 133, 135, 137, 155, 230, 268 }, // 5         
             { 210, 223, 223, 235, 243, 255, 350, 398 }, // 6       
-            { 220, 233, 233, 245, 253, 265, 360, 408 }, // 7    Extended Berliner table  
-            { 100, 100, 100, 100, 100, 100, 100, 100 }, // 8    Extended Berliner table            
+            { 220, 233, 233, 245, 253, 265, 360, 408 }, // 7                    // Extended Berliner table  
+            { 100, 100, 100, 100, 100, 100, 100, 100 }, // 8                    // Extended Berliner table            
         };
         
-        int MultiplierMultiplePawn[][]      =       // Extended Beeliner table
+        int MultiplierMultiplePawn[][]      =                                   // Extended Beeliner table
         { // Double     TripleOrMore      
           // Pawn       Pawn 
-            { 33,       20 },       // NoFellowAndNoOppoentPawnOnAdjacentFiles
-            { 50,       30 },       // NoFellowAndOpponentPawnOnAdjacentFile
-            { 75,       45 },       // FellowAndOpponentPawnOnOppositeAdjacentFile
-            { 50,       30 },       // FellowAndOpponentPawnOnSameAdjacentFile 
+            { 33,       20 },                                                   // NoFellowAndNoOppoentPawnOnAdjacentFiles
+            { 50,       30 },                                                   // NoFellowAndOpponentPawnOnAdjacentFile
+            { 75,       45 },                                                   // FellowAndOpponentPawnOnOppositeAdjacentFile
+            { 50,       30 },                                                   // FellowAndOpponentPawnOnSameAdjacentFile 
         };
+        
+        boolean FellowPawnOnAdjacentUpperFile;
+        boolean FellowPawnOnAdjacentLowerFile;
+        boolean OpponentPawnOnAdjacentUpperFile;
+        boolean OpponentPawnOnAdjacentLowerFile;       
+        int row_n;
+        int PositionType;                    
+        int FellowPawnsInFile;
+        int Multiplier;
         
         int PawnValue                       = 0;
         int Rank                            = 0;
         int File                            = 0;
-        int row_n;
-        int Multiplier;
         int PawnType                        = 0;
-        int PositionType;                    
-        int FellowPawnsInFile;
         int AdjacentIndex                   = 0;
-        boolean FellowPawnOnAdjacentUpperFile;
-        boolean FellowPawnOnAdjacentLowerFile;
-        boolean OpponentPawnOnAdjacentUpperFile;
-        boolean OpponentPawnOnAdjacentLowerFile;
         
         File = col - 1;
         
@@ -481,13 +462,13 @@ public class Rating
         
         if((PositionType == PASSED) || (PositionType == PASSED_AND_CONNECTED_ONE) || (PositionType == PASSED_AND_CONNECTED_TWO))
         {          
-            return PawnValue;                                                               // Finished, no need to count for multiple pawns
+            return PawnValue;                                                   // Finished, no need to count for multiple pawns
         }
    
-        FellowPawnsInFile = NumberOfFellowPawnsInFront(Pos, col, row);                      // Identify if 0: Single, 1: Double or 2: Triple or more Pawn
+        FellowPawnsInFile = NumberOfFellowPawnsInFront(Pos, col, row);          // Identify if 0: Single, 1: Double or 2: Triple or more Pawn
         if(FellowPawnsInFile == 0)
         {
-            return PawnValue;                                                               // Finished, Single Pawn
+            return PawnValue;                                                   // Finished, Single Pawn
         }
         
         FellowPawnOnAdjacentUpperFile       = PawnOnFile(Pos, col, row, UPPER_FILE_DELTA , FELLOW);
@@ -497,23 +478,23 @@ public class Rating
         
         if(!FellowPawnOnAdjacentUpperFile && !FellowPawnOnAdjacentLowerFile && !OpponentPawnOnAdjacentUpperFile && !OpponentPawnOnAdjacentLowerFile)
         {
-            AdjacentIndex = 0;    // NoFellowAndNoOppoentPawnOnAdjacentFiles
+            AdjacentIndex = 0;                                                  // NoFellowAndNoOppoentPawnOnAdjacentFiles
         }
         
         if((!FellowPawnOnAdjacentUpperFile && !FellowPawnOnAdjacentLowerFile) && (OpponentPawnOnAdjacentUpperFile || OpponentPawnOnAdjacentLowerFile))
         {
-            AdjacentIndex = 1;   // NoFellowButOpponentPawnOnAdjacentFile
+            AdjacentIndex = 1;                                                  // NoFellowButOpponentPawnOnAdjacentFile
         }        
         
         if((FellowPawnOnAdjacentUpperFile && OpponentPawnOnAdjacentLowerFile) || (FellowPawnOnAdjacentLowerFile && OpponentPawnOnAdjacentUpperFile))
         {
-            AdjacentIndex = 2;   // FellowAndOpponentPawnOnOppositeAdjacentFile
+            AdjacentIndex = 2;                                                  // FellowAndOpponentPawnOnOppositeAdjacentFile
         }        
         
         if((FellowPawnOnAdjacentUpperFile && OpponentPawnOnAdjacentUpperFile && !OpponentPawnOnAdjacentLowerFile) || 
            (FellowPawnOnAdjacentLowerFile && OpponentPawnOnAdjacentLowerFile && !OpponentPawnOnAdjacentUpperFile))
         {
-            AdjacentIndex = 3;   // FellowAndOpponentPawnOnSameAdjacentFile 
+            AdjacentIndex = 3;                                                  // FellowAndOpponentPawnOnSameAdjacentFile 
         }         
 
         if((AdjacentIndex < 0) || (AdjacentIndex > 3))
@@ -583,10 +564,10 @@ public class Rating
         int PositionType    = 0;
         boolean PawnPassed  = true;
             
-        PositionType = ISOLATED;                // Default        
-        // Identify if pawn is ISOLATED, FRONT, BACK, CONNECTED_ONE or CONNECTED_TWO
+        PositionType = ISOLATED;                                                // Default        
+                                                                                // Identify if pawn is ISOLATED, FRONT, BACK, CONNECTED_ONE or CONNECTED_TWO
         loop_column: 
-        for(col_step = -1; col_step < 2; col_step += 2)              // Look at column down then column up
+        for(col_step = -1; col_step < 2; col_step += 2)                         // Look at column down then column up
         {
             col_n = col + col_step;
             //System.out.println("col_n = " + col_n);
@@ -610,18 +591,18 @@ public class Rating
             }            
             
             loop_row:
-            for(row_n = row_start; ((row_n > 1) && (row_n < Position.ROWS)); row_n += row_step)          // Look at all rows
-            {
+            for(row_n = row_start; ((row_n > 1) && (row_n < Position.ROWS)); row_n += row_step)          
+            {                                                                   // Look at all rows
                 if(((Pos[row][col] == Position.WHITE_PAWN) && (Pos[row_n][col_n] == Position.WHITE_PAWN)) ||
                    ((Pos[row][col] == Position.BLACK_PAWN) && (Pos[row_n][col_n] == Position.BLACK_PAWN)))
                 {
                     if ((((Pos[row][col] == Position.WHITE_PAWN) && ((row_n - row) < -1)) || ((Pos[row][col] == Position.BLACK_PAWN) && ((row_n - row) > -1))) && (PositionType == ISOLATED))
                     {
-                        PositionType = FRONT;                                                      // FRONT overrules ISOLATED
+                        PositionType = FRONT;                                   // FRONT overrules ISOLATED
                     }
                     
                     if ((((Pos[row][col] == Position.WHITE_PAWN) && ((row_n - row) > -1)) || ((Pos[row][col] == Position.BLACK_PAWN) && ((row_n - row) < -1))) && ((PositionType == ISOLATED) || (PositionType == FRONT)))                    {
-                        PositionType = BACK;                                                       // BACK overrules ISOLATED or FRONT
+                        PositionType = BACK;                                    // BACK overrules ISOLATED or FRONT
                     }
                                       
                     if (((row_n - row) >=  -1) && ((row_n - row) <=  1))
@@ -629,14 +610,14 @@ public class Rating
                         //System.out.println("row_n = " + row_n + " row = " + row);
                         if(PositionType != CONNECTED_ONE)
                         {
-                            PositionType = CONNECTED_ONE;                                          // Set PositionType to CONNECTED_ONE unless it is already set to CONNECTED_ONE
+                            PositionType = CONNECTED_ONE;                       // Set PositionType to CONNECTED_ONE unless it is already set to CONNECTED_ONE
                             //System.out.println("Connected one");
-                            break loop_row;                                                        // Can't get a different type for this column, go to next column
+                            break loop_row;                                     // Can't get a different type for this column, go to next column
                         }
                         else
                         {
-                            PositionType = CONNECTED_TWO;                                          // Set PositionType to CONNECTED_TWO since it was already set to CONNECTED_ONE
-                            break loop_column;                                                        // Can't get a different type from here on => exit loop
+                            PositionType = CONNECTED_TWO;                       // Set PositionType to CONNECTED_TWO since it was already set to CONNECTED_ONE
+                            break loop_column;                                  // Can't get a different type from here on => exit loop
                         }
                     }                   
                 }
@@ -646,7 +627,7 @@ public class Rating
         // Identify if pawn passed
         PawnPassed = true; 
         loop_passed:
-        for(col_step = -1; col_step < 2; col_step++)               // Look at column down, own column and column up
+        for(col_step = -1; col_step < 2; col_step++)                            // Look at column down, own column and column up
         {       
             col_n = col + col_step;            
             if((col_n < 1) || (col_n > Position.COLS))    
@@ -654,8 +635,8 @@ public class Rating
                 continue;
             }            
             
-            for(row_n = row_start + row_step; ((row_n > 1) && (row_n < Position.ROWS)); row_n += row_step)           // Look for opponent pawn at all rows in front of own pawn
-            {
+            for(row_n = row_start + row_step; ((row_n > 1) && (row_n < Position.ROWS)); row_n += row_step)           
+            {                                                                   // Look for opponent pawn at all rows in front of own pawn
                 if(((Pos[row][col] == Position.WHITE_PAWN) && (Pos[row_n][col_n] == Position.BLACK_PAWN)) ||
                    ((Pos[row][col] == Position.BLACK_PAWN) && (Pos[row_n][col_n] == Position.WHITE_PAWN)))
                 {
@@ -712,7 +693,7 @@ public class Rating
                 PawnsInFront++;
                 if(PawnsInFront == 2)                
                 {
-                    break;                      // Two or more pawns in front makes it a triple pawn
+                    break;                                                      // Two or more pawns in front makes it a triple pawn
                 }
             }
         }

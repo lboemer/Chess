@@ -1,7 +1,7 @@
 import java.util.*;
 import java.text.*;
  
-import java.util.Scanner;   // Import Scanner class (contains methods
+import java.util.Scanner;                                                       // Import Scanner class
 import java.io.*;
 
 /// From frames
@@ -43,8 +43,9 @@ public class Chess
     public static int       Iteration;
     public static int       Ply;
 
-    public static int       MoveDepth;    
-   
+    public static int       MoveDepth;
+    public static boolean   WhiteBoard = false;
+    
     // timing variables
     public static long      Start;
     public static long      End;
@@ -63,7 +64,7 @@ public class Chess
 
     public static String str = "Leo test \n new line";
     
-    public static        JFrame frame = new JFrame("Leo Java Chess");
+    public static JFrame frame = new JFrame("Leo Java Chess");
     public static UserInterface ui = new UserInterface();
      
     public static Scanner scanner             = new Scanner(System.in);
@@ -112,7 +113,7 @@ public class Chess
         boolean NewGame             = false;
         boolean GetNewUserMove      = false;    
         String inputString;
-        int LocalRating                  = 0;
+        int LocalRating             = 0;
         int Iteration_Finished      = 0;
         Start                       = System.currentTimeMillis( );
         char[] ch                   = new char[100];  
@@ -124,13 +125,13 @@ public class Chess
         char Px;
         int MoveNumber = 0;
         
-        long        UserBegin_ms;
-        long        UserEnd_ms;
-        long        ComputerBegin_ms;  
-        long        ComputerEnd_ms;
+        long UserBegin_ms;
+        long UserEnd_ms;
+        long ComputerBegin_ms;  
+        long ComputerEnd_ms;
         
-        float       SecondsUsedFloat;
-        float       RatingFloat;
+        float SecondsUsedFloat;
+        float RatingFloat;
         
         
         //JFrame frame = new JFrame("Leo Java Chess");
@@ -162,6 +163,8 @@ public class Chess
         
         String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
         
+
+        
         do{                                                                     // New Game
             Move.EmptyMoveList(MovePath);
             Move.EmptyMoveList(MoveBest);          
@@ -169,39 +172,12 @@ public class Chess
             
             Ply = 0;
             Iteration_Move_Counter[0] = 1;
+            MoveNumber        = 0;
       
             Settings.InitiateSettings(Pos);
-            if(Position.GetMoveColor(Pos) == Position.WHITE_MOVE)
-            {
-                UserInterface.WhiteBoard = true;
-                System.out.println("UserInterface.WhiteBoard = " + UserInterface.WhiteBoard);
-            }
-            else
-            {
-                UserInterface.WhiteBoard = false;
-                System.out.println("UserInterface.WhiteBoard = " + UserInterface.WhiteBoard);
-            }
-                          
-            ui.repaintWindow(Pos);                                              // Draws beginning position
-        
-            if(Settings.GetUserInput(Pos) == false)
-            {
-                return;
-            }
             
-            if(Position.GetMoveColor(Pos) == Position.WHITE_MOVE)
-            {
-                UserInterface.WhiteBoard = true;
-                System.out.println("UserInterface.WhiteBoard = " + UserInterface.WhiteBoard);
-            }
-            else
-            {
-                UserInterface.WhiteBoard = false;
-                System.out.println("UserInterface.WhiteBoard = " + UserInterface.WhiteBoard);
-            }            
-            
-            ui.repaintWindow(Pos);                                              // Draws new beginning position
-          
+            Settings.GetUserInput(Pos);
+
             UserBegin_ms        = 0;
             UserTotal_ms = 0;
             UserEnd_ms = 0;
@@ -212,18 +188,20 @@ public class Chess
             do
             {
                 UserBegin_ms = System.currentTimeMillis( );
+                MoveNumber++;  
                 
-                MoveNumber++;
+                System.out.println("FirstMove = " + FirstMove);
+                System.out.println("MoveNumber = " + MoveNumber);   
+                System.out.println("PlayMode = " + PlayMode); 
+                
                 if((MoveNumber == 1) && (FirstMove == Settings.PLAYER) && ((PlayMode == Settings.PLAYER_PLAYER) || (PlayMode == Settings.PLAYER_COMPUTER))
                  || (MoveNumber >  1) &&                                   ((PlayMode == Settings.PLAYER_PLAYER) || (PlayMode == Settings.PLAYER_COMPUTER)))
                 {
-                    
                     do
                     {
                         switch(ui.GetUserMoveFromMouseInput(Pos, MovePath, MoveBestFinishedIteration, Back))
                         {
                             case '0':                                           // User made a valid move
-
                                 Move.DisplayMoveList(MovePath, Move.STOP, Ply, Move.TABLE, Move.SHOW_NO_RATING);  
                                 
                                 ui.repaintWindow(Pos);                               
@@ -257,13 +235,11 @@ public class Chess
                                 //return;
                                 break;
                         }        
-                        
-                        //UserMoveInput = true;  // Get inpuit from Mouse
                     }while(GetNewUserMove);
                     
                     if(NewGame)
                     {
-                        break; // Leaves do loop to start new game
+                        break;                                                  // Leaves do loop to start new game
                     }
 
                     if(Position.EndPosition(Pos, MovePath, ShowPositionStatus))
@@ -331,8 +307,8 @@ public class Chess
   
                         Move.CopyMoveList(MoveBest, 0, MoveBestFinishedIteration);                              
                         
-                        // Only show finished MoveDepth evaluation
-                        System.out.print(MoveDepth);        
+                        
+                        System.out.print(MoveDepth);                            // Only show finished MoveDepth evaluation
                         System.out.format("  %9d", Total_Move_Counter); 
                         
                         RatingFloat = LocalRating;
@@ -666,6 +642,19 @@ public class Chess
         }
         return 0;                                                               // This statement is not reached and is added to make compiler happy  
     }    
+
+    public static boolean TestA()
+    {
+        int a;
+        FirstMove = 8;
+        return true;
+    }
+
+    public static boolean SetBoard(int[][] Pos)
+    {
+        return (((Chess.FirstMove == Settings.PLAYER)      && (Position.GetMoveColor(Pos) == Position.WHITE_MOVE)) ||
+                ((Chess.FirstMove == Settings.COMPUTER)    && (Position.GetMoveColor(Pos) == Position.BLACK_MOVE)));  
+    } 
 }
 
 class MyKeyListener implements KeyListener {

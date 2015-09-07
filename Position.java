@@ -1,36 +1,4 @@
-/**
- 
-V1.0 2015-03-29 
-
-V1.1 2015-03-29
-- removed code that is replaced by move lists
-
-V1.2 2015-04-21
-- replaced GivingCheck() by adding a parameter to Check()
-- moved OwnFigure(), GetMoveColor(), OpponentFigure(), OpponentKing(), OffBoardOrOwnFigure(), OnBoard() from Chess. to Position.
-
-V1.3 2015-04-26
-- removed MoveCreatesNoReceivingCheck() since it was not needed anymore
-- replaced NoLegalMove() with AnyMovePossible()
-- added 0-0 and 0-0-0 moves to AnyMovePossible
-- reworked Check();
-- kept previous Check() as CheckOld() 
-- created GenerateCandidateMoveList() as new concept idea that can be reused many times e.g for GenerateMoveList(), for Check(), fro AnyMovePossible()
-- moved FigureLists {} from Chess to Position 
-- fixed Bishop and Queen direction to start from 1
-
-V1.4 2015-04-26
-- renamed Check() to CheckNew(), CheckNew produces different results in 3 Move Mate
-- renamed CheckOld() back ot Chec()
-
-V1.5 2015-05-11
-- add 0-0 and 0-0-0 to AnyMovePossible()
-- renamed Move_Possible() to MovePossible()
-- swapped col and row in Pos[][]
-
-**/
-
-import java.util.*;   //For Date
+import java.util.*;                                                             //For Date
 
 public class Position
 {
@@ -234,12 +202,12 @@ public class Position
         
         SetMoveColor(Pos, WHITE_MOVE);
          
-        SetColumnPawnMovedTwoRows(Pos,0);                           // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
+        SetColumnPawnMovedTwoRows(Pos,0);                                       // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
         
-        SetWhiteLongCastling(Pos, WRA1_AND_WKE1_DID_NOT_MOVE);      // White Long Castling possible, WRa1 and WKe1 did not move before
-        SetWhiteShortCastling(Pos, WRH1_AND_WKE1_DID_NOT_MOVE);     // White Short Castling possible, WRh8 and WKe1 did not move before
-        SetBlackLongCastling(Pos, BRA8_AND_BKE8_DID_NOT_MOVE);      // Black Long Casling possible, WRh8 and BKe8 did not move before
-        SetBlackShortCastling(Pos, BRH8_AND_BKE8_DID_NOT_MOVE);     // Black Short Castling possible, BRa8 and BKe8 did not move before
+        SetWhiteLongCastling(Pos, WRA1_AND_WKE1_DID_NOT_MOVE);                  // White Long Castling possible, WRa1 and WKe1 did not move before
+        SetWhiteShortCastling(Pos, WRH1_AND_WKE1_DID_NOT_MOVE);                 // White Short Castling possible, WRh8 and WKe1 did not move before
+        SetBlackLongCastling(Pos, BRA8_AND_BKE8_DID_NOT_MOVE);                  // Black Long Casling possible, WRh8 and BKe8 did not move before
+        SetBlackShortCastling(Pos, BRH8_AND_BKE8_DID_NOT_MOVE);                 // Black Short Castling possible, BRa8 and BKe8 did not move before
     }
     
     public static void PositionPawn(int[][] Pos)
@@ -269,12 +237,12 @@ public class Position
   
         SetMoveColor(Pos, WHITE_MOVE);
          
-        SetColumnPawnMovedTwoRows(Pos,0);                           // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
+        SetColumnPawnMovedTwoRows(Pos,0);                                       // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
         
-        SetWhiteLongCastling(Pos, WRA1_AND_WKE1_DID_NOT_MOVE);      // White Long Castling possible, WRa1 and WKe1 did not move before
-        SetWhiteShortCastling(Pos, WRH1_AND_WKE1_DID_NOT_MOVE);     // White Short Castling possible, WRh8 and WKe1 did not move before
-        SetBlackLongCastling(Pos, BRA8_AND_BKE8_DID_NOT_MOVE);      // Black Long Casling possible, WRh8 and BKe8 did not move before
-        SetBlackShortCastling(Pos, BRH8_AND_BKE8_DID_NOT_MOVE);     // Black Short Castling possible, BRa8 and BKe8 did not move before
+        SetWhiteLongCastling(Pos, WRA1_AND_WKE1_DID_NOT_MOVE);                  // White Long Castling possible, WRa1 and WKe1 did not move before
+        SetWhiteShortCastling(Pos, WRH1_AND_WKE1_DID_NOT_MOVE);                 // White Short Castling possible, WRh8 and WKe1 did not move before
+        SetBlackLongCastling(Pos, BRA8_AND_BKE8_DID_NOT_MOVE);                  // Black Long Casling possible, WRh8 and BKe8 did not move before
+        SetBlackShortCastling(Pos, BRH8_AND_BKE8_DID_NOT_MOVE);                 // Black Short Castling possible, BRa8 and BKe8 did not move before
     }   
     
     public static void PositionEnPassant(int[][] Pos)
@@ -305,15 +273,14 @@ public class Position
         
         SetMoveColor(Pos, BLACK_MOVE); 
          
-        SetColumnPawnMovedTwoRows(Pos, B);                          // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move  
+        SetColumnPawnMovedTwoRows(Pos, B);                                      // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move  
         
-        SetWhiteLongCastling(Pos, WRA1_OR_WKE1_DID_MOVE);           // White Long Castling not possible, WRa1 and WKe1 did not move before
-        SetWhiteShortCastling(Pos, WRH1_AND_WKE1_DID_NOT_MOVE);     // White Short Castling not possible, WRh8 and WKe1 did not move before
-        SetBlackLongCastling(Pos, BRA8_AND_BKE8_DID_NOT_MOVE);      // Black Long Casling not possible, WRh8 and BKe8 did not move before
-        SetBlackShortCastling(Pos, BRH8_AND_BKE8_DID_NOT_MOVE);     // Black Short Castling not possible, BRa8 and BKe8 did not move before
+        SetWhiteLongCastling(Pos, WRA1_OR_WKE1_DID_MOVE);                       // White Long Castling not possible, WRa1 and WKe1 did not move before
+        SetWhiteShortCastling(Pos, WRH1_AND_WKE1_DID_NOT_MOVE);                 // White Short Castling not possible, WRh8 and WKe1 did not move before
+        SetBlackLongCastling(Pos, BRA8_AND_BKE8_DID_NOT_MOVE);                  // Black Long Casling not possible, WRh8 and BKe8 did not move before
+        SetBlackShortCastling(Pos, BRH8_AND_BKE8_DID_NOT_MOVE);                 // Black Short Castling not possible, BRa8 and BKe8 did not move before
         
-        SetNumberOfMovesWithNoPawnMoveOrCapture(Pos, 0);
-        
+        SetNumberOfMovesWithNoPawnMoveOrCapture(Pos, 0);   
     } 
     
     public static void PositionPromotion(int[][] Pos)
@@ -342,7 +309,7 @@ public class Position
         Pos[4][G] = BLACK_PAWN;         
         
         SetMoveColor(Pos, WHITE_MOVE);
-        SetColumnPawnMovedTwoRows(Pos,B);              // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
+        SetColumnPawnMovedTwoRows(Pos,B);                                       // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
         
         SetWhiteLongCastling(Pos, WRA1_AND_WKE1_DID_NOT_MOVE);                  // White Long Castling possible, WRa1 and WKe1 did not move before
         SetWhiteShortCastling(Pos, WRH1_AND_WKE1_DID_NOT_MOVE);                 // White Short Castling possible, WRh8 and WKe1 did not move before
@@ -376,7 +343,7 @@ public class Position
         Pos[7][G] = BLACK_PAWN;
          
         SetMoveColor(Pos, WHITE_MOVE);
-        SetColumnPawnMovedTwoRows(Pos,0);              // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
+        SetColumnPawnMovedTwoRows(Pos,0);                                       // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
         
         SetWhiteLongCastling(Pos, WRA1_AND_WKE1_DID_NOT_MOVE);                  // White Long Castling possible, WRa1 and WKe1 did not move before
         SetWhiteShortCastling(Pos, WRH1_AND_WKE1_DID_NOT_MOVE);                 // White Short Castling possible, WRh8 and WKe1 did not move before
@@ -397,12 +364,12 @@ public class Position
         Pos[7][G] = BLACK_KING;
 
         SetMoveColor(Pos, BLACK_MOVE);
-        SetColumnPawnMovedTwoRows(Pos,0);              // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
+        SetColumnPawnMovedTwoRows(Pos,0);                                       // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
          
-        SetWhiteLongCastling(Pos, WRA1_OR_WKE1_DID_MOVE);                  // White Long Castling not possible, WRa1 and WKe1 did not move before
-        SetWhiteShortCastling(Pos, WRH1_OR_WKE1_DID_MOVE);                 // White Short Castling not possible, WRh8 and WKe1 did not move before
-        SetBlackLongCastling(Pos, BRA8_OR_BKE8_DID_MOVE);                  // Black Long Casling not possible, WRh8 and BKe8 did not move before
-        SetBlackShortCastling(Pos, BRH8_OR_BKE8_DID_MOVE);                 // Black Short Castling not possible, BRa8 and BKe8 did not move before
+        SetWhiteLongCastling(Pos, WRA1_OR_WKE1_DID_MOVE);                       // White Long Castling not possible, WRa1 and WKe1 did not move before
+        SetWhiteShortCastling(Pos, WRH1_OR_WKE1_DID_MOVE);                      // White Short Castling not possible, WRh8 and WKe1 did not move before
+        SetBlackLongCastling(Pos, BRA8_OR_BKE8_DID_MOVE);                       // Black Long Casling not possible, WRh8 and BKe8 did not move before
+        SetBlackShortCastling(Pos, BRH8_OR_BKE8_DID_MOVE);                      // Black Short Castling not possible, BRa8 and BKe8 did not move before
     }
      
     public static void PositionOneMoveMate(int[][] Pos)
@@ -429,7 +396,7 @@ public class Position
         Pos[7][G] = BLACK_PAWN;
          
         SetMoveColor(Pos, BLACK_MOVE);
-        SetColumnPawnMovedTwoRows(Pos,0);              // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
+        SetColumnPawnMovedTwoRows(Pos,0);                                       // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
         
         SetWhiteLongCastling(Pos, WRA1_AND_WKE1_DID_NOT_MOVE);                  // White Long Castling possible, WRa1 and WKe1 did not move before
         SetWhiteShortCastling(Pos, WRH1_AND_WKE1_DID_NOT_MOVE);                 // White Short Castling possible, WRh8 and WKe1 did not move before
@@ -460,12 +427,12 @@ public class Position
         Pos[4][H] = BLACK_PAWN;
  
         SetMoveColor(Pos,WHITE_MOVE);
-        SetColumnPawnMovedTwoRows(Pos,0);              // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
+        SetColumnPawnMovedTwoRows(Pos,0);                                       // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
 
-        SetWhiteLongCastling(Pos, WRA1_OR_WKE1_DID_MOVE);                  // White Long Castling not possible, WRa1 and WKe1 did not move before
-        SetWhiteShortCastling(Pos, WRH1_OR_WKE1_DID_MOVE);                 // White Short Castling not possible, WRh8 and WKe1 did not move before
-        SetBlackLongCastling(Pos, BRA8_OR_BKE8_DID_MOVE);                  // Black Long Casling not possible, WRh8 and BKe8 did not move before
-        SetBlackShortCastling(Pos, BRH8_OR_BKE8_DID_MOVE);                 // Black Short Castling not possible, BRa8 and BKe8 did not move before
+        SetWhiteLongCastling(Pos, WRA1_OR_WKE1_DID_MOVE);                       // White Long Castling not possible, WRa1 and WKe1 did not move before
+        SetWhiteShortCastling(Pos, WRH1_OR_WKE1_DID_MOVE);                      // White Short Castling not possible, WRh8 and WKe1 did not move before
+        SetBlackLongCastling(Pos, BRA8_OR_BKE8_DID_MOVE);                       // Black Long Casling not possible, WRh8 and BKe8 did not move before
+        SetBlackShortCastling(Pos, BRH8_OR_BKE8_DID_MOVE);                      // Black Short Castling not possible, BRa8 and BKe8 did not move before
     }
     
     public static void PositionThreeMoveMate(int[][] Pos)
@@ -497,12 +464,12 @@ public class Position
         Pos[4][F] = BLACK_PAWN;
 
         SetMoveColor(Pos, BLACK_MOVE);
-        SetColumnPawnMovedTwoRows(Pos,0);              // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
+        SetColumnPawnMovedTwoRows(Pos,0);                                       // Shows column of pawn that moved two steps to reach this position, 0 means that no pawn moved two steps in last move 
  
-        SetWhiteLongCastling(Pos, WRA1_OR_WKE1_DID_MOVE);                  // White Long Castling not possible, WRa1 and WKe1 did not move before
-        SetWhiteShortCastling(Pos, WRH1_OR_WKE1_DID_MOVE);                 // White Short Castling not possible, WRh8 and WKe1 did not move before
-        SetBlackLongCastling(Pos, BRA8_OR_BKE8_DID_MOVE);                  // Black Long Casling not possible, WRh8 and BKe8 did not move before
-        SetBlackShortCastling(Pos, BRH8_OR_BKE8_DID_MOVE);                 // Black Short Castling not possible, BRa8 and BKe8 did not move before 
+        SetWhiteLongCastling(Pos, WRA1_OR_WKE1_DID_MOVE);                       // White Long Castling not possible, WRa1 and WKe1 did not move before
+        SetWhiteShortCastling(Pos, WRH1_OR_WKE1_DID_MOVE);                      // White Short Castling not possible, WRh8 and WKe1 did not move before
+        SetBlackLongCastling(Pos, BRA8_OR_BKE8_DID_MOVE);                       // Black Long Casling not possible, WRh8 and BKe8 did not move before
+        SetBlackShortCastling(Pos, BRH8_OR_BKE8_DID_MOVE);                      // Black Short Castling not possible, BRa8 and BKe8 did not move before 
     }
     
     public static void ClearPosition(int[][] Pos)
@@ -510,9 +477,9 @@ public class Position
         int row;
         int col;
       
-        for (row = 0; row <= ROWS; row++)               // Loop over total ROWS + 1
+        for (row = 0; row <= ROWS; row++)                                       // Loop over total ROWS + 1
         {   
-            for (col = 0; col <= COLS; col++)           // Loop over total COLS + 1 
+            for (col = 0; col <= COLS; col++)                                   // Loop over total COLS + 1 
             {
                 Pos[row][col] = EMPTY;
             }
@@ -595,11 +562,11 @@ public class Position
     
         for (row = 1; row <= ROWS; row++)
         {
-            for (col = 1; col <= COLS; col++)                          // Get rating of position            
+            for (col = 1; col <= COLS; col++)                                   // Get rating of position            
             {
                 switch(Pos[row][col])
                 {   
-                    case WHITE_KING:                    // For now rating scheme just counts value of figures, later rating scheme can be more sophisticated
+                    case WHITE_KING:                                            // For now rating scheme just counts value of figures, later rating scheme can be more sophisticated
                         WK += 1;
                         break;
                         
@@ -776,7 +743,6 @@ public class Position
         System.out.print("   ");
         for (col = 1; col <= COLS; col++)
         {
-            //System.out.print(col + "   ");
             switch (col)
             {
                 case 1:
@@ -830,6 +796,8 @@ public class Position
             }
         }
         System.out.println();
+        System.out.println("Chess.WhiteBoard = " + Chess.WhiteBoard);
+        System.out.println("Chess.WhiteBoard = " + Chess.WhiteBoard);
         ShowNumberOfRepetitivePositions(Pos);          
         ShowFiftyMoveCounter(Pos);
         Rating.ShowPositionType(Rating.GetPositionType(Pos));
@@ -937,13 +905,11 @@ public class Position
     public static void SetNumberOfMovesWithNoPawnMoveOrCapture(int[][] Pos, int set)
     {
         Pos[ROW_STORE_FIFTY_MOVE][COLUMN_STORE_FIFTY_MOVE] = set;    
-        //System.out.println("set Set()= " + set);
     } 
     
     public static void SetNumberOfRepetitivePositions(int[][] Pos, int set)
     {
         Pos[ROW_STORE_NUMBER_OF_REPETITIVE_POSITIONS][COLUMN_STORE_NUMBER_OF_REPETITIVE_POSITIONS] = set;    
-        //System.out.println("set Set()= " + set);
     }       
     
     public static int GetNumberOfRepetitivePositions(int[][] Pos)
@@ -954,8 +920,7 @@ public class Position
     public static void IncrementNumberOfMovesWithNoPawnMoveOrCapture(int[][] Pos)
     {
         int set;
-        Pos[ROW_STORE_FIFTY_MOVE][COLUMN_STORE_FIFTY_MOVE]++; 
-        //System.out.println("set Increment()= " + set);        
+        Pos[ROW_STORE_FIFTY_MOVE][COLUMN_STORE_FIFTY_MOVE]++;      
     }        
     
     public static int GetNumberOfMovesWithNoPawnMoveOrCapture(int[][] Pos)
@@ -973,34 +938,23 @@ public class Position
         
         if(type == RECEIVING_CHECK)
         {
-            SwitchMoveColor(Pos);                            // Switch to opponent move   
+            SwitchMoveColor(Pos);                                               // Switch to opponent move   
         }
 
         if (GenerateCandidateMoveList(Pos, CandidateMoveList, CAPTURE_KING) == CAN_TAKE_KING)
         {
             CanTakeKing = true;
         }
-        
-        //for(l = 0; CandidateMoveList[l][Move.FIGURE] != Position.EMPTY; l++)
-        //{      
-        //     if(OpponentKing(Pos, CandidateMoveList[l][Move.COL_N], CandidateMoveList[l][Move.ROW_N]))
-        //     {
-        //        CanTakeKing = true;
-        //        break;
-        //    }      
-        // }
-        
+
         if(type == RECEIVING_CHECK)
         {
-            SwitchMoveColor(Pos);                            // Switch to opponent move   
+            SwitchMoveColor(Pos);                                               // Switch to opponent move   
         }
-        
         return CanTakeKing;
     }
     
     public static boolean Check3(int[][] Pos, int type)      
     {
-        
         int l;
         boolean CanTakeKing         = false;
         int[][] CandidateMoveList   = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];
@@ -1009,7 +963,7 @@ public class Position
         
         if(type == RECEIVING_CHECK)
         {
-            SwitchMoveColor(Pos);                            // Switch to opponent move   
+            SwitchMoveColor(Pos);                                               // Switch to opponent move   
         }
         
         for(l = 0; CandidateMoveList[l][Move.FIGURE] != Position.EMPTY; l++)
@@ -1023,13 +977,13 @@ public class Position
         
         if(type == RECEIVING_CHECK)
         {
-            SwitchMoveColor(Pos);                            // Switch to opponent move   
+            SwitchMoveColor(Pos);                                               // Switch to opponent move   
         }
         
         return CanTakeKing;
     }
     
-    public static boolean Check2(int[][] Pos, int type)                            // Test for check by testing if the opponent could take the King in one of the next opponents move  
+    public static boolean Check2(int[][] Pos, int type)                         // Test for check by testing if the opponent could take the King in one of the next opponents move  
     {
         int col;
         int row;
@@ -1037,9 +991,9 @@ public class Position
         int j;
         int PawnStep = 0;        
         int factor;
-        int dir;         // Counter for going through all possible directions
-        int row_n = 0;      // To make complier happy
-        int col_n = 0;      // To nake complier happy
+        int dir;                                                                // Counter for going through all possible directions
+        int row_n = 0;                                                          // Initialization is required to make complier happy
+        int col_n = 0;                                                          // Initialization is required to nake complier happy
         boolean CanTakeKing = false;
         
         int Figure; 
@@ -1049,7 +1003,7 @@ public class Position
         
         if(type == RECEIVING_CHECK)
         {
-            SwitchMoveColor(Pos);                            // Switch to opponent move   
+            SwitchMoveColor(Pos);                                               // Switch to opponent move   
         }
         
         if (Chess.DebugLevel > Settings.MEDIUM)
@@ -1069,7 +1023,7 @@ public class Position
                 continue;
             }
 
-            switch (Figure)                                            // Investigate if figure could capture opponent King
+            switch (Figure)                                                     // Investigate if figure could capture opponent King
             {                                                                   // No need to test for one or two steos forward since pawn does not capture an opponent figure  
                 case WHITE_PAWN:
                 case BLACK_PAWN:
@@ -1084,7 +1038,7 @@ public class Position
                             PawnStep = -1;
                             break;
                     }                      
-                    for (i = -1; i < 2; i += 2)                                                        // Pawn takes opponent figure away
+                    for (i = -1; i < 2; i += 2)                                 // Pawn takes opponent figure away
                     {
                         col_n = col + i;                                
                         row_n = row + PawnStep;
@@ -1100,36 +1054,36 @@ public class Position
                
                 case WHITE_ROOK:
                 case BLACK_ROOK:
-                    for (dir = 1; dir <= 4; dir++)                  // Loop over all four directions
+                    for (dir = 1; dir <= 4; dir++)                              // Loop over all four directions
                     {
-                        for (i = 1; i < COLS; i++)                     // Loop over all steps in one direction         
+                        for (i = 1; i < COLS; i++)                              // Loop over all steps in one direction         
                         {
                             switch(dir)
                             {
-                                case 1:                    // Move N
+                                case 1:                                         // Move N
                                     col_n = col; 
                                     row_n = row + i;
                                     break;
                                         
-                                case 2:                    // Move E
+                                case 2:                                         // Move E
                                     col_n = col + i;          
                                     row_n = row;
                                     break;
                                         
-                                case 3:                    // Move S
+                                case 3:                                         // Move S
                                     col_n = col;
                                     row_n = row - i;
                                     break;
                                         
-                                case 4:                    // Move W
+                                case 4:                                         // Move W
                                     col_n = col - i;
                                     row_n = row;
                                     break;
                             }
                                         
-                            if(Position.OffBoardOrOwnFigure(Pos, col_n, row_n))             // Reached boundry or own figure
+                            if(Position.OffBoardOrOwnFigure(Pos, col_n, row_n)) // Reached boundry or own figure
                             {
-                                break;                                                      // Stop moving in this direction, continue with next direction
+                                break;                                          // Stop moving in this direction, continue with next direction
                             }                                      
                                     
                             if (Chess.DebugLevel > Settings.MEDIUM)
@@ -1143,7 +1097,7 @@ public class Position
                                 break outerloop;
                             }               
 
-                            if(OpponentFigure(Pos, col_n, row_n))        // Took oponent figure away, stop moving in this direction                    
+                            if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop moving in this direction                    
                             {
                                 break;
                             }
@@ -1153,7 +1107,7 @@ public class Position
                
                 case WHITE_KNIGHT:
                 case BLACK_KNIGHT:
-                    for (dir = 1; dir <= 8; dir++)                                                          // Loop over all four directions
+                    for (dir = 1; dir <= 8; dir++)                              // Loop over all four directions
                     {
                         switch (dir)
                         {
@@ -1213,36 +1167,36 @@ public class Position
                
                 case WHITE_BISHOP:
                 case BLACK_BISHOP:
-                    for (dir = 1; dir <= 4; dir ++)                  // Loop over all four directions
+                    for (dir = 1; dir <= 4; dir ++)                             // Loop over all four directions
                     {
-                        for (i = 1; i < COLS; i++)                     // Loop over all steps in one direction         
+                        for (i = 1; i < COLS; i++)                              // Loop over all steps in one direction         
                         {
                             switch (dir)
                             {
-                                case 1:                    // Move NE
+                                case 1:                                         // Move NE
                                     col_n = col + i;           
                                     row_n = row + i;
                                     break;
                                         
-                                case 2:                    // Move SE
+                                case 2:                                         // Move SE
                                     col_n = col + i;          
                                     row_n = row - i;
                                     break;
                                         
-                                case 3:                    // Move SW
+                                case 3:                                         // Move SW
                                     col_n = col - i;
                                     row_n = row - i;
                                     break;
                                         
-                                case 4:                    // Move NW
+                                case 4:                                         // Move NW
                                     col_n = col - i;
                                     row_n = row + i;
                                     break;
                             }
                                
-                            if(OffBoardOrOwnFigure(Pos, col_n, row_n))             // Reached boundry or own figure
+                            if(OffBoardOrOwnFigure(Pos, col_n, row_n))          // Reached boundry or own figure
                             {
-                                break;                                                      // Stop moving in this direction, continue with next direction
+                                break;                                          // Stop moving in this direction, continue with next direction
                             }                                      
                                     
                             if (Chess.DebugLevel > Settings.MEDIUM)
@@ -1256,7 +1210,7 @@ public class Position
                                 break outerloop;
                             }               
 
-                            if(OpponentFigure(Pos, col_n, row_n))        // Took oponent figure away, stop moving in this direction                    
+                            if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop moving in this direction                    
                             {
                                 break;
                             }                                  
@@ -1266,56 +1220,56 @@ public class Position
                
                 case WHITE_QUEEN:
                 case BLACK_QUEEN:          
-                    for (dir = 1; dir <= 8; dir++)                  // Loop over all eight directions
+                    for (dir = 1; dir <= 8; dir++)                              // Loop over all eight directions
                     {
-                        for (i = 1; i < COLS; i++)                     // Loop over all steps in one direction         
+                        for (i = 1; i < COLS; i++)                              // Loop over all steps in one direction         
                         {
                             switch(dir)
                             {
-                                case 1:                    // Move N
+                                case 1:                                         // Move N
                                     col_n = col;           
                                     row_n = row + i;
                                     break;
                                     
-                                case 2:                    // Move NE
+                                case 2:                                         // Move NE
                                     col_n = col + i;          
                                     row_n = row + i;
                                     break;
                                     
-                                case 3:                    // Move E
+                                case 3:                                         // Move E
                                     col_n = col + i;
                                     row_n = row;
                                     break;
                                     
-                                case 4:                    // Move SE
+                                case 4:                                         // Move SE
                                     col_n = col + i;
                                     row_n = row - i;
                                     break;
                                         
-                                case 5:                    // Move S
+                                case 5:                                         // Move S
                                     col_n = col;           
                                     row_n = row - i;
                                     break;
                                     
-                                case 6:                    // Move SW
+                                case 6:                                         // Move SW
                                     col_n = col - i;          
                                     row_n = row - i;
                                     break;
                                         
-                                case 7:                    // Move W
+                                case 7:                                         // Move W
                                     col_n = col - i;
                                     row_n = row;
                                     break;
                                    
-                                case 8:                    // Move NW
+                                case 8:                                         // Move NW
                                     col_n = col - i;
                                     row_n = row + i;
                                     break;                                           
                             }                            
 
-                            if(OffBoardOrOwnFigure(Pos, col_n, row_n))             // Reached boundry or own figure
+                            if(OffBoardOrOwnFigure(Pos, col_n, row_n))          // Reached boundry or own figure
                             {
-                                break;                                                      // Stop moving in this direction, continue with next direction
+                                break;                                          // Stop moving in this direction, continue with next direction
                             }                                      
                                     
                             if (Chess.DebugLevel > Settings.MEDIUM)
@@ -1329,7 +1283,7 @@ public class Position
                                 break outerloop;
                             }               
 
-                            if(OpponentFigure(Pos, col_n, row_n))        // Took oponent figure away, stop moving in this direction                    
+                            if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop moving in this direction                    
                             {
                                 break;
                             }                                                 
@@ -1339,54 +1293,54 @@ public class Position
                         
                 case WHITE_KING:
                 case BLACK_KING:
-                    for (dir = 1; dir <= 8; dir++)                                                          // Loop over all four directions
+                    for (dir = 1; dir <= 8; dir++)                              // Loop over all four directions
                     {
                         switch(dir)
                         {
                             case 1:
                                 col_n = col - 1;
-                                row_n = row - 1;        // SW
+                                row_n = row - 1;                                // SW
                                 break;
                                 
                             case 2:
-                                col_n = col - 1;        // W
+                                col_n = col - 1;                                // W
                                 row_n = row;
                                 break;
                                 
                             case 3:
-                                col_n = col - 1;        // NW
+                                col_n = col - 1;                                // NW
                                 row_n = row + 1;
                                 break;
                                 
                             case 4:
-                                col_n = col;            // S
+                                col_n = col;                                    // S
                                 row_n = row - 1 ;
                                 break;
                                 
                             case 5:
-                                col_n = col;            // N
+                                col_n = col;                                    // N
                                 row_n = row + 1;
                                 break;
                                 
                             case 6:
-                                col_n = col + 1;        // SE
+                                col_n = col + 1;                                // SE
                                 row_n = row - 1;
                                 break;
                                 
                             case 7:
-                                col_n = col + 1;        // E
+                                col_n = col + 1;                                // E
                                 row_n = row;
                                 break;
                                 
                             case 8:
-                                col_n = col + 1;        // NE
+                                col_n = col + 1;                                // NE
                                 row_n = row + 1;
                                 break;                                     
                         }       
                           
-                        if(OffBoardOrOwnFigure(Pos, col_n, row_n))      // Reached boundry or own figure
+                        if(OffBoardOrOwnFigure(Pos, col_n, row_n))              // Reached boundry or own figure
                         {
-                            continue;                                   // Continue with next move
+                            continue;                                           // Continue with next move
                         }                 
                 
                         if (OpponentKing(Pos, col_n, row_n))
@@ -1401,22 +1355,22 @@ public class Position
         
         if(type == RECEIVING_CHECK)
         {
-            SwitchMoveColor(Pos);                            // Switch to oppnent move   
+            SwitchMoveColor(Pos);                                               // Switch to oppnent move   
         }
         
         return CanTakeKing;        
     }
     
-    public static boolean Check(int[][] Pos, int type)                            // Test for check by testing if the opponent could take the King in one of the next opponents move  
+    public static boolean Check(int[][] Pos, int type)                          // Test for check by testing if the opponent could take the King in one of the next opponents move  
     {
         int col;
         int row;
         int i;
         int j;
         int factor;
-        int dir;         // Counter for going through all possible directions
-        int row_n = 0;      // To make complier happy
-        int col_n = 0;      // To nake complier happy
+        int dir;                                                                // Counter for going through all possible directions
+        int row_n = 0;                                                          // To make complier happy
+        int col_n = 0;                                                          // To nake complier happy
         boolean CanTakeKing = false;
         int FieldNo;
         int PawnStep = 0;
@@ -1425,7 +1379,7 @@ public class Position
         
         if(type == RECEIVING_CHECK)
         {
-            SwitchMoveColor(Pos);                            // Switch to oppnent move   
+            SwitchMoveColor(Pos);                                               // Switch to oppnent move   
         }
         
         if (Chess.DebugLevel > Settings.MEDIUM)
@@ -1441,11 +1395,11 @@ public class Position
                 if (((GetMoveColor(Pos) == WHITE_MOVE) && (GetFigureColor(Pos[row][col]) == WHITE_FIGURE)) ||   // Only evaluate WHITE figure if GetMoveColor(Pos) == WHITE or BLACK figure if GetMoveColor(Pos) == BLACK
                     ((GetMoveColor(Pos) == BLACK_MOVE) && (GetFigureColor(Pos[row][col]) == BLACK_FIGURE)))                       
                 {
-                    switch (Pos[row][col])                                            // Investigate if figure could capture opponent King
-                    {                                                                   // No need to test for one or two steos forward since pawn does not capture an opponent figure  
+                    switch (Pos[row][col])                                      // Investigate if figure could capture opponent King
+                    {                                                           // No need to test for one or two steos forward since pawn does not capture an opponent figure  
                         case WHITE_PAWN:
                         case BLACK_PAWN:
-                            for (i = -1; i < 2; i += 2)                                                        // Pawn takes opponent figure away
+                            for (i = -1; i < 2; i += 2)                         // Pawn takes opponent figure away
                             {
                                 switch(GetMoveColor(Pos))
                                 {
@@ -1466,8 +1420,8 @@ public class Position
                                         System.out.println("Checking if Pawn move to col = " + col_n + " row = " + row_n + " could take King");
                                     } 
 
-                                    if ((Pos[row_n][col_n]*GetMoveColor(Pos) == BLACK_KING))              // Could take oponent King
-                                    {
+                                    if ((Pos[row_n][col_n]*GetMoveColor(Pos) == BLACK_KING))             
+                                    {                                           // Could take oponent King
                                         if (Chess.DebugLevel > Settings.MEDIUM)
                                         {
                                             System.out.println("Pawn could take King");
@@ -1481,28 +1435,28 @@ public class Position
                
                         case WHITE_ROOK:
                         case BLACK_ROOK:
-                            for (dir = 1; dir <= 4; dir++)                  // Loop over all four directions
+                            for (dir = 1; dir <= 4; dir++)                      // Loop over all four directions
                             {
-                                for (i = 1; i < COLS; i++)                     // Loop over all steps in one direction         
+                                for (i = 1; i < COLS; i++)                      // Loop over all steps in one direction         
                                 {
                                     switch(dir)
                                     {
-                                        case 1:                    // Move N
+                                        case 1:                                 // Move N
                                             row_n = row + i;
                                             col_n = col;           
                                             break;
                                         
-                                        case 2:                    // Move E
+                                        case 2:                                 // Move E
                                             col_n = col + i;          
                                             row_n = row;
                                             break;
                                         
-                                        case 3:                    // Move S
+                                        case 3:                                 // Move S
                                             col_n = col;
                                             row_n = row - i;
                                             break;
                                         
-                                        case 4:                    // Move W
+                                        case 4:                                 // Move W
                                             col_n = col - i;
                                             row_n = row;
                                             break;
@@ -1516,8 +1470,8 @@ public class Position
                                         System.out.println("Checking if Rook move to col = " + col_n + " row = " + row_n + " could take King");
                                     }   
                                         
-                                    if ((Pos[row_n][col_n]*GetMoveColor(Pos) == BLACK_KING))     // Could take oponent King
-                                    {
+                                    if ((Pos[row_n][col_n]*GetMoveColor(Pos) == BLACK_KING))     
+                                    {                                           // Could take oponent King
                                         if (Chess.DebugLevel > Settings.MEDIUM)
                                         {
                                             System.out.println("Rook could take King");
@@ -1536,7 +1490,7 @@ public class Position
                         case BLACK_KNIGHT:
                             for(i = -2; i < 3; i++)
                             {
-                                j = -1;        // to makle compiler happy     
+                                j = -1;                                         // to makle compiler happy     
                                 
                                 if (i == 0)
                                 {
@@ -1552,7 +1506,7 @@ public class Position
                                 {
                                     col_n = col + i;
                                     row_n = row + j * factor;
-                                    if (col_n > 0 && col_n <= COLS && row_n <= Position.ROWS && row_n > 0 && Pos[row_n][col_n]*GetMoveColor(Pos) < 1)    // Vai
+                                    if (col_n > 0 && col_n <= COLS && row_n <= Position.ROWS && row_n > 0 && Pos[row_n][col_n]*GetMoveColor(Pos) < 1)    
                                     {
                                         if (Chess.DebugLevel > Settings.MEDIUM)
                                         {
@@ -1576,28 +1530,28 @@ public class Position
                          case WHITE_BISHOP:
                          case BLACK_BISHOP:
 
-                            for (dir = 0; dir < 4; dir ++)                  // Loop over all four directions
+                            for (dir = 0; dir < 4; dir ++)                      // Loop over all four directions
                             {
-                                for (i = 1; i < COLS; i++)                     // Loop over all steps in one direction         
+                                for (i = 1; i < COLS; i++)                      // Loop over all steps in one direction         
                                 {
                                     switch (dir)
                                     {
-                                        case 0:                    // Move NE
+                                        case 0:                                 // Move NE
                                             col_n = col + i;           
                                             row_n = row + i;
                                             break;
                                         
-                                        case 1:                    // Move SE
+                                        case 1:                                 // Move SE
                                             col_n = col + i;          
                                             row_n = row - i;
                                             break;
                                         
-                                        case 2:                    // Move SW
+                                        case 2:                                 // Move SW
                                             col_n = col - i;
                                             row_n = row - i;
                                             break;
                                         
-                                        case 3:                    // Move NW
+                                        case 3:                                 // Move NW
                                             col_n = col - i;
                                             row_n = row + i;
                                             break;
@@ -1630,48 +1584,48 @@ public class Position
                
                         case WHITE_QUEEN:
                         case BLACK_QUEEN:          
-                            for (dir = 0; dir < 8; dir ++)                  // Loop over all eight directions
+                            for (dir = 0; dir < 8; dir ++)                      // Loop over all eight directions
                             {
-                                for (i = 1; i < COLS; i++)                     // Loop over all steps in one direction         
+                                for (i = 1; i < COLS; i++)                      // Loop over all steps in one direction         
                                 {
                                     switch (dir)
                                     {
-                                        case 0:                    // Move N
+                                        case 0:                                 // Move N
                                             col_n = col;           
                                             row_n = row + i;
                                             break;
                                         
-                                        case 1:                    // Move NE
+                                        case 1:                                 // Move NE
                                             col_n = col + i;          
                                             row_n = row + i;
                                             break;
                                         
-                                        case 2:                    // Move E
+                                        case 2:                                 // Move E
                                             col_n = col + i;
                                             row_n = row;
                                             break;
                                         
-                                        case 3:                    // Move SE
+                                        case 3:                                 // Move SE
                                             col_n = col + i;
                                             row_n = row - i;
                                             break;
                                         
-                                        case 4:                    // Move S
+                                        case 4:                                 // Move S
                                             col_n = col;           
                                             row_n = row - i;
                                             break;
                                         
-                                        case 5:                    // Move SW
+                                        case 5:                                 // Move SW
                                             col_n = col - i;          
                                             row_n = row - i;
                                             break;
                                         
-                                        case 6:                    // Move W
+                                        case 6:                                 // Move W
                                             col_n = col - i;
                                             row_n = row;
                                             break;
                                         
-                                        case 7:                    // Move NW
+                                        case 7:                                 // Move NW
                                             col_n = col - i;
                                             row_n = row + i;
                                             break;                                           
@@ -1741,7 +1695,7 @@ public class Position
         
         if(type == RECEIVING_CHECK)
         {
-            SwitchMoveColor(Pos);                            // Switch to opponent move   
+            SwitchMoveColor(Pos);                                               // Switch to opponent move   
         }
         
         return CanTakeKing;
@@ -1769,10 +1723,8 @@ public class Position
         int RookColumn                  = EMPTY;
         int NewRookColumn               = EMPTY;            
         
-        // Counter for going through all possible directions
-        
-        col_n = 0;                                          // To make complier happy
-        row_n = 0;                                          // To make complier happy
+        col_n = 0;                                                              // To make complier happy
+        row_n = 0;                                                              // To make complier happy
         step = GetMoveColor(Pos);
             
         //System.out.println("Entering noLegalMove() Move Color = " + GetMoveColor(Pos));
@@ -1786,14 +1738,14 @@ public class Position
                     System.out.println("Col = " + col + " Row = " + row + " Move no: " + Chess.Total_Move_Counter + " Pos[row][col] = " + Pos[row][col]);
                     System.out.println("GetMoveColor(Pos)  = " + GetMoveColor(Pos));
                 }
-                if (Pos[row][col]*GetMoveColor(Pos) > 0)                                                            // Move WHITE figure if GetMoveColor(Pos) == WHITE, Move BLACK figure if GetMoveColor(Pos) == BLACK
+                if (Pos[row][col]*GetMoveColor(Pos) > 0)                        // Move WHITE figure if GetMoveColor(Pos) == WHITE, Move BLACK figure if GetMoveColor(Pos) == BLACK
                 {
                     switch (Pos[row][col])
                     {
                         case WHITE_PAWN:
                         case BLACK_PAWN:
                         
-                            if (Pos[row + step][col] == Position.EMPTY)                                                    // Move Pawn one field forward
+                            if (Pos[row + step][col] == Position.EMPTY)         // Move Pawn one field forward
                             {
                                 col_n = col;
                                 row_n = row + step;
@@ -1801,9 +1753,9 @@ public class Position
                                 {
                                     System.out.println("row+step=  = " + row_n);
                                 }
-                                if (row_n == Position.ROWS || row_n == 1)                                                // Convert Pawn
+                                if (row_n == Position.ROWS || row_n == 1)       // Convert Pawn
                                 {
-                                    for (p = 5; p > 1; p--)                                                        // Loop for Queen, Rook, Knight, Bishop
+                                    for (p = 5; p > 1; p--)                     // Loop for Queen, Rook, Knight, Bishop
                                     {
                                         temp_figure = Pos[row][col];
                                         Pos[row][col] = p*GetMoveColor(Pos);            
@@ -1835,11 +1787,11 @@ public class Position
                             }
                
                             col_n = col;
-                            row_n = row + 2*step;                                                               // Move two steps forward
+                            row_n = row + 2*step;                               // Move two steps forward
                             if ((GetMoveColor(Pos) == WHITE_MOVE&& row == 2) || (GetMoveColor(Pos) == BLACK_MOVE&& row == 7))
                             {
                                 if ((Pos[row+step][col] == Position.EMPTY) && (Pos[row_n][col] == Position.EMPTY))         
-                                {                                                                               // Move Pawn two fields forward
+                                {                                               // Move Pawn two fields forward
 
                                     if (MovePossible(Pos, col, row, col_n, row_n) == true)
                                     {
@@ -1849,14 +1801,14 @@ public class Position
                                 }
                             }
                             
-                            for (i = -1; i < 2; i += 2)                                                         // Pawn takes opponent figure away
+                            for (i = -1; i < 2; i += 2)                         // Pawn takes opponent figure away
                             {
                                 col_n = col + i;
                                 row_n = row + step;
                                 if ((row_n == Position.ROWS || row_n == 1) && col_n > 0 && col_n < COLS+1 && Pos[row_n][col_n]*GetMoveColor(Pos) < 0)   
-                                {                                                                                           // Take away opponent figure
+                                {                                               // Take away opponent figure
                          
-                                    for (p = 5; p > 1; p--)                                                         // .... and convert to new officer, Loop for Queen, Rook, Knight, Bishop
+                                    for (p = 5; p > 1; p--)                     // .... and convert to new officer, Loop for Queen, Rook, Knight, Bishop
                                     {
                                         temp_figure = Pos[row][col];
                                         temp_figure_1 = Pos[row_n][col_n];
@@ -1875,7 +1827,7 @@ public class Position
                                 }
                                 
                                 if (row_n < Position.ROWS && row_n > 1 && col_n > 0 && col_n < COLS+1 && Pos[row_n][col_n]*GetMoveColor(Pos) < 0) 
-                                {                                                                               // Take away opponent figure
+                                {                                               // Take away opponent figure
                                     
                                     if (MovePossible(Pos, col, row, col_n, row_n) == true)
                                     {
@@ -1885,7 +1837,7 @@ public class Position
 
                                 if ((GetMoveColor(Pos) == WHITE_MOVE&& row == 5) || (GetMoveColor(Pos) == BLACK_MOVE&& row == 4) && col_n > 0 && col_n <= COLS)   // En Passant
                                 {                                                                                                 
-                                   if (col_n == GetColumnPawnMovedTwoRows(Pos))                      //Workaround: Compiler ssems to miss this if this is added to line before
+                                   if (col_n == GetColumnPawnMovedTwoRows(Pos)) //Workaround: Compiler ssems to miss this if this is added to line before
                                     {
                                         if(Chess.DebugLevel == Settings.HIGH)
                                         {
@@ -1893,8 +1845,8 @@ public class Position
                                         }
                                         temp_figure = Pos[row][col_n];
                                         Pos[row][col_n] = Position.EMPTY;
-                                        Pos[row_n][col_n] = temp_figure;                                    // Only to have EvaluateMove detect that a figure was taken away and 
-                                                                                                            // have noation show it 
+                                        Pos[row_n][col_n] = temp_figure;        // Only to have EvaluateMove detect that a figure was taken away and 
+                                                                                // have noation show it 
                                         if (MovePossible(Pos, col, row, col_n, row_n) == true)
                                         {
                                             Pos[row][col_n] = temp_figure;  
@@ -1912,40 +1864,43 @@ public class Position
                         case WHITE_ROOK:
                         case BLACK_ROOK:
                
-                            for (dir = 0; dir < 4; dir ++)                                                  // Loop over all four directions
+                            for (dir = 0; dir < 4; dir ++)                      // Loop over all four directions
                             {
-                                for (i = 1; i < COLS; i++)                                                     // Loop over all steps in one direction         
+                                for (i = 1; i < COLS; i++)                      // Loop over all steps in one direction         
                                 {
                                     switch (dir)
                                     {
-                                        case 0:                                                             // Move N
+                                        case 0:                                 // Move N
                                             col_n = col;           
-                                            row_n = row+i;
+                                            row_n = row + i;
                                             break;
-                                        case 1:                                                             // Move E
-                                            col_n = col+i;          
+                                            
+                                        case 1:                                 // Move E
+                                            col_n = col + i;          
                                             row_n = row;
                                             break;
-                                        case 2:                                                             // Move S
+                                            
+                                        case 2:                                 // Move S
                                             col_n = col;
-                                            row_n = row-i;
+                                            row_n = row - i;
                                             break;
-                                        case 3:                                                             // Move W
-                                            col_n = col-i;
+                                            
+                                        case 3:                                 // Move W
+                                            col_n = col - i;
                                             row_n = row;
                                             break;
                                     }
                                         
-                                    if (col_n < 1 || col_n > COLS || row_n < 1 || row_n > Position.ROWS || Pos[row_n][col_n]*GetMoveColor(Pos) > 0) // Reached boundry or own figure
-                                        break;
+                                    if (col_n < 1 || col_n > COLS || row_n < 1 || row_n > Position.ROWS || Pos[row_n][col_n]*GetMoveColor(Pos) > 0) 
+                                        break;                                  // Reached boundry or own figure
                                                        
                                     if (MovePossible(Pos, col, row, col_n, row_n) == true)
                                     {
                                         return true;
                                     } 
                                     
-                                    if (Pos[row_n][col_n]* GetMoveColor(Pos) < 0)                               // Took opponent figure away, stop to moving in this direction
-                                        break;
+                                    if (Pos[row_n][col_n]* GetMoveColor(Pos) < 0)                               
+                                        break;                                  // Took opponent figure away, stop to moving in this direction
                                 }
                             }
                             break;
@@ -1953,20 +1908,20 @@ public class Position
                         case WHITE_KNIGHT:
                         case BLACK_KNIGHT:
 
-                            for(i = -2; i < 3; i++)                                                        // Loop over 5 column steps, column step
+                            for(i = -2; i < 3; i++)                             // Loop over 5 column steps, column step
                             {
-                                j = -1;                                                                 // initialize j to makle compiler happy
+                                j = -1;                                         // initialize j to makle compiler happy
                                 
-                                if (i == 0)                                                             // skip column step 0
+                                if (i == 0)                                     // skip column step 0
                                 {
                                     continue;
                                 }
-                                if (i == -2 || i == 2)                                                  // set row step to 1
+                                if (i == -2 || i == 2)                          // set row step to 1
                                     j = 1;
-                                if (i == -1 || i == 1)                                                  // set row step to 2
+                                if (i == -1 || i == 1)                          // set row step to 2
                                     j = 2;
 
-                                for (factor = -1; factor < 2; factor += 2)                              // Loop over two rows
+                                for (factor = -1; factor < 2; factor += 2)      // Loop over two rows
                                 {
                                     col_n = col + i;
                                     row_n = row + j * factor;
@@ -1988,27 +1943,30 @@ public class Position
                         case WHITE_BISHOP:
                         case BLACK_BISHOP:
           
-                            for (dir = 0; dir < 4; dir ++)                  // Loop over all four directions
+                            for (dir = 0; dir < 4; dir ++)                      // Loop over all four directions
                             {
-                                for (i = 1; i< COLS; i++)                     // Loop over all steps in one direction         
+                                for (i = 1; i< COLS; i++)                       // Loop over all steps in one direction         
                                 {
                                     switch (dir)
                                     {
-                                        case 0:                             // Move NE
-                                            col_n = col+i;           
-                                            row_n = row+i;
+                                        case 0:                                 // Move NE
+                                            col_n = col + i;           
+                                            row_n = row + i;
                                             break;
-                                        case 1:                             // Move SE
-                                            col_n = col+i;          
-                                            row_n = row-i;
+                                            
+                                        case 1:                                 // Move SE
+                                            col_n = col + i;          
+                                            row_n = row - i;
                                             break;
-                                        case 2:                             // Move SW
-                                            col_n = col-i;
-                                            row_n = row-i;
+                                            
+                                        case 2:                                 // Move SW
+                                            col_n = col - i;
+                                            row_n = row - i;
                                             break;
-                                        case 3:                             // Move NW
-                                            col_n = col-i;
-                                            row_n = row+i;
+                                            
+                                        case 3:                                 // Move NW
+                                            col_n = col - i;
+                                            row_n = row + i;
                                             break;
                                     }
                                         
@@ -2033,43 +1991,50 @@ public class Position
                         case WHITE_QUEEN:
                         case BLACK_QUEEN:
                                 
-                            for (dir = 0; dir < 8; dir ++)                  // Loop over all eight directions
+                            for (dir = 0; dir < 8; dir ++)                      // Loop over all eight directions
                             {
-                                for (i = 1; i < COLS; i++)                     // Loop over all steps in one direction         
+                                for (i = 1; i < COLS; i++)                      // Loop over all steps in one direction         
                                 {
                                     switch (dir)
                                     {
-                                        case 0:                    // Move N
+                                        case 0:                                 // Move N
                                             col_n = col;           
-                                            row_n = row+i;
+                                            row_n = row + i;
                                             break;
-                                        case 1:                    // Move NE
-                                            col_n = col+i;          
-                                            row_n = row+i;
+                                            
+                                        case 1:                                 // Move NE
+                                            col_n = col + i;          
+                                            row_n = row + i;
                                             break;
-                                        case 2:                    // Move E
-                                            col_n = col+i;
+                                            
+                                        case 2:                                 // Move E
+                                            col_n = col + i;
                                             row_n = row;
                                             break;
-                                        case 3:                    // Move SE
-                                            col_n = col+i;
-                                            row_n = row-i;
+                                            
+                                        case 3:                                 // Move SE
+                                            col_n = col + i;
+                                            row_n = row - i;
                                             break;
-                                        case 4:                    // Move S
+                                            
+                                        case 4:                                 // Move S
                                             col_n = col;           
-                                            row_n = row-i;
+                                            row_n = row - i;
                                             break;
-                                        case 5:                    // Move SW
-                                            col_n = col-i;          
-                                            row_n = row-i;
+                                            
+                                        case 5:                                 // Move SW
+                                            col_n = col - i;          
+                                            row_n = row - i;
                                             break;
-                                        case 6:                    // Move W
-                                            col_n = col-i;
+                                            
+                                        case 6:                                 // Move W
+                                            col_n = col - i;
                                             row_n = row;
                                             break;
-                                        case 7:                    // Move NW
-                                            col_n = col-i;
-                                            row_n = row+i;
+                                            
+                                        case 7:                                 // Move NW
+                                            col_n = col - i;
+                                            row_n = row + i;
                                             break;                                           
                                     }
                                         
@@ -2094,9 +2059,9 @@ public class Position
                         case WHITE_KING:
                         case BLACK_KING:
                                        
-                            for (i=-1; i < 2 ; i++)                                                         // loop over three columns
+                            for (i=-1; i < 2 ; i++)                             // loop over three columns
                             {     
-                                for (j=-1; j < 2 ; j++)                                                     // loop over three rows
+                                for (j=-1; j < 2 ; j++)                         // loop over three rows
                                 {
                                     col_n = col+i;
                                     row_n = row+j;
@@ -2125,18 +2090,15 @@ public class Position
                                 switch(CastlingList[i])
                                 {
                                     case Position.LONG_CASTLING:
-                                        //System.out.println("CastlingList[" + i + "]= Position.LONG_CASTLING");
                                         RookColumn      = Position.A;
                                         NewRookColumn   = Position.D;
-                                        col_n           = Position.C;        //For King
-                                        //Position.DisplayPosition(Pos);
+                                        col_n           = Position.C;           //For King
                                         break;
                                         
                                     case Position.SHORT_CASTLING:
-                                        //System.out.println("CastlingList[" + i + "]= Position.SHORT_CASTLING");
                                         RookColumn      = Position.H;
                                         NewRookColumn   = Position.F;
-                                        col_n           = Position.G;        //For King
+                                        col_n           = Position.G;           //For King
                                         break;
                                 }
                                 
@@ -2152,8 +2114,7 @@ public class Position
                                         row_n   = Position.BLACK_CASTLING_ROW;
                                         break;
                                 }
-                                   
-                                // Move Rook since MovePossible() only moves the King
+
                                 Pos[row_n][RookColumn]   = Pos[row][RookColumn];
                                 Pos[row][RookColumn]        = EMPTY;                                
                                 
@@ -2161,8 +2122,7 @@ public class Position
                                 {
                                     return true;
                                 }
-                                
-                                // Revert Rook mov
+
                                 Pos[row_n][RookColumn]      = Pos[row][NewRookColumn];
                                 Pos[row][NewRookColumn]     = EMPTY;                                 
                             }
@@ -2181,16 +2141,16 @@ public class Position
 
         //System.out.println("Entering MovePossible(): Checking if opponent could take King in the next move...");
         
-        temp_figure = Pos[row_n][col_n];            // Save opponent figure on move to field, to be able to restore the orginal position before returning
-        Pos[row_n][col_n] = Pos[row][col];          // Make move
-        Pos[row][col] = Position.EMPTY;                      // Set leaving field to empty  
+        temp_figure = Pos[row_n][col_n];                                        // Save opponent figure on move to field, to be able to restore the orginal position before returning
+        Pos[row_n][col_n] = Pos[row][col];                                      // Make move
+        Pos[row][col] = Position.EMPTY;                                         // Set leaving field to empty  
 
         if (Chess.DebugLevel > Settings.MEDIUM)
         {
             System.out.println("MovePossible: Checking if opponent could take King in the next move...");
         } 
 
-        check = Check(Pos, RECEIVING_CHECK);                        // Check if King could be captured in the next move
+        check = Check(Pos, RECEIVING_CHECK);                                    // Check if King could be captured in the next move
 
         Pos[row][col] = Pos[row_n][col_n];
         Pos[row_n][col_n] = temp_figure;
@@ -2198,7 +2158,7 @@ public class Position
         return(!check);
     }    
     
-    public static boolean InsufficientMaterial(int[][] Pos)                   // Detect Draw for not enough material on field    
+    public static boolean InsufficientMaterial(int[][] Pos)                     // Detect Draw for not enough material on field    
     {
         int col;
         int row;
@@ -2294,7 +2254,6 @@ public class Position
         SwitchMoveColor(Pos);   
         if (!AnyMovePossible(Pos))
         {
-            // if(ReceivingCheck(Pos))
             if(Check(Pos, RECEIVING_CHECK))
             {
                 Status = CHECKMATE;
@@ -2427,7 +2386,6 @@ public class Position
 
     public static boolean FiftyMove(int[][] Pos)
     {
-        //System.out.println("FiftyMoveRule() is implemented.");   
         if(GetNumberOfMovesWithNoPawnMoveOrCapture(Pos) >= NUMBER_OF_MOVES_WITH_NO_PAWN_MOVE_OR_CAPTURE_REQUIRED_TO_DECLARE_DRAW)
         {
             return true;
@@ -2590,7 +2548,7 @@ public class Position
         int i;
         int PawnStep = 0;
         int FieldNo;
-        int dir;                                                // Counter for going through all possible directions
+        int dir;                                                                // Counter for going through all possible directions
         int Figure;
         int Figure_p = 0;
         int Figure_n = 0;
@@ -2637,14 +2595,14 @@ public class Position
                 
                     if(Type == MOVES)
                     {
-                        col_n = col;                                                                                                // Move Pawn one field forward
+                        col_n = col;                                            // Move Pawn one field forward
                         row_n = row + PawnStep;      
                         if (Pos[row_n][col_n] == Position.EMPTY)                                                    
                         {
-                            if ((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))                         // Convert Pawn
-                            {
+                            if ((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))                        
+                            {                                                   // Convert Pawn
                                 for (i = 0; i < WhitePromotionFigure.length; i++)    
-                                {                                                                                                   // Loop for Queen, Rook, Knight, Bishop
+                                {                                               // Loop for Queen, Rook, Knight, Bishop
                                     switch (GetMoveColor(Pos))
                                     {
                                         case WHITE_MOVE:
@@ -2665,7 +2623,7 @@ public class Position
                         }
                     
                         col_n = col;        
-                        row_n = row + 2 * PawnStep;                                                                                   // Move two PawnSteps forward
+                        row_n = row + 2 * PawnStep;                             // Move two PawnSteps forward
                         if (((GetMoveColor(Pos) == WHITE_MOVE) && (row == WHITE_PAWN_INITIAL_ROW)) || 
                             ((GetMoveColor(Pos) == BLACK_MOVE) && (row == BLACK_PAWN_INITIAL_ROW)))
                         {
@@ -2676,16 +2634,16 @@ public class Position
                         }
                     }
                     
-                    for (i = -1; i < 2; i += 2)                                                                                 // Pawn takes opponent figure away
+                    for (i = -1; i < 2; i += 2)                                 // Pawn takes opponent figure away
                     {
                         col_n = col + i;
                         row_n = row + PawnStep;
                         if((col_n >= 1) && (col_n <= COLS) && (OpponentFigure(Pos,col_n, row_n)))
                         {
                             if ((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))                     // Convert Pawn                           
-                            {                                                                                                   // Take away opponent figure
-                                for (i = 0; i < WhitePromotionFigure.length; i++)                                               // Loop for Queen, Rook, Knight, Bishop
-                                {                                                                                                // .... and convert to new officer
+                            {                                                         // Take away opponent figure
+                                for (i = 0; i < WhitePromotionFigure.length; i++)    // Loop for Queen, Rook, Knight, Bishop
+                                {                                               // .... and convert to new officer
                                     switch(GetMoveColor(Pos))
                                     {
                                         case WHITE_MOVE:
@@ -2736,7 +2694,7 @@ public class Position
                             // En passant
                             if ((((GetMoveColor(Pos) == WHITE_MOVE) && (row == 5)) || ((GetMoveColor(Pos) == BLACK_MOVE) && (row == 4))) && (col_n >= 1) && (col_n <= COLS))
                             {                                                                                                 
-                                if (col_n == GetColumnPawnMovedTwoRows(Pos))                      //Workaround: Compiler ssems to miss this if this is added to line befor
+                                if (col_n == GetColumnPawnMovedTwoRows(Pos))    //Workaround: Compiler ssems to miss this if this is added to line beforE
                                 {
                                     if(Chess.DebugLevel == Settings.HIGH)
                                     {
@@ -2751,28 +2709,28 @@ public class Position
                
                 case WHITE_ROOK:
                 case BLACK_ROOK:
-                    for (dir = 1; dir <= 4; dir++)                                                         // Loop over all four directions
+                    for (dir = 1; dir <= 4; dir++)                              // Loop over all four directions
                     {
-                        for (i = 1; i < COLS; i++)                                                 // Loop over all PawnSteps in one direction         
+                        for (i = 1; i < COLS; i++)                              // Loop over all PawnSteps in one direction         
                         {
                             switch(dir)
                             {
-                                case 1:                                                                     // Move N
+                                case 1:                                         // Move N
                                     col_n = col;           
                                     row_n = row + i;
                                     break;
                                         
-                                case 2:                                                                     // Move E
+                                case 2:                                         // Move E
                                     col_n = col + i;          
                                     row_n = row;
                                     break;
                                         
-                                case 3:                                                                     // Move S
+                                case 3:                                         // Move S
                                     col_n = col;
                                     row_n = row - i;
                                     break;
                                         
-                                case 4:                                                                     // Move W
+                                case 4:                                         // Move W
                                     col_n = col - i;
                                     row_n = row;
                                     break;
@@ -2780,10 +2738,8 @@ public class Position
                          
                             if(OffBoardOrOwnFigure(Pos, col_n, row_n))
                             {
-                                break;                                                                      // Stop moving in this direction, continue with next direction
+                                break;                                          // Stop moving in this direction, continue with next direction
                             }
-                            
-                            //Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);    
                             
                             switch(Type)
                             {
@@ -2799,7 +2755,7 @@ public class Position
                                    break;
                             }
                             
-                            if(OpponentFigure(Pos, col_n, row_n))                                           // Took oponent figure away, stop to moving in this direction
+                            if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop to moving in this direction
                             {                               
                                 break;
                             }
@@ -2809,7 +2765,7 @@ public class Position
                
                 case WHITE_KNIGHT:
                 case BLACK_KNIGHT:
-                    for (dir = 1; dir <= 8; dir++)                                                          // Loop over all four directions
+                    for (dir = 1; dir <= 8; dir++)                              // Loop over all four directions
                     {
                         switch(dir)
                         {
@@ -2856,7 +2812,7 @@ public class Position
                                 
                         if(OffBoardOrOwnFigure(Pos, col_n, row_n))
                         {
-                            continue;                                                                      // Continue with next direction
+                            continue;                                           // Continue with next direction
                         }
                         
                         switch(Type)
@@ -2878,28 +2834,28 @@ public class Position
                
                 case WHITE_BISHOP:
                 case BLACK_BISHOP:
-                    for (dir = 1; dir <= 4; dir++)                                                         // Loop over all four directions
+                    for (dir = 1; dir <= 4; dir++)                              // Loop over all four directions
                     {
-                        for (i = 1; i < COLS; i++)                                                          // Loop over all steps in one direction         
+                        for (i = 1; i < COLS; i++)                              // Loop over all steps in one direction         
                         {
                             switch(dir)
                             {
-                                case 1:                                                                     // Move NE
+                                case 1:                                         // Move NE
                                     col_n = col + i;           
                                     row_n = row + i;
                                     break;
                                         
-                                case 2:                                                                     // Move SE
+                                case 2:                                         // Move SE
                                     col_n = col + i;          
                                     row_n = row - i;;
                                     break;
                                         
-                                case 3:                                                                     // Move SW
+                                case 3:                                         // Move SW
                                     col_n = col - i;
                                     row_n = row - i;
                                     break;
                                         
-                                case 4:                                                                     // Move NW
+                                case 4:                                         // Move NW
                                     col_n = col - i;
                                     row_n = row + i;
                                     break;
@@ -2907,7 +2863,7 @@ public class Position
                                     
                             if(OffBoardOrOwnFigure(Pos, col_n, row_n))
                             {
-                                break;                                                                      // Stop moving in this direction, continue with next direction
+                                break;                                          // Stop moving in this direction, continue with next direction
                             }
                             
                             switch(Type)
@@ -2926,7 +2882,7 @@ public class Position
                             
                             //Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);    
                             
-                            if(OpponentFigure(Pos, col_n, row_n))     // Took oponent figure away, stop to moving in this direction
+                            if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop to moving in this direction
                             {
                                 break;
                             }
@@ -2936,48 +2892,48 @@ public class Position
 
                 case WHITE_QUEEN:
                 case BLACK_QUEEN:        
-                    for (dir = 1; dir <= 8; dir++)                  // Loop over all eight directions
+                    for (dir = 1; dir <= 8; dir++)                              // Loop over all eight directions
                     {
-                        for (i = 1; i < COLS; i++)                     // Loop over all PawnSteps in one direction         
+                        for (i = 1; i < COLS; i++)                              // Loop over all PawnSteps in one direction         
                         {
                             switch(dir)
                             {
-                                case 1:                    // Move N
+                                case 1:                                         // Move N
                                     col_n = col;           
                                     row_n = row + i;
                                     break;
                                     
-                                case 2:                    // Move NE
+                                case 2:                                         // Move NE
                                     col_n = col + i;          
                                     row_n = row + i;
                                     break;
                                     
-                                case 3:                    // Move E
+                                case 3:                                         // Move E
                                     col_n = col + i;
                                     row_n = row;
                                     break;
                                     
-                                case 4:                    // Move SE
+                                case 4:                                         // Move SE
                                     col_n = col + i;
                                     row_n = row - i;
                                     break;
                                         
-                                case 5:                    // Move S
+                                case 5:                                         // Move S
                                     col_n = col;           
                                     row_n = row - i;
                                     break;
                                     
-                                case 6:                    // Move SW
+                                case 6:                                         // Move SW
                                     col_n = col - i;          
                                     row_n = row - i;
                                     break;
                                         
-                                case 7:                    // Move W
+                                case 7:                                         // Move W
                                     col_n = col - i;
                                     row_n = row;
                                     break;
                                    
-                                case 8:                    // Move NW
+                                case 8:                                         // Move NW
                                     col_n = col - i;
                                     row_n = row + i;
                                     break;                                           
@@ -3004,7 +2960,7 @@ public class Position
                             
                             //Move.AddMoveToMoveList(MoveList, Figure, col, row,  Pos[row_n][col_n], Figure, col_n, row_n);    
                             
-                            if(OpponentFigure(Pos, col_n, row_n))  // Took oponent figure away, stop to moving in this direction
+                            if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop to moving in this direction
                             {
                                 break;
                             }   
@@ -3014,56 +2970,55 @@ public class Position
                
                 case WHITE_KING:
                 case BLACK_KING:
-                    for (dir = 1; dir <= 8; dir++)                                                          // Loop over all four directions
+                    for (dir = 1; dir <= 8; dir++)                              // Loop over all four directions
                     {
                         switch(dir)
                         {
                             case 1:
                                 col_n = col - 1;
-                                row_n = row - 1;        // N
+                                row_n = row - 1;                                // N
                                 break;
                                 
                             case 2:
-                                col_n = col - 1;        // NE
+                                col_n = col - 1;                                // NE
                                 row_n = row;
                                 break;
                                 
                             case 3:
-                                col_n = col - 1;        // E
+                                col_n = col - 1;                                // E
                                 row_n = row + 1;
                                 break;
                                 
                             case 4:
-                                col_n = col;            // SE
+                                col_n = col;                                    // SE
                                 row_n = row - 1 ;
                                 break;
                                 
                             case 5:
-                                col_n = col;            // S
+                                col_n = col;                                    // S
                                 row_n = row + 1;
                                 break;
                                 
                             case 6:
-                                col_n = col + 1;        // SW
+                                col_n = col + 1;                                // SW
                                 row_n = row - 1;
                                 break;
                                 
                             case 7:
-                                col_n = col + 1;        // W
+                                col_n = col + 1;                                // W
                                 row_n = row;
                                 break;
                                 
                             case 8:
-                                col_n = col + 1;        // NW
+                                col_n = col + 1;                                // NW
                                 row_n = row + 1;
                                 break;                                     
                         }
                                 
                         if(OffBoardOrOwnFigure(Pos, col_n, row_n))
                         {
-                            continue;                                                                      // Stop moving in this direction, continue with next direction
-                        }
-                        //Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);    
+                            continue;                                           // Stop moving in this direction, continue with next direction
+                        } 
                         
                         switch(Type)
                         {
@@ -3084,19 +3039,16 @@ public class Position
                     if(Type == MOVES)
                     {
                         list = Move.Castling(Pos, CastlingList);
-                        //System.out.println("Performing Castling."); 
                         for (i = 0; i < list; i++)
                         {
-                            //System.out.println("Performing Castling."); 
-                            //Position.DisplayPosition(Pos);
                             switch(CastlingList[i])
                             {
                                 case Position.LONG_CASTLING:
-                                    col_n           = Position.C;        //For King
+                                    col_n           = Position.C;               //For King
                                     break;
                                         
                                 case Position.SHORT_CASTLING:
-                                    col_n           = Position.G;        //For King
+                                    col_n           = Position.G;               //For King
                                     break;
                             }
                                 
@@ -3114,7 +3066,6 @@ public class Position
                             }
                                    
                             Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);    
-                            //System.out.println("Castling... Pos[row][col] = " + Pos[row][col] + " col = " + col + " row = " + row + " col_n = " + col_n);
                         }
                     }
                     break;                            
