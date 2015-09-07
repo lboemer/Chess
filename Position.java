@@ -796,8 +796,6 @@ public class Position
             }
         }
         System.out.println();
-        System.out.println("Chess.WhiteBoard = " + Chess.WhiteBoard);
-        System.out.println("Chess.WhiteBoard = " + Chess.WhiteBoard);
         ShowNumberOfRepetitivePositions(Pos);          
         ShowFiftyMoveCounter(Pos);
         Rating.ShowPositionType(Rating.GetPositionType(Pos));
@@ -806,7 +804,7 @@ public class Position
     
     public static void ShowNumberOfRepetitivePositions(int[][] Pos)
     {
-        System.out.println("RepetitivePsitionCounter: " + GetNumberOfRepetitivePositions(Pos));
+        System.out.println("RepetitivePositionCounter: " + GetNumberOfRepetitivePositions(Pos));
     }        
     
     public static void ShowFiftyMoveCounter(int[][] Pos)

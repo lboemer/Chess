@@ -28,9 +28,8 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
     static String srt;    
     static int col_f, row_f, col_n, row_n;    
     static int col_p;                                                           // Column promotion figure selected
-    
-    
-   public static String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
+        
+    public static String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
     
     public void repaintWindow(int[][] Pos) {
         int row;
@@ -41,7 +40,6 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             for(col = 0; col <= Position.COLS; col++)                           // Go through entire array, COLS + 1 cols
             {
                 PosDrawBuffer[row][col] = Pos[row][col];                        // Copy position into PosDrawBuffer to ensure that the postion at this step in the program is drawn
-                //System.out.println(Pos[row][col]);
             }
         }
 

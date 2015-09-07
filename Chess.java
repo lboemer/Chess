@@ -189,11 +189,7 @@ public class Chess
             {
                 UserBegin_ms = System.currentTimeMillis( );
                 MoveNumber++;  
-                
-                System.out.println("FirstMove = " + FirstMove);
-                System.out.println("MoveNumber = " + MoveNumber);   
-                System.out.println("PlayMode = " + PlayMode); 
-                
+
                 if((MoveNumber == 1) && (FirstMove == Settings.PLAYER) && ((PlayMode == Settings.PLAYER_PLAYER) || (PlayMode == Settings.PLAYER_COMPUTER))
                  || (MoveNumber >  1) &&                                   ((PlayMode == Settings.PLAYER_PLAYER) || (PlayMode == Settings.PLAYER_COMPUTER)))
                 {
@@ -203,10 +199,8 @@ public class Chess
                         {
                             case '0':                                           // User made a valid move
                                 Move.DisplayMoveList(MovePath, Move.STOP, Ply, Move.TABLE, Move.SHOW_NO_RATING);  
-                                
-                                ui.repaintWindow(Pos);                               
-                                
                                 Position.SwitchMoveColor(Pos);                  // Switch move color
+                                ui.repaintWindow(Pos); 
                                 NewGame = false;
                                 GetNewUserMove = false;
                                 Back = false;
@@ -426,7 +420,7 @@ public class Chess
         Move.MoveListIteration  = 1;   
         
         Move.GenerateMoveList(Pos, MovesPosition, MovePath, CheckForCanTakeKingOnly);   // Generates all possible moves for one position into MovesPosition
-        Move.SortMoveList(MovesPosition);                                       // Sorts the move list and places best move first
+        //Move.SortMoveList(MovesPosition);                                       // Sorts the move list and places best move first
 
         switch(DecisionRule)
         {  
@@ -642,13 +636,6 @@ public class Chess
         }
         return 0;                                                               // This statement is not reached and is added to make compiler happy  
     }    
-
-    public static boolean TestA()
-    {
-        int a;
-        FirstMove = 8;
-        return true;
-    }
 
     public static boolean SetBoard(int[][] Pos)
     {
