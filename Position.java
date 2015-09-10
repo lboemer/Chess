@@ -1,4 +1,5 @@
-import java.util.*;                                                             //For Date
+import java.util.*;                                                             // For Date
+import java.lang.*;                                                             // For abs
 
 public class Position
 {
@@ -1697,6 +1698,218 @@ public class Position
         }
         
         return CanTakeKing;
+    }
+    
+    public static boolean Checknew(int[][] Pos, int Type)
+    {
+        int row;
+        int col;
+        int row_s;                                                              // Row step
+        int col_s;                                                              // Column step       
+        int row_K = 0;                                                          // Row of opponent king 
+        int col_K = 0;                                                          // Column of opponent king
+
+        boolean CanTakeKing = false;                                            // False initialization is required
+        
+        if(Type == RECEIVING_CHECK)
+        {
+            SwitchMoveColor(Pos);                                               // Switch to opponent move   
+        }        
+        
+        loop:
+        for(row_K = 1; row_K <= ROWS; row_K++)                                  // Find row and column of opponent king
+        {
+            for(col_K = 1; col_K <= COLS; col_K++)
+            {
+                if(OpponentKing(Pos, col_K, row_K))
+                {
+                    break loop;                                                 // Found row and column of opponent king
+                }
+            }
+        }
+        //System.out.println("row_K = " + row_K + " col_K = " + col_K);
+
+        loop_over_own_figures:
+        for(row = 1; row <= ROWS; row++)                                        // Go through all fields and find own figure
+        {
+            for(col = 1; col <= COLS; col++)
+            {
+                if(OwnFigure(Pos, col, row))                                    // Found own figure
+                {
+                    switch(Pos[row][col])
+                    {
+                        case WHITE_PAWN:
+                        case BLACK_PAWN:
+                            if(Pos[row][col] == WHITE_PAWN)
+                            {
+                                row_s = 1;
+                            }
+                            else
+                            {
+                                row_s = -1;
+                            }
+                            if(((row + row_s) == row_K) && (Math.abs(col - col_K) == 1))
+                            {
+                                CanTakeKing = true;                             // Pawn can capture king
+                                break loop_over_own_figures;
+                            }
+                            break;
+                            
+                        case WHITE_ROOK:
+                        case BLACK_ROOK:
+                            if(RookCanCaptureKing(Pos, row, col, row_K, col_K))
+                            {
+                                CanTakeKing = true;                                    // Rook can capture king
+                                break loop_over_own_figures;
+                            }
+                            break;
+                            
+                        case WHITE_KNIGHT:
+                        case BLACK_KNIGHT:
+                            if(((Math.abs(col - col_K) == 2) && (Math.abs(row - row_K) == 1)) ||
+                               ((Math.abs(col - col_K) == 1) && (Math.abs(row - row_K) == 2)))
+                            {
+                                CanTakeKing = true;                                    // Knight can capture king
+                                break loop_over_own_figures;
+                            }
+                            break;
+              
+                        case WHITE_BISHOP:
+                        case BLACK_BISHOP:
+                            if(BishopCanCaptureKing(Pos, row, col, row_K, col_K))
+                            {
+                                CanTakeKing = true;                                    // Bishop can capture king  
+                                break loop_over_own_figures;
+                            }
+                            break;
+                            
+                        case WHITE_QUEEN:
+                        case BLACK_QUEEN:
+                            if((BishopCanCaptureKing(Pos, row, col, row_K, col_K)) ||                           
+                               (RookCanCaptureKing  (Pos, row, col, row_K, col_K)))
+                            {                                                   // Queen moves are the sum of rook or bishop moves
+                                CanTakeKing = true;                                    // Queen can capture king 
+                                break loop_over_own_figures;
+                            }
+                            break;
+                        
+                        case WHITE_KING:
+                        case BLACK_KING:
+                            if(((Math.abs(col - col_K) == 1) || (Math.abs(col - col_K) == 0)) &&
+                               ((Math.abs(row - row_K) == 1) || (Math.abs(row - row_K) == 0)))
+                            {
+                                CanTakeKing = true;                                    // King can capture king 
+                                break loop_over_own_figures;
+                            }
+                            break;
+                    }
+                }                                                               // Not own figure, continue loop
+            }                                                                   // end of col loop
+        }                                                                       // end of row loop
+        if(Type == RECEIVING_CHECK)
+        {
+            SwitchMoveColor(Pos);                                               // Switch back to own move   
+        }   
+        return CanTakeKing;
+    }
+        
+    public static boolean RookCanCaptureKing(int[][] Pos, int row, int col, int row_K, int col_K)
+    {
+        int row_s = 0;                                                          // row_s is row step
+        int col_s = 0;                                                          // col_s is col step
+        
+        if((row == row_K) || (col == col_K))                                    // King is on rook's row or column
+        {                                                                       // Identify direction of rook's move towards king
+            if(col < col_K)                                                     // King is on rook's row
+            {
+                col_s = 1;                                                      // Step column up to reach opponent king
+            }
+            if(col > col_K)                                                     // Do not use else here since if would change col_s for col == col_K
+            {
+                col_s = -1;                                                     // Step column down to reach opponent king
+            }
+            
+            if(row < row_K)                                                     // King is on rook's column
+            {
+                row_s = 1;                                                      // Step row up to reach opponent king
+            }
+            if(row > row_K)                                                     // Do not use else here since if would change row_s for rol == row_K
+            {
+                row_s = -1;                                                     // Step row down to reach opponent king
+            }            
+            return(CanCaptureKingMovingInThisDirection(Pos, row, col, row_s, col_s, row_K, col_K));
+        }
+        return false;                                                           // King is not on one rook's ow or column
+    }
+        
+    public static boolean BishopCanCaptureKing(int[][] Pos, int row, int col, int row_K, int col_K)
+    {
+        int row_s = 1;                                                          // row_s is row step
+        int col_s = 1;                                                          // col_s is col step
+        
+        if(Math.abs(row - row_K) == Math.abs(col - col_K))                      // King is on one Bishop diagonal
+        {                                                                       // Identify direction of bishop move towards king
+            //System.out.println("Bishop is on diagonale");
+            if(col > col_K)
+            {
+                col_s = -1;
+            }
+            if(row > row_K)
+            {
+                row_s = -1;
+            }
+            return(CanCaptureKingMovingInThisDirection(Pos, row, col, row_s, col_s, row_K, col_K));
+        }
+        return false;                                                           // King is not on one Bishop diagonal
+    }
+    
+    public static boolean CanCaptureKingMovingInThisDirection(int[][] Pos, int row, int col, int row_s, int col_s, int row_K, int col_K)
+    {
+        int i;
+        
+        //System.out.println("row = " + row + " col = " + col + " row_s = " + row_s + " col_s = " + col_s + " row_K = " + row_K + " col_K = " + col_K);
+        
+        
+        /*
+        for(i = 1; Pos[row + i * row_s][col + i * col_s] == EMPTY; i++)         // Move in this direction until reaching an occupied field
+        {      
+            System.out.println("i = " + i);
+            if(((row + i * row_s) < 1) || ((row + i * row_s) > ROWS) || ((col + i * col_s) < 1) || ((col + i * col_s) > COLS))
+            {
+                System.out.println("row = " + row);
+                System.out.println("row_s = " + row_s);
+                System.out.println("col = " + col);
+                System.out.println("col_s = " + col_s);          
+                System.out.println("i = " + i); 
+                DisplayPosition(Pos);
+            }
+        }
+        System.out.println("i = " + i);
+        i--;
+        System.out.println("i before = " + i); 
+        int figure = Pos[row + i * row_s][col + i * col_s];
+        System.out.println("figire = " + figure);       
+        
+        
+        System.out.println("i = " + i + "row = " + row + " col = " + col + " row_s = " + row_s + " col_s = " + col_s + " row_K = " + row_K + " col_K = " + col_K);   
+        
+        return(((row + i * row_s) == row_K) && ((col + i * col_s) == col_K));   // If occupied field equals king field return true 
+                
+        */
+        
+        for(i = 1; ; i++)         // Move in this direction until reaching an occupied field
+        {     
+            if(((row + i * row_s) == row_K) && ((col + i * col_s) == col_K))
+            {
+                return true;
+            }
+            if(Pos[row + i * row_s][col + i * col_s] != EMPTY)
+            {
+                break;
+            }
+        } 
+        return false;
+        
     }
     
     public static boolean AnyMovePossible(int[][] Pos)  
