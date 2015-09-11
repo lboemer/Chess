@@ -926,781 +926,8 @@ public class Position
     {
         return Pos[ROW_STORE_FIFTY_MOVE][COLUMN_STORE_FIFTY_MOVE];        
     }    
-     
-    public static boolean Check4(int[][] Pos, int type)      
-    {
-        int l;
-        boolean CanTakeKing         = false;
-        int[][] CandidateMoveList   = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];
-            
-        Move.EmptyMoveList(CandidateMoveList);      
-        
-        if(type == RECEIVING_CHECK)
-        {
-            SwitchMoveColor(Pos);                                               // Switch to opponent move   
-        }
-
-        if (GenerateCandidateMoveList(Pos, CandidateMoveList, CAPTURE_KING) == CAN_TAKE_KING)
-        {
-            CanTakeKing = true;
-        }
-
-        if(type == RECEIVING_CHECK)
-        {
-            SwitchMoveColor(Pos);                                               // Switch to opponent move   
-        }
-        return CanTakeKing;
-    }
     
-    public static boolean Check3(int[][] Pos, int type)      
-    {
-        int l;
-        boolean CanTakeKing         = false;
-        int[][] CandidateMoveList   = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];
-            
-        Move.EmptyMoveList(CandidateMoveList);      
-        
-        if(type == RECEIVING_CHECK)
-        {
-            SwitchMoveColor(Pos);                                               // Switch to opponent move   
-        }
-        
-        for(l = 0; CandidateMoveList[l][Move.FIGURE] != Position.EMPTY; l++)
-        {      
-             if(OpponentKing(Pos, CandidateMoveList[l][Move.COL_N], CandidateMoveList[l][Move.ROW_N]))
-             {
-                CanTakeKing = true;
-                break;
-            }      
-        }
-        
-        if(type == RECEIVING_CHECK)
-        {
-            SwitchMoveColor(Pos);                                               // Switch to opponent move   
-        }
-        
-        return CanTakeKing;
-    }
-    
-    public static boolean Check2(int[][] Pos, int type)                         // Test for check by testing if the opponent could take the King in one of the next opponents move  
-    {
-        int col;
-        int row;
-        int i;
-        int j;
-        int PawnStep = 0;        
-        int factor;
-        int dir;                                                                // Counter for going through all possible directions
-        int row_n = 0;                                                          // Initialization is required to make complier happy
-        int col_n = 0;                                                          // Initialization is required to nake complier happy
-        boolean CanTakeKing = false;
-        
-        int Figure; 
-        int FieldNo;
-            
-        //System.out.println("Entering Check() Move Color = " + GetMoveColor(Pos));
-        
-        if(type == RECEIVING_CHECK)
-        {
-            SwitchMoveColor(Pos);                                               // Switch to opponent move   
-        }
-        
-        if (Chess.DebugLevel > Settings.MEDIUM)
-        {
-            System.out.println("Move Color = " + GetMoveColor(Pos));
-        }
-
-        outerloop:
-        for (FieldNo = 0; FieldNo < (ROWS * COLS); FieldNo++)
-        {
-            col         = (FieldNo % COLS) + 1;
-            row         = (FieldNo / ROWS) + 1;
-            Figure      = Pos[row][col];
-
-            if(OwnFigure(Pos, col, row) == false)
-            {
-                continue;
-            }
-
-            switch (Figure)                                                     // Investigate if figure could capture opponent King
-            {                                                                   // No need to test for one or two steos forward since pawn does not capture an opponent figure  
-                case WHITE_PAWN:
-                case BLACK_PAWN:
-                    // No need to check for one step or two step forward since these moves can't take opponent King
-                    switch(GetMoveColor(Pos))
-                    {
-                        case WHITE_MOVE:
-                            PawnStep = 1;
-                            break;
-                
-                        case BLACK_MOVE:
-                            PawnStep = -1;
-                            break;
-                    }                      
-                    for (i = -1; i < 2; i += 2)                                 // Pawn takes opponent figure away
-                    {
-                        col_n = col + i;                                
-                        row_n = row + PawnStep;
-
-                        if ((col_n >= 1) && (col_n <= COLS) && (OpponentKing(Pos, col_n, row_n)))
-                        {    
-                            CanTakeKing = true;
-                            break outerloop;
-                        }    
-                    }
-                    // No need to check for En Passant since En Passant can't take opponent King
-                    break;
-               
-                case WHITE_ROOK:
-                case BLACK_ROOK:
-                    for (dir = 1; dir <= 4; dir++)                              // Loop over all four directions
-                    {
-                        for (i = 1; i < COLS; i++)                              // Loop over all steps in one direction         
-                        {
-                            switch(dir)
-                            {
-                                case 1:                                         // Move N
-                                    col_n = col; 
-                                    row_n = row + i;
-                                    break;
-                                        
-                                case 2:                                         // Move E
-                                    col_n = col + i;          
-                                    row_n = row;
-                                    break;
-                                        
-                                case 3:                                         // Move S
-                                    col_n = col;
-                                    row_n = row - i;
-                                    break;
-                                        
-                                case 4:                                         // Move W
-                                    col_n = col - i;
-                                    row_n = row;
-                                    break;
-                            }
-                                        
-                            if(Position.OffBoardOrOwnFigure(Pos, col_n, row_n)) // Reached boundry or own figure
-                            {
-                                break;                                          // Stop moving in this direction, continue with next direction
-                            }                                      
-                                    
-                            if (Chess.DebugLevel > Settings.MEDIUM)
-                            {
-                                System.out.println("Checking if Rook move to col = " + col_n + " row = " + row_n + " could take King");
-                            }   
-                                        
-                            if (OpponentKing(Pos, col_n, row_n))
-                            {    
-                                CanTakeKing = true;
-                                break outerloop;
-                            }               
-
-                            if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop moving in this direction                    
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    break;
-               
-                case WHITE_KNIGHT:
-                case BLACK_KNIGHT:
-                    for (dir = 1; dir <= 8; dir++)                              // Loop over all four directions
-                    {
-                        switch (dir)
-                        {
-                            case 1:
-                                col_n = col - 2;
-                                row_n = row - 1;
-                                break;
-                                
-                            case 2:
-                                col_n = col - 2;
-                                row_n = row + 1;
-                                break;
-                                
-                            case 3:
-                                col_n = col - 1;
-                                row_n = row - 2;
-                                break;
-                                
-                            case 4:
-                                col_n = col - 1;
-                                row_n = row + 2 ;
-                                break;
-                                
-                            case 5:
-                                col_n = col + 1;
-                                row_n = row - 2;
-                                break;
-                                
-                            case 6:
-                                col_n = col + 1;
-                                row_n = row + 2;
-                                break;
-                                
-                            case 7:
-                                col_n = col + 2;
-                                row_n = row - 1;
-                                break;
-                                
-                            case 8:
-                                col_n = col + 2;
-                                row_n = row + 1 ;
-                                break;                                     
-                        }
-                
-                        if(OffBoardOrOwnFigure(Pos, col_n, row_n))             // Reached boundry or own figure
-                        {
-                            continue;                                          // Continue with next move
-                        }                 
-                
-                        if (OpponentKing(Pos, col_n, row_n))
-                        {    
-                            CanTakeKing = true;
-                            break outerloop;
-                        }                        
-                        break;
-                    }
-               
-                case WHITE_BISHOP:
-                case BLACK_BISHOP:
-                    for (dir = 1; dir <= 4; dir ++)                             // Loop over all four directions
-                    {
-                        for (i = 1; i < COLS; i++)                              // Loop over all steps in one direction         
-                        {
-                            switch (dir)
-                            {
-                                case 1:                                         // Move NE
-                                    col_n = col + i;           
-                                    row_n = row + i;
-                                    break;
-                                        
-                                case 2:                                         // Move SE
-                                    col_n = col + i;          
-                                    row_n = row - i;
-                                    break;
-                                        
-                                case 3:                                         // Move SW
-                                    col_n = col - i;
-                                    row_n = row - i;
-                                    break;
-                                        
-                                case 4:                                         // Move NW
-                                    col_n = col - i;
-                                    row_n = row + i;
-                                    break;
-                            }
-                               
-                            if(OffBoardOrOwnFigure(Pos, col_n, row_n))          // Reached boundry or own figure
-                            {
-                                break;                                          // Stop moving in this direction, continue with next direction
-                            }                                      
-                                    
-                            if (Chess.DebugLevel > Settings.MEDIUM)
-                            {
-                                System.out.println("Checking if Rook move to col = " + col_n + " row = " + row_n + " could take King");
-                            }   
-                                        
-                            if (OpponentKing(Pos, col_n, row_n))
-                            {    
-                                CanTakeKing = true;
-                                break outerloop;
-                            }               
-
-                            if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop moving in this direction                    
-                            {
-                                break;
-                            }                                  
-                        }
-                    }  
-                    break;
-               
-                case WHITE_QUEEN:
-                case BLACK_QUEEN:          
-                    for (dir = 1; dir <= 8; dir++)                              // Loop over all eight directions
-                    {
-                        for (i = 1; i < COLS; i++)                              // Loop over all steps in one direction         
-                        {
-                            switch(dir)
-                            {
-                                case 1:                                         // Move N
-                                    col_n = col;           
-                                    row_n = row + i;
-                                    break;
-                                    
-                                case 2:                                         // Move NE
-                                    col_n = col + i;          
-                                    row_n = row + i;
-                                    break;
-                                    
-                                case 3:                                         // Move E
-                                    col_n = col + i;
-                                    row_n = row;
-                                    break;
-                                    
-                                case 4:                                         // Move SE
-                                    col_n = col + i;
-                                    row_n = row - i;
-                                    break;
-                                        
-                                case 5:                                         // Move S
-                                    col_n = col;           
-                                    row_n = row - i;
-                                    break;
-                                    
-                                case 6:                                         // Move SW
-                                    col_n = col - i;          
-                                    row_n = row - i;
-                                    break;
-                                        
-                                case 7:                                         // Move W
-                                    col_n = col - i;
-                                    row_n = row;
-                                    break;
-                                   
-                                case 8:                                         // Move NW
-                                    col_n = col - i;
-                                    row_n = row + i;
-                                    break;                                           
-                            }                            
-
-                            if(OffBoardOrOwnFigure(Pos, col_n, row_n))          // Reached boundry or own figure
-                            {
-                                break;                                          // Stop moving in this direction, continue with next direction
-                            }                                      
-                                    
-                            if (Chess.DebugLevel > Settings.MEDIUM)
-                            {
-                                System.out.println("Checking if Rook move to col = " + col_n + " row = " + row_n + " could take King");
-                            }   
-                                        
-                            if (OpponentKing(Pos, col_n, row_n))
-                            {    
-                                CanTakeKing = true;
-                                break outerloop;
-                            }               
-
-                            if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop moving in this direction                    
-                            {
-                                break;
-                            }                                                 
-                        }
-                    }
-                    break;
-                        
-                case WHITE_KING:
-                case BLACK_KING:
-                    for (dir = 1; dir <= 8; dir++)                              // Loop over all four directions
-                    {
-                        switch(dir)
-                        {
-                            case 1:
-                                col_n = col - 1;
-                                row_n = row - 1;                                // SW
-                                break;
-                                
-                            case 2:
-                                col_n = col - 1;                                // W
-                                row_n = row;
-                                break;
-                                
-                            case 3:
-                                col_n = col - 1;                                // NW
-                                row_n = row + 1;
-                                break;
-                                
-                            case 4:
-                                col_n = col;                                    // S
-                                row_n = row - 1 ;
-                                break;
-                                
-                            case 5:
-                                col_n = col;                                    // N
-                                row_n = row + 1;
-                                break;
-                                
-                            case 6:
-                                col_n = col + 1;                                // SE
-                                row_n = row - 1;
-                                break;
-                                
-                            case 7:
-                                col_n = col + 1;                                // E
-                                row_n = row;
-                                break;
-                                
-                            case 8:
-                                col_n = col + 1;                                // NE
-                                row_n = row + 1;
-                                break;                                     
-                        }       
-                          
-                        if(OffBoardOrOwnFigure(Pos, col_n, row_n))              // Reached boundry or own figure
-                        {
-                            continue;                                           // Continue with next move
-                        }                 
-                
-                        if (OpponentKing(Pos, col_n, row_n))
-                        {    
-                            CanTakeKing = true;
-                            break outerloop;
-                        }                        
-                        break;                        
-                    }    
-            }
-        }
-        
-        if(type == RECEIVING_CHECK)
-        {
-            SwitchMoveColor(Pos);                                               // Switch to oppnent move   
-        }
-        
-        return CanTakeKing;        
-    }
-    
-    public static boolean Check(int[][] Pos, int type)                          // Test for check by testing if the opponent could take the King in one of the next opponents move  
-    {
-        int col;
-        int row;
-        int i;
-        int j;
-        int factor;
-        int dir;                                                                // Counter for going through all possible directions
-        int row_n = 0;                                                          // To make complier happy
-        int col_n = 0;                                                          // To nake complier happy
-        boolean CanTakeKing = false;
-        int FieldNo;
-        int PawnStep = 0;
-            
-        //System.out.println("Entering Check() Move Color = " + GetMoveColor(Pos));
-        
-        if(type == RECEIVING_CHECK)
-        {
-            SwitchMoveColor(Pos);                                               // Switch to oppnent move   
-        }
-        
-        if (Chess.DebugLevel > Settings.MEDIUM)
-        {
-            System.out.println("Move Color = " + GetMoveColor(Pos));
-        }
-        
-        outerloop:
-        for (row = 1; row <= ROWS; row++)
-        {
-            for (col = 1; col <= COLS; col++)
-            {   
-                if (((GetMoveColor(Pos) == WHITE_MOVE) && (GetFigureColor(Pos[row][col]) == WHITE_FIGURE)) ||   // Only evaluate WHITE figure if GetMoveColor(Pos) == WHITE or BLACK figure if GetMoveColor(Pos) == BLACK
-                    ((GetMoveColor(Pos) == BLACK_MOVE) && (GetFigureColor(Pos[row][col]) == BLACK_FIGURE)))                       
-                {
-                    switch (Pos[row][col])                                      // Investigate if figure could capture opponent King
-                    {                                                           // No need to test for one or two steos forward since pawn does not capture an opponent figure  
-                        case WHITE_PAWN:
-                        case BLACK_PAWN:
-                            for (i = -1; i < 2; i += 2)                         // Pawn takes opponent figure away
-                            {
-                                switch(GetMoveColor(Pos))
-                                {
-                                    case WHITE_MOVE:
-                                        PawnStep = 1;
-                                        break;
-                                        
-                                    case BLACK_MOVE:
-                                        PawnStep = -1;
-                                        break;
-                                }
-                                row_n = row + PawnStep;
-                                col_n = col + i;
-                                if (row_n <= Position.ROWS && row_n > 0 && col_n > 0 && col_n <= COLS) 
-                                {    
-                                    if (Chess.DebugLevel > Settings.MEDIUM)
-                                    {
-                                        System.out.println("Checking if Pawn move to col = " + col_n + " row = " + row_n + " could take King");
-                                    } 
-
-                                    if ((Pos[row_n][col_n]*GetMoveColor(Pos) == BLACK_KING))             
-                                    {                                           // Could take oponent King
-                                        if (Chess.DebugLevel > Settings.MEDIUM)
-                                        {
-                                            System.out.println("Pawn could take King");
-                                        }
-                                        CanTakeKing = true;
-                                        break outerloop;
-                                    }    
-                                }
-                            }
-                            break;
-               
-                        case WHITE_ROOK:
-                        case BLACK_ROOK:
-                            for (dir = 1; dir <= 4; dir++)                      // Loop over all four directions
-                            {
-                                for (i = 1; i < COLS; i++)                      // Loop over all steps in one direction         
-                                {
-                                    switch(dir)
-                                    {
-                                        case 1:                                 // Move N
-                                            row_n = row + i;
-                                            col_n = col;           
-                                            break;
-                                        
-                                        case 2:                                 // Move E
-                                            col_n = col + i;          
-                                            row_n = row;
-                                            break;
-                                        
-                                        case 3:                                 // Move S
-                                            col_n = col;
-                                            row_n = row - i;
-                                            break;
-                                        
-                                        case 4:                                 // Move W
-                                            col_n = col - i;
-                                            row_n = row;
-                                            break;
-                                    }
-                                        
-                                    if (col_n < 1 || col_n > COLS || row_n < 1 || row_n > Position.ROWS || Pos[row_n][col_n]*GetMoveColor(Pos) > 0) // Reached boundry or own figure
-                                        break;
-                                      
-                                    if (Chess.DebugLevel > Settings.MEDIUM)
-                                    {
-                                        System.out.println("Checking if Rook move to col = " + col_n + " row = " + row_n + " could take King");
-                                    }   
-                                        
-                                    if ((Pos[row_n][col_n]*GetMoveColor(Pos) == BLACK_KING))     
-                                    {                                           // Could take oponent King
-                                        if (Chess.DebugLevel > Settings.MEDIUM)
-                                        {
-                                            System.out.println("Rook could take King");
-                                        }
-                                        CanTakeKing = true;
-                                        break outerloop;                                        
-                                    }  
-                                    
-                                    if (Pos[row_n][col_n]* GetMoveColor(Pos) < 0)         // Took oponent figure away, stop moving in this direction
-                                        break;
-                                }
-                            }
-                            break;
-               
-                        case WHITE_KNIGHT:
-                        case BLACK_KNIGHT:
-                            for(i = -2; i < 3; i++)
-                            {
-                                j = -1;                                         // to makle compiler happy     
-                                
-                                if (i == 0)
-                                {
-                                    continue;
-                                }
-                                
-                                if (i == -2 || i == 2)
-                                    j = 1;
-                                if (i == -1 || i == 1)
-                                    j = 2;
-
-                                for (factor = -1; factor < 2; factor += 2)
-                                {
-                                    col_n = col + i;
-                                    row_n = row + j * factor;
-                                    if (col_n > 0 && col_n <= COLS && row_n <= Position.ROWS && row_n > 0 && Pos[row_n][col_n]*GetMoveColor(Pos) < 1)    
-                                    {
-                                        if (Chess.DebugLevel > Settings.MEDIUM)
-                                        {
-                                            System.out.println("Checking if Knight move to col = " + col_n + " row = " + row_n + " could take King");
-                                        }   
-                                        if ((Pos[row_n][col_n]*GetMoveColor(Pos) == BLACK_KING))   // Could take oponent King
-                                        {   
-                                            if (Chess.DebugLevel > Settings.MEDIUM)
-                                            {
-                                                System.out.println("Knight could take King");
-                                            }
-                                            
-                                            CanTakeKing = true;
-                                            break outerloop;                                            
-                                        }          
-                                    }
-                                }
-                            }                            
-                            break;
-               
-                         case WHITE_BISHOP:
-                         case BLACK_BISHOP:
-
-                            for (dir = 0; dir < 4; dir ++)                      // Loop over all four directions
-                            {
-                                for (i = 1; i < COLS; i++)                      // Loop over all steps in one direction         
-                                {
-                                    switch (dir)
-                                    {
-                                        case 0:                                 // Move NE
-                                            col_n = col + i;           
-                                            row_n = row + i;
-                                            break;
-                                        
-                                        case 1:                                 // Move SE
-                                            col_n = col + i;          
-                                            row_n = row - i;
-                                            break;
-                                        
-                                        case 2:                                 // Move SW
-                                            col_n = col - i;
-                                            row_n = row - i;
-                                            break;
-                                        
-                                        case 3:                                 // Move NW
-                                            col_n = col - i;
-                                            row_n = row + i;
-                                            break;
-                                    }
-                                        
-                                    if (col_n < 1 || col_n > COLS || row_n < 1 || row_n > Position.ROWS || Pos[row_n][col_n]*GetMoveColor(Pos) > 0) // Reached boundry or own figure
-                                        break;
-                                
-                                    if (Chess.DebugLevel > Settings.MEDIUM)
-                                    {
-                                        System.out.println("Checking if Bishop move to col = " + col_n + " row = " + row_n + " could take King");
-                                    } 
-                               
-                                    if ((Pos[row_n][col_n]*GetMoveColor(Pos) == BLACK_KING))   // Could take King
-                                    {              
-                                        if (Chess.DebugLevel > Settings.MEDIUM)
-                                        {
-                                            System.out.println("Bishop could take King");
-                                        }
-                                        
-                                        CanTakeKing = true;
-                                        break outerloop;                                        
-                                    }  
-                                    if (Pos[row_n][col_n]* GetMoveColor(Pos) < 0)         // Took oponent figure away, stop moving in this direction
-                                        break;
-                                    
-                                }
-                            }  
-                            break;
-               
-                        case WHITE_QUEEN:
-                        case BLACK_QUEEN:          
-                            for (dir = 0; dir < 8; dir ++)                      // Loop over all eight directions
-                            {
-                                for (i = 1; i < COLS; i++)                      // Loop over all steps in one direction         
-                                {
-                                    switch (dir)
-                                    {
-                                        case 0:                                 // Move N
-                                            col_n = col;           
-                                            row_n = row + i;
-                                            break;
-                                        
-                                        case 1:                                 // Move NE
-                                            col_n = col + i;          
-                                            row_n = row + i;
-                                            break;
-                                        
-                                        case 2:                                 // Move E
-                                            col_n = col + i;
-                                            row_n = row;
-                                            break;
-                                        
-                                        case 3:                                 // Move SE
-                                            col_n = col + i;
-                                            row_n = row - i;
-                                            break;
-                                        
-                                        case 4:                                 // Move S
-                                            col_n = col;           
-                                            row_n = row - i;
-                                            break;
-                                        
-                                        case 5:                                 // Move SW
-                                            col_n = col - i;          
-                                            row_n = row - i;
-                                            break;
-                                        
-                                        case 6:                                 // Move W
-                                            col_n = col - i;
-                                            row_n = row;
-                                            break;
-                                        
-                                        case 7:                                 // Move NW
-                                            col_n = col - i;
-                                            row_n = row + i;
-                                            break;                                           
-                                    }
-                                        
-                                    if (col_n < 1 || col_n > COLS || row_n < 1 || row_n > Position.ROWS || Pos[row_n][col_n]*GetMoveColor(Pos) > 0) // Reached boundry or own figure
-                                        break;
-                                
-                                    if (Chess.DebugLevel > Settings.MEDIUM)
-                                    {
-                                        System.out.println("Checking Queen move to col = " + col_n + " row = " + row_n + " could take King");
-                                    }
-                                
-                                    if ((Pos[row_n][col_n]*GetMoveColor(Pos) == BLACK_KING))    // Could take King
-                                    {
-                                        if (Chess.DebugLevel > Settings.MEDIUM)
-                                        {
-                                            System.out.println("Quuen could take King");
-                                        }
-                                        
-                                        CanTakeKing = true;
-                                        break outerloop;                                        
-                                    }   
-                                    if (Pos[row_n][col_n]* GetMoveColor(Pos) < 0)         // Took oponent figure away, stop moving in this direction
-                                        break;
-                                    
-                                }
-                            }
-                            break;
-                        
-                        case WHITE_KING:
-                        case BLACK_KING:       
-                            for (i = -1; i < 2 ; i++)
-                            {     
-                                for (j = -1; j < 2 ; j++)
-                                {
-                                    col_n = col + i;
-                                    row_n = row + j;
-                                     
-     
-                                    if ((i != 0 || j != 0) && col_n > 0 && col+i <= COLS && row+j > 0 && row+j <= Position.ROWS && Pos[row + j][col + i]*GetMoveColor(Pos) < 1)
-                                    {
-
-                                        if (Chess.DebugLevel > Settings.MEDIUM)
-                                        {
-                                            System.out.println("Checking if King move to  col = " + col_n + " row = " + row_n + " could take King");
-                                        }
-                                        if ((Pos[row_n][col_n]*GetMoveColor(Pos) == BLACK_KING))    // Could take King
-                                        {   
-                                            if (Chess.DebugLevel > Settings.MEDIUM)
-                                            {
-                                                System.out.println("King could take King");
-                                            }
-                                            
-                                            CanTakeKing = true;
-                                            break outerloop;                                            
-                                        }
-                                    }
-                                }
-                            }    
-                            // No need to check for Castling since casling does not capture an opponent figure
-                            break;
-                    }    
-                }
-            }
-        }
-        
-        if(type == RECEIVING_CHECK)
-        {
-            SwitchMoveColor(Pos);                                               // Switch to opponent move   
-        }
-        
-        return CanTakeKing;
-    }
-    
-    public static boolean Checknew(int[][] Pos, int Type)
+    public static boolean Check(int[][] Pos, int Type)
     {
         int row;
         int col;
@@ -1866,50 +1093,11 @@ public class Position
     public static boolean CanCaptureKingMovingInThisDirection(int[][] Pos, int row, int col, int row_s, int col_s, int row_K, int col_K)
     {
         int i;
-        
-        //System.out.println("row = " + row + " col = " + col + " row_s = " + row_s + " col_s = " + col_s + " row_K = " + row_K + " col_K = " + col_K);
-        
-        
-        /*
+
         for(i = 1; Pos[row + i * row_s][col + i * col_s] == EMPTY; i++)         // Move in this direction until reaching an occupied field
-        {      
-            System.out.println("i = " + i);
-            if(((row + i * row_s) < 1) || ((row + i * row_s) > ROWS) || ((col + i * col_s) < 1) || ((col + i * col_s) > COLS))
-            {
-                System.out.println("row = " + row);
-                System.out.println("row_s = " + row_s);
-                System.out.println("col = " + col);
-                System.out.println("col_s = " + col_s);          
-                System.out.println("i = " + i); 
-                DisplayPosition(Pos);
-            }
-        }
-        System.out.println("i = " + i);
-        i--;
-        System.out.println("i before = " + i); 
-        int figure = Pos[row + i * row_s][col + i * col_s];
-        System.out.println("figire = " + figure);       
-        
-        
-        System.out.println("i = " + i + "row = " + row + " col = " + col + " row_s = " + row_s + " col_s = " + col_s + " row_K = " + row_K + " col_K = " + col_K);   
-        
-        return(((row + i * row_s) == row_K) && ((col + i * col_s) == col_K));   // If occupied field equals king field return true 
-                
-        */
-        
-        for(i = 1; ; i++)         // Move in this direction until reaching an occupied field
         {     
-            if(((row + i * row_s) == row_K) && ((col + i * col_s) == col_K))
-            {
-                return true;
-            }
-            if(Pos[row + i * row_s][col + i * col_s] != EMPTY)
-            {
-                break;
-            }
         } 
-        return false;
-        
+        return(((row + i * row_s) == row_K) && ((col + i * col_s) == col_K));  
     }
     
     public static boolean AnyMovePossible(int[][] Pos)  
@@ -2588,23 +1776,12 @@ public class Position
 
     public static boolean ThreePositionRepetition(int[][] Pos, int[][] MovePath)
     {   
-        if(Move.RepetitivePositions(MovePath) >= Move.NUMBER_REPETIVE_POSITIONS_TO_CAUSE_DRAW)
-        {
-            return true;
-        }
-        return false;
+        return(Move.RepetitivePositions(MovePath) >= Move.NUMBER_REPETIVE_POSITIONS_TO_CAUSE_DRAW);
     }         
 
     public static boolean FiftyMove(int[][] Pos)
     {
-        if(GetNumberOfMovesWithNoPawnMoveOrCapture(Pos) >= NUMBER_OF_MOVES_WITH_NO_PAWN_MOVE_OR_CAPTURE_REQUIRED_TO_DECLARE_DRAW)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return(GetNumberOfMovesWithNoPawnMoveOrCapture(Pos) >= NUMBER_OF_MOVES_WITH_NO_PAWN_MOVE_OR_CAPTURE_REQUIRED_TO_DECLARE_DRAW);
     }
     
     public static boolean OwnFigure(int[][] Pos, int col, int row)
@@ -2749,8 +1926,9 @@ public class Position
         SetBlackLongCastling(Pos, CastlingLocal[2]);
         SetBlackShortCastling(Pos, CastlingLocal[3]);
     }
-    
-    public static int GenerateCandidateMoveList(int[][] Pos, int[][] MoveList, int Type)
+        
+    //public static int GenerateCandidateMoveList(int[][] Pos, int[][] MoveList, int Type)
+    public static int GenerateCandidateMoveList(int[][] Pos, int[][] MoveList)
     {
         int col;
         int col_n = 0;
@@ -2765,29 +1943,29 @@ public class Position
         int Figure_n = 0;
         int[] CastlingList = new int[2];
         int list;
+        int Type = MOVES;
+        
+        switch(Type)
+        {
+            case MOVES:
+                //System.out.println("Type: MOVES");
+                break;
+                
+            case CAPTURE_KING:
+                System.out.println("Type: MOVES");
+                break;
+        }        
          
         for (FieldNo = 0; FieldNo < (ROWS * COLS); FieldNo++)
         {
             col         = (FieldNo % COLS) + 1;
             row         = (FieldNo / ROWS) + 1 ;
             Figure      = Pos[row][col];
-     
-            //System.out.print("Create move list for ");
-            //DisplayFigure(Figure);
-            //DisplayCol(col);
-            //DisplayRow(row);
-            //System.out.println();
             
             if(OwnFigure(Pos, col, row) == false)
             {
                 continue;
             }
-        
-            //System.out.print("Create move list for ");
-            //DisplayFigure(Figure);
-            //DisplayCol(col);
-            //DisplayRow(row);
-            //System.out.println();
                     
             switch(Figure)
             {
@@ -2852,7 +2030,7 @@ public class Position
                         if((col_n >= 1) && (col_n <= COLS) && (OpponentFigure(Pos,col_n, row_n)))
                         {
                             if ((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))                     // Convert Pawn                           
-                            {                                                         // Take away opponent figure
+                            {                                                   // Take away opponent figure
                                 for (i = 0; i < WhitePromotionFigure.length; i++)    // Loop for Queen, Rook, Knight, Bishop
                                 {                                               // .... and convert to new officer
                                     switch(GetMoveColor(Pos))
@@ -3091,8 +2269,6 @@ public class Position
                                    break;
                             }                            
                             
-                            //Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);    
-                            
                             if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop to moving in this direction
                             {
                                 break;
@@ -3169,8 +2345,6 @@ public class Position
                                    break;
                             }                            
                             
-                            //Move.AddMoveToMoveList(MoveList, Figure, col, row,  Pos[row_n][col_n], Figure, col_n, row_n);    
-                            
                             if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop to moving in this direction
                             {
                                 break;
@@ -3181,7 +2355,7 @@ public class Position
                
                 case WHITE_KING:
                 case BLACK_KING:
-                    for (dir = 1; dir <= 8; dir++)                              // Loop over all four directions
+                    for (dir = 1; dir <= 8; dir++)                              // Loop over all eight directions
                     {
                         switch(dir)
                         {

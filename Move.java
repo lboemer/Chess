@@ -717,14 +717,15 @@ public class Move
                 break;
         }                
     } 
-    
-    public static int GenerateMoveList(int[][] Pos, int[][] MovesPosition, int[][] MovePath, boolean CheckForCanTakeKingOnly)
+    //public static int GenerateMoveList(int[][] Pos, int[][] MovesPosition, int[][] MovePath, boolean CheckForCanTakeKingOnly)
+    public static int GenerateMoveList(int[][] Pos, int[][] MovesPosition, int[][] MovePath)
     {
         int l;
         int[][] CandidateMoveList   = new int[MAX_NUMBER_MOVE_LIST][ENTRIES_MOVE_LIST];
         
         EmptyMoveList(CandidateMoveList);  
-        Position.GenerateCandidateMoveList(Pos, CandidateMoveList, Position.MOVES);
+        //Position.GenerateCandidateMoveList(Pos, CandidateMoveList, Position.MOVES);
+        Position.GenerateCandidateMoveList(Pos, CandidateMoveList);
         
         for(l = 0; CandidateMoveList[l][FIGURE] != Position.EMPTY; l++)
         {      
@@ -1280,7 +1281,8 @@ public class Move
         boolean CheckForCanTakeKingOnly = false;
 
         EmptyMoveList(UserMovesPosition);       
-        GenerateMoveList(Pos, UserMovesPosition, MovePath, CheckForCanTakeKingOnly);
+        //GenerateMoveList(Pos, UserMovesPosition, MovePath, CheckForCanTakeKingOnly);
+        GenerateMoveList(Pos, UserMovesPosition, MovePath);
         for(m = 0; UserMovesPosition[m][Move.FIGURE] != Position.EMPTY; m++)
         {
             if((UserMovesPosition[m][COL]       == col)         &&
