@@ -269,12 +269,11 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         int row;
         int col;
         int i;
-        boolean CheckForCanTakeKingOnly = false;
+
         //String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
         
         Scanner scanner             = new Scanner(System.in);
-        
-        
+
         Settings.ClearScreen(Pos);  
         if(!Back)
         {
@@ -294,9 +293,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         scanner.nextLine();          
         
         */
-        
-
-        
+                
         System.out.println(); 
         Move.DisplayMoveList(MovePath, Move.STOP, Chess.Ply, Move.TABLE, Move.SHOW_NO_RATING);                     // Displays MoveHistory
         //System.out.println("in  GetUserMoveFromMouseInput()");
@@ -312,8 +309,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         
         //System.out.println("Generate Movelist in GetUserMoveFromMouseInput()");        
         Move.EmptyMoveList(FillMoveList);
-        //Move.GenerateMoveList(Pos, FillMoveList, FillMoveHistory, CheckForCanTakeKingOnly);     // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
-        Move.GenerateMoveList(Pos, FillMoveList, FillMoveHistory);     // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
+        Move.GenerateMoveList(Pos, FillMoveList, FillMoveHistory);              // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
         //Move.DisplayMoveList(FillMoveList, Move.ALL, 0, Move.LIST, Move.SHOW_NO_RATING); 
 
         do

@@ -403,7 +403,6 @@ public class Chess
         int temp_ep                 = 0;
         int ReturnValue             = 0;      
         int EnPassantStatus         = 0;
-        boolean CheckForCanTakeKingOnly = false;
         int RepetitivePositionsCounterLocal;
         int FiftyMoveCounterLocal;       
         int i;
@@ -419,8 +418,7 @@ public class Chess
         Move.EmptyMoveList(MovesPosition);  
         Move.MoveListIteration  = 1;   
         
-        //Move.GenerateMoveList(Pos, MovesPosition, MovePath, CheckForCanTakeKingOnly);   // Generates all possible moves for one position into MovesPosition
-        Move.GenerateMoveList(Pos, MovesPosition, MovePath);   // Generates all possible moves for one position into MovesPosition
+        Move.GenerateMoveList(Pos, MovesPosition, MovePath);                    // Generates all possible moves for one position into MovesPosition
         Move.SortMoveList(MovesPosition);                                       // Sorts the move list and places best move first
 
         switch(DecisionRule)
