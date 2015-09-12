@@ -64,12 +64,6 @@ public class Move
     // Parameter for adding move to move hostory
     public static final int DO_NOT_ADD_TO_MOVE_HISTORY          = 0;
     public static final int ADD_TO_MOVE_HISTORY                 = 1;   
-    
-    // Return value of GenerateMoveList()
-    public static final int CAN_TAKE_KING                       = -2; 
-    public static final int CAN_NOT_TAKE_OPPONENT_KING          = -1; 
-    public static final int NO_MOVE_ADDED                       = 0;
-    public static final int MOVE_ADDED                          = 1;    
 
     public static int MoveListIteration                         = 0;
     

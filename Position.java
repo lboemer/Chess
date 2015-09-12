@@ -147,15 +147,7 @@ public class Position
     // Parameter for Check()
     public static final int GIVING_CHECK                        = 0;
     public static final int RECEIVING_CHECK                     = 1;    
-    
-    // Parameter for GenerateCandidateMoveList()    
-    public static final int MOVES                               = 0;
-    public static final int CAPTURE_KING                        = 1;    
-    
-    // Return values for GenerateCandidateMoveList() 
-    public static final int CAN_TAKE_KING                       = 0;
-    public static final int CANNOT_TAKE_KING                    = 1;       
-        
+
     public static int       BeginPosition;   
     
     public Position()
@@ -1926,9 +1918,8 @@ public class Position
         SetBlackLongCastling(Pos, CastlingLocal[2]);
         SetBlackShortCastling(Pos, CastlingLocal[3]);
     }
-        
-    //public static int GenerateCandidateMoveList(int[][] Pos, int[][] MoveList, int Type)
-    public static int GenerateCandidateMoveList(int[][] Pos, int[][] MoveList)
+
+    public static void GenerateCandidateMoveList(int[][] Pos, int[][] MoveList)
     {
         int col;
         int col_n = 0;
@@ -1943,19 +1934,7 @@ public class Position
         int Figure_n = 0;
         int[] CastlingList = new int[2];
         int list;
-        int Type = MOVES;
-        
-        switch(Type)
-        {
-            case MOVES:
-                //System.out.println("Type: MOVES");
-                break;
-                
-            case CAPTURE_KING:
-                System.out.println("Type: MOVES");
-                break;
-        }        
-         
+
         for (FieldNo = 0; FieldNo < (ROWS * COLS); FieldNo++)
         {
             col         = (FieldNo % COLS) + 1;
@@ -1981,45 +1960,42 @@ public class Position
                             PawnStep = -1;
                             break;
                     }                
-                
-                    if(Type == MOVES)
+               
+                    col_n = col;                                            // Move Pawn one field forward
+                    row_n = row + PawnStep;      
+                    if (Pos[row_n][col_n] == Position.EMPTY)                                                    
                     {
-                        col_n = col;                                            // Move Pawn one field forward
-                        row_n = row + PawnStep;      
-                        if (Pos[row_n][col_n] == Position.EMPTY)                                                    
-                        {
-                            if ((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))                        
-                            {                                                   // Convert Pawn
-                                for (i = 0; i < WhitePromotionFigure.length; i++)    
-                                {                                               // Loop for Queen, Rook, Knight, Bishop
-                                    switch (GetMoveColor(Pos))
-                                    {
-                                        case WHITE_MOVE:
-                                            Figure_n = WhitePromotionFigure[i];
-                                            break;
+                        if ((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))                        
+                        {                                                   // Convert Pawn
+                            for (i = 0; i < WhitePromotionFigure.length; i++)    
+                            {                                               // Loop for Queen, Rook, Knight, Bishop
+                                switch (GetMoveColor(Pos))
+                                {
+                                    case WHITE_MOVE:
+                                        Figure_n = WhitePromotionFigure[i];
+                                        break;
 
-                                        case BLACK_MOVE:
-                                            Figure_n = BlackPromotionFigure[i];
-                                            break;
-                                        }
-                                        Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure_n, col_n, row_n);                                                               
-                                    }
-                            }
-                            else
-                            {
-                                Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);                            
+                                    case BLACK_MOVE:
+                                        Figure_n = BlackPromotionFigure[i];
+                                        break;
+                                }
+                                Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure_n, col_n, row_n);                                                               
                             }
                         }
-                    
-                        col_n = col;        
-                        row_n = row + 2 * PawnStep;                             // Move two PawnSteps forward
-                        if (((GetMoveColor(Pos) == WHITE_MOVE) && (row == WHITE_PAWN_INITIAL_ROW)) || 
-                            ((GetMoveColor(Pos) == BLACK_MOVE) && (row == BLACK_PAWN_INITIAL_ROW)))
+                        else
                         {
-                            if ((Pos[row+PawnStep][col] == Position.EMPTY) && (Pos[row_n][col] == Position.EMPTY))         
-                            { 
-                                Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);                            
-                            }
+                            Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);                            
+                        }
+                    }
+                    
+                    col_n = col;        
+                    row_n = row + 2 * PawnStep;                             // Move two PawnSteps forward
+                    if (((GetMoveColor(Pos) == WHITE_MOVE) && (row == WHITE_PAWN_INITIAL_ROW)) || 
+                        ((GetMoveColor(Pos) == BLACK_MOVE) && (row == BLACK_PAWN_INITIAL_ROW)))
+                    {
+                        if ((Pos[row+PawnStep][col] == Position.EMPTY) && (Pos[row_n][col] == Position.EMPTY))         
+                        { 
+                            Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);                            
                         }
                     }
                     
@@ -2042,57 +2018,27 @@ public class Position
                                             case BLACK_MOVE:
                                             Figure_n = BlackPromotionFigure[i];
                                             break;
-                                    }                                    
-                                    
-                                    switch(Type)
-                                    {
-                                        case MOVES:
-                                            Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure_n, col_n, row_n);
-                                            break;
-                                            
-                                        case CAPTURE_KING:
-                                            if(OpponentKing(Pos, col_n, row_n))
-                                            {
-                                                return CAN_TAKE_KING;
-                                            }
-                                            break;
-                                    }
+                                    }     
+                                    Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure_n, col_n, row_n);
                                 }
                             }
                             else
                             {
-                                switch(Type)
-                                {
-                                    case MOVES:
-                                        Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);
-                                        break;
-                                        
-                                    case CAPTURE_KING:
-                                        if(OpponentKing(Pos, col_n, row_n))
-                                        {
-                                            return CAN_TAKE_KING;
-                                        }
-                                        break;
-                                }                                               
+
+                                Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);
+                                              
                             }
-                        }
-                            
-                        
-                        if(Type == MOVES)
-                        {
-                            // En passant
-                            if ((((GetMoveColor(Pos) == WHITE_MOVE) && (row == 5)) || ((GetMoveColor(Pos) == BLACK_MOVE) && (row == 4))) && (col_n >= 1) && (col_n <= COLS))
-                            {                                                                                                 
-                                if (col_n == GetColumnPawnMovedTwoRows(Pos))    //Workaround: Compiler ssems to miss this if this is added to line beforE
-                                {
-                                    if(Chess.DebugLevel == Settings.HIGH)
-                                    {
-                                        System.out.println("En Passant");
-                                    }
+                        }   
+
+                        // En passant
+                        if ((((GetMoveColor(Pos) == WHITE_MOVE) && (row == 5)) || ((GetMoveColor(Pos) == BLACK_MOVE) && (row == 4))) && (col_n >= 1) && (col_n <= COLS))
+                        {                                                                                                 
+                            if (col_n == GetColumnPawnMovedTwoRows(Pos))        //Workaround: Compiler ssems to miss this if this is added to line beforE
+                            {
                                     Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);                          
-                                }               
-                            }
+                            }               
                         }
+                        
                     }                   
                     break;
                
@@ -2129,20 +2075,8 @@ public class Position
                             {
                                 break;                                          // Stop moving in this direction, continue with next direction
                             }
-                            
-                            switch(Type)
-                            {
-                                case MOVES:
-                                    Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);
-                                    break;
-                                        
-                                case CAPTURE_KING:
-                                    if(OpponentKing(Pos, col_n, row_n))
-                                    {
-                                        return CAN_TAKE_KING;
-                                    }
-                                   break;
-                            }
+
+                            Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);
                             
                             if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop to moving in this direction
                             {                               
@@ -2203,21 +2137,7 @@ public class Position
                         {
                             continue;                                           // Continue with next direction
                         }
-                        
-                        switch(Type)
-                        {
-                            case MOVES:
-                                Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);
-                                break;
-                                        
-                            case CAPTURE_KING:
-                                if(OpponentKing(Pos, col_n, row_n))
-                                {
-                                    return CAN_TAKE_KING;
-                                }
-                                break;
-                        }
-                        
+                        Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);
                     }
                     break;
                
@@ -2254,21 +2174,7 @@ public class Position
                             {
                                 break;                                          // Stop moving in this direction, continue with next direction
                             }
-                            
-                            switch(Type)
-                            {
-                                case MOVES:
-                                    Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);
-                                    break;
-                                        
-                                case CAPTURE_KING:
-                                    if(OpponentKing(Pos, col_n, row_n))
-                                    {
-                                        return CAN_TAKE_KING;
-                                    }
-                                   break;
-                            }                            
-                            
+                            Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);                            
                             if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop to moving in this direction
                             {
                                 break;
@@ -2330,20 +2236,8 @@ public class Position
                             {
                                 break;
                             }
-                            
-                            switch(Type)
-                            {
-                                case MOVES:
-                                    Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);
-                                    break;
-                                        
-                                case CAPTURE_KING:
-                                    if(OpponentKing(Pos, col_n, row_n))
-                                    {
-                                        return CAN_TAKE_KING;
-                                    }
-                                   break;
-                            }                            
+
+                            Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);
                             
                             if(OpponentFigure(Pos, col_n, row_n))               // Took oponent figure away, stop to moving in this direction
                             {
@@ -2398,64 +2292,43 @@ public class Position
                                 col_n = col + 1;                                // NW
                                 row_n = row + 1;
                                 break;                                     
-                        }
-                                
+                        }       
                         if(OffBoardOrOwnFigure(Pos, col_n, row_n))
                         {
                             continue;                                           // Stop moving in this direction, continue with next direction
                         } 
-                        
-                        switch(Type)
-                        {
-                            case MOVES:
-                                Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);
-                                break;
-                                        
-                            case CAPTURE_KING:
-                                if(OpponentKing(Pos, col_n, row_n))
-                                {
-                                    return CAN_TAKE_KING;
-                                }
-                                break;
-                        }                        
-
+                        Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);                     
                     }
- 
-                    if(Type == MOVES)
+                    list = Move.Castling(Pos, CastlingList);
+                    for (i = 0; i < list; i++)
                     {
-                        list = Move.Castling(Pos, CastlingList);
-                        for (i = 0; i < list; i++)
+                        switch(CastlingList[i])
                         {
-                            switch(CastlingList[i])
-                            {
-                                case Position.LONG_CASTLING:
-                                    col_n           = Position.C;               //For King
-                                    break;
+                            case Position.LONG_CASTLING:
+                                col_n           = Position.C;               //For King
+                                break;
                                         
-                                case Position.SHORT_CASTLING:
-                                    col_n           = Position.G;               //For King
-                                    break;
-                            }
-                                
-                            switch(Position.GetMoveColor(Pos))
-                            {
-                                case Position.WHITE_MOVE:
-                                    row     = Position.WHITE_CASTLING_ROW;
-                                    row_n   = Position.WHITE_CASTLING_ROW;
-                                    break;
-                                        
-                                case Position.BLACK_MOVE:
-                                    row     = Position.BLACK_CASTLING_ROW;
-                                    row_n   = Position.BLACK_CASTLING_ROW;
-                                    break;
-                            }
-                                   
-                            Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);    
+                            case Position.SHORT_CASTLING:
+                                col_n           = Position.G;               //For King
+                                break;
                         }
+                                
+                        switch(Position.GetMoveColor(Pos))
+                        {
+                            case Position.WHITE_MOVE:
+                                row     = Position.WHITE_CASTLING_ROW;
+                                row_n   = Position.WHITE_CASTLING_ROW;
+                                break;
+                                        
+                            case Position.BLACK_MOVE:
+                                row     = Position.BLACK_CASTLING_ROW;
+                                row_n   = Position.BLACK_CASTLING_ROW;
+                                break;
+                        }
+                        Move.AddMoveToMoveList(MoveList, Figure, col, row, Pos[row_n][col_n], Figure, col_n, row_n);    
                     }
                     break;                            
             }
         }
-        return CANNOT_TAKE_KING;
     }              
 }
