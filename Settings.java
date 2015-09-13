@@ -793,7 +793,7 @@ public class Settings
                         break;                          
                 }
             }
-        }while(!Move.UserMoveSuccessful(Pos, col, row, Figure_n, col_p_n, row_p_n, MovePath));            
+        }while(!Move.UserMoveSuccessful(Pos, row, col, Figure_n, row_p_n, col_p_n, MovePath));            
         Settings.ClearScreen(Pos);  
         return '0';
     }

@@ -37,8 +37,8 @@ public class Rating
     
     public static int GetRating1(int[][] Pos, int PositionStatus)               // Rating 1
     {
-        int col;
         int row;
+        int col;
         int FinePawnRating;        
         int Rating                                  = 0;
         
@@ -189,7 +189,7 @@ public class Rating
                             break;
                             
                         case Position.WHITE_PAWN:
-                            Rating += PawnRating(Pos, col, row, OPENING_GAME);
+                            Rating += PawnRating(Pos, row, col, OPENING_GAME);
                             break;
                             
                         case Position.BLACK_KING:
@@ -213,7 +213,7 @@ public class Rating
                             break;
                             
                         case Position.BLACK_PAWN:
-                            Rating -= PawnRating(Pos, col, row, OPENING_GAME);    
+                            Rating -= PawnRating(Pos, row, col, OPENING_GAME);    
                             break;
                     }
             }
@@ -307,7 +307,7 @@ public class Rating
         return Phase;
     }
     
-    public static int PawnRating(int[][] Pos, int col, int row, int GamePhase)
+    public static int PawnRating(int[][] Pos, int row, int col, int GamePhase)
     {
         final int UPPER_FILE_DELTA          = 1;
         final int LOWER_FILE_DELTA          = -1;        
@@ -380,7 +380,7 @@ public class Rating
         
         int PawnValue                       = 0;
         int Rank                            = 0;
-        int File                            = 0;
+        int File;
         int PawnType                        = 0;
         int AdjacentIndex                   = 0;
         
@@ -410,8 +410,8 @@ public class Rating
         }
         
         //System.out.print("Pawn[" + row + "][" + col + "] ");
-        PositionType = PawnPositionType(Pos, col, row);
-        //ShowPawnType(Pos, col, row,  PositionType);
+        PositionType = PawnPositionType(Pos, row, col);
+        //ShowPawnType(Pos, row, col,  PositionType);
         switch(PositionType)
         {  
             case ISOLATED:
@@ -465,16 +465,16 @@ public class Rating
             return PawnValue;                                                   // Finished, no need to count for multiple pawns
         }
    
-        FellowPawnsInFile = NumberOfFellowPawnsInFront(Pos, col, row);          // Identify if 0: Single, 1: Double or 2: Triple or more Pawn
+        FellowPawnsInFile = NumberOfFellowPawnsInFront(Pos, row, col);          // Identify if 0: Single, 1: Double or 2: Triple or more Pawn
         if(FellowPawnsInFile == 0)
         {
             return PawnValue;                                                   // Finished, Single Pawn
         }
         
-        FellowPawnOnAdjacentUpperFile       = PawnOnFile(Pos, col, row, UPPER_FILE_DELTA , FELLOW);
-        FellowPawnOnAdjacentLowerFile       = PawnOnFile(Pos, col, row, LOWER_FILE_DELTA , FELLOW);
-        OpponentPawnOnAdjacentUpperFile     = PawnOnFile(Pos, col, row, UPPER_FILE_DELTA , OPPONENT);
-        OpponentPawnOnAdjacentLowerFile     = PawnOnFile(Pos, col, row, LOWER_FILE_DELTA , OPPONENT);
+        FellowPawnOnAdjacentUpperFile       = PawnOnFile(Pos, row, col, UPPER_FILE_DELTA , FELLOW);
+        FellowPawnOnAdjacentLowerFile       = PawnOnFile(Pos, row, col, LOWER_FILE_DELTA , FELLOW);
+        OpponentPawnOnAdjacentUpperFile     = PawnOnFile(Pos, row, col, UPPER_FILE_DELTA , OPPONENT);
+        OpponentPawnOnAdjacentLowerFile     = PawnOnFile(Pos, row, col, LOWER_FILE_DELTA , OPPONENT);
         
         if(!FellowPawnOnAdjacentUpperFile && !FellowPawnOnAdjacentLowerFile && !OpponentPawnOnAdjacentUpperFile && !OpponentPawnOnAdjacentLowerFile)
         {
@@ -552,7 +552,7 @@ public class Rating
         return PawnValue; 
     }
         
-    public static int PawnPositionType(int[][]Pos, int col, int row)
+    public static int PawnPositionType(int[][]Pos, int row,  int col)
     {
         int col_n;
         int col_step;
@@ -561,8 +561,8 @@ public class Rating
         int row_start       = 0;
         int row_step        = 0;
         
-        int PositionType    = 0;
-        boolean PawnPassed  = true;
+        int PositionType;
+        boolean PawnPassed;
             
         PositionType = ISOLATED;                                                // Default        
                                                                                 // Identify if pawn is ISOLATED, FRONT, BACK, CONNECTED_ONE or CONNECTED_TWO
@@ -668,7 +668,7 @@ public class Rating
         return PositionType;
     }
     
-    public static int NumberOfFellowPawnsInFront(int[][]Pos, int col, int row)
+    public static int NumberOfFellowPawnsInFront(int[][]Pos, int row,  int col)
     {
         int PawnsInFront    = 0;
         int PawnStep        = 0;
@@ -701,7 +701,7 @@ public class Rating
         return PawnsInFront;
     }
     
-    public static boolean PawnOnFile(int[][] Pos, int col, int row, int File, int Type)
+    public static boolean PawnOnFile(int[][] Pos, int row, int col, int File, int Type)
     {
         int row_n;
         int row_start;
@@ -911,7 +911,7 @@ public class Rating
         System.out.println();
     }
     
-    public static void ShowPawnType(int[][]Pos, int col, int row, int Type)
+    public static void ShowPawnType(int[][]Pos, int row, int col, int Type)
     {
         System.out.print("Pawn[" + row + "][" + col + "] is of type: ");
         switch(Type)

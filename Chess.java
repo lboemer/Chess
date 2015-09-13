@@ -117,7 +117,7 @@ public class Chess
         int Iteration_Finished      = 0;
         Start                       = System.currentTimeMillis( );
         char[] ch                   = new char[100];  
-        int[][] Pos                 = new int[Position.COLS+1][Position.ROWS+1];
+        int[][] Pos                 = new int[Position.ROWS + 1][Position.COLS + 1];
         boolean ShowPositionStatus;
         Scanner scanner             = new Scanner(System.in);
         
@@ -178,12 +178,9 @@ public class Chess
             
             Settings.GetUserInput(Pos);
 
-            UserBegin_ms        = 0;
+      
             UserTotal_ms = 0;
-            UserEnd_ms = 0;
-            ComputerBegin_ms = 0;
             ComputerTotal_ms = 0;
-            ComputerEnd_ms =0;           
                           
             do
             {
@@ -356,11 +353,11 @@ public class Chess
                     }
                     
                     Move.MakeMove(Pos,   
-                             MoveBestFinishedIteration[0][Move.COL],                                     
-                             MoveBestFinishedIteration[0][Move.ROW],      
+                             MoveBestFinishedIteration[0][Move.ROW],                                     
+                             MoveBestFinishedIteration[0][Move.COL],      
                              MoveBestFinishedIteration[0][Move.FIGURE_N],      
-                             MoveBestFinishedIteration[0][Move.COL_N],                                     
-                             MoveBestFinishedIteration[0][Move.ROW_N],                     
+                             MoveBestFinishedIteration[0][Move.ROW_N],                                     
+                             MoveBestFinishedIteration[0][Move.COL_N],                     
                              MovePath, Move.ADD_TO_MOVE_HISTORY);                                       
                     
                     Position.SwitchMoveColor(Pos); 
@@ -397,28 +394,30 @@ public class Chess
         int[][] MovesPosition       = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];           // Holds all possible moves for one position
         int[] CastlingLocal         = new int[4];        
         int minmax                  = 0;
-        int RatingScore             = 0;
-        int Figure                  = 0;
+        int RatingScore;
+        int Figure;
         int TempPawn                = 0;
-        int temp_ep                 = 0;
+        int temp_ep;
         int ReturnValue             = 0;      
         int EnPassantStatus         = 0;
         int RepetitivePositionsCounterLocal;
         int FiftyMoveCounterLocal;       
         int i;
         int p;
+        int row;
         int col;
-        int row;                
         int Figure_p; 
         int Figure_n;                 
-        int col_n;
-        int row_n;   
+        int row_n;
+        int col_n;  
+        boolean ReturnOnFirstMovePossible = false;
                 
         Move.EmptyMoveList(MoveRating);    
         Move.EmptyMoveList(MovesPosition);  
         Move.MoveListIteration  = 1;   
         
-        Move.GenerateMoveList(Pos, MovesPosition, MovePath);                    // Generates all possible moves for one position into MovesPosition
+        Position.GenerateMoveList(Pos, MovesPosition, MovePath, ReturnOnFirstMovePossible);                    // Generates all possible moves for one position into MovesPosition
+             
         Move.SortMoveList(MovesPosition);                                       // Sorts the move list and places best move first
 
         switch(DecisionRule)
@@ -489,12 +488,12 @@ public class Chess
                 Display_Move_Counter[Iteration] = 0;  
                 
                 Figure              = MovesPosition[p][Move.FIGURE];                 
-                col                 = MovesPosition[p][Move.COL];
                 row                 = MovesPosition[p][Move.ROW];
+                col                 = MovesPosition[p][Move.COL];
                 Figure_p            = MovesPosition[p][Move.FIGURE_P]; 
                 Figure_n            = MovesPosition[p][Move.FIGURE_N];                 
-                col_n               = MovesPosition[p][Move.COL_N];
-                row_n               = MovesPosition[p][Move.ROW_N];         
+                row_n               = MovesPosition[p][Move.ROW_N];
+                col_n               = MovesPosition[p][Move.COL_N];         
                 
                 if(((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n) && (Figure_p == Position.EMPTY))
                 {
@@ -509,7 +508,7 @@ public class Chess
                 RepetitivePositionsCounterLocal = Position.GetNumberOfRepetitivePositions(Pos);                
                 FiftyMoveCounterLocal       = Position.GetNumberOfMovesWithNoPawnMoveOrCapture(Pos);                
                 
-                Move.MakeMove(Pos, col, row, Figure_n, col_n, row_n, MovePath, Move.DO_NOT_ADD_TO_MOVE_HISTORY);  
+                Move.MakeMove(Pos, row, col, Figure_n, row_n, col_n, MovePath, Move.DO_NOT_ADD_TO_MOVE_HISTORY);  
                 RatingScore = IterateMove(Pos, alpha, beta, MovePath, MoveRating);   
 
                 Position.SwitchMoveColor(Pos);                                  // Switch move color back 

@@ -42,7 +42,6 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
                 PosDrawBuffer[row][col] = Pos[row][col];                        // Copy position into PosDrawBuffer to ensure that the postion at this step in the program is drawn
             }
         }
-
         repaint();                                                              // Draw position from PosDrawBuffer[][]
     }
 
@@ -165,7 +164,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         if(WhitePromotionFigure || BlackPromotionFigure)
         {
             //System.out.println("In paint() WhitePromotionFigure = " + WhitePromotionFigure + "BlackPromotionFigure = " + BlackPromotionFigure);
-            g.setColor(new Color(100,150,100));                                 // Draw background frame for Promotion figures
+            g.setColor(new Color(100, 150, 100));                                 // Draw background frame for Promotion figures
             g.fillRect(
                 X_PROMOTION_FRAME_SQUARE_OFFSET * SQUARE_SIZE + SQUARE_SIZE / 2, 
                 Y_PROMOTION_FRAME_SQUARE_OFFSET * SQUARE_SIZE,                     
@@ -175,7 +174,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
                     
             if(LeftMouseButtonPressed)                                          // Draw background for selected promotion figure
             {
-                g.setColor(new Color(255,100,100));                             // Red
+                g.setColor(new Color(255, 100, 100));                             // Red
                 g.fillRect((col_p - 1) * SQUARE_SIZE, 3 * SQUARE_SIZE + SQUARE_SIZE /2, SQUARE_SIZE, SQUARE_SIZE);  
             }
             
@@ -234,11 +233,11 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         switch(Position.GetMoveColor(PosDrawBuffer) )
         {
             case Position.WHITE_MOVE:
-                Chess.str ="White move";
+                Chess.str = "White move";
                 break;
                 
             case Position.BLACK_MOVE:
-                Chess.str ="Black move";
+                Chess.str = "Black move";
                 break;
         }
         g.drawString(Chess.str, 20, 15 + 8 * SQUARE_SIZE);        
@@ -269,7 +268,8 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         int row;
         int col;
         int i;
-
+        boolean ReturnOnFirstMovePossible = false;
+        
         //String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
         
         Scanner scanner             = new Scanner(System.in);
@@ -308,8 +308,9 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         }        
         
         //System.out.println("Generate Movelist in GetUserMoveFromMouseInput()");        
-        Move.EmptyMoveList(FillMoveList);
-        Move.GenerateMoveList(Pos, FillMoveList, FillMoveHistory);              // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
+        Move.EmptyMoveList(FillMoveList);                                       // paint uses FillMoveList to draw possible move to fields green
+        //Position.GenerateMoveList(Pos, FillMoveList, FillMoveHistory, ReturnOnFirstMovePossible);              // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
+        Position.GenerateMoveList(Pos, FillMoveList, MovePath, ReturnOnFirstMovePossible);              // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
         //Move.DisplayMoveList(FillMoveList, Move.ALL, 0, Move.LIST, Move.SHOW_NO_RATING); 
 
         do
@@ -320,7 +321,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
                System.out.print ("");                                           // Somehow needs to do something to get out of loop ..... accidentially figured this out         
             }while(MouseInputActive);
             //System.out.println("Mouse input finished");        
-        }while(!Move.UserMoveSuccessful(Pos, col_f, row_f, Figure_n, col_n, row_n, MovePath));
+        }while(!Move.UserMoveSuccessful(Pos, row_f, col_f, Figure_n, row_n, col_n, MovePath));
         repaint();                                                              // Draws position from PosDrawBuffer[][]
         Settings.ClearScreen(Pos); 
         return '0';
@@ -353,8 +354,8 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             }            
             else
             {
-                col_f = 0;                                                      // Will result in an invalid move and trigger another mousePressed() event
                 row_f = 0;
+                col_f = 0;                                                      // Will result in an invalid move and trigger another mousePressed() event
                 //System.out.println("col_f = " + col_f + "row_f = " + row_f);
             }
         }
@@ -475,8 +476,8 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             }
             else
             {
-                col_n = 0;                                                      // Will result in an invalid move and trigger anothrt mousePressed() event
                 row_n = 0;                                                      // Will result in an invalid move and trigger anothrt mousePressed() event
+                col_n = 0;                                                      // Will result in an invalid move and trigger anothrt mousePressed() event
                 //System.out.println("col_n = " + col_n + " row_n = " + row_n);
             }
         }
