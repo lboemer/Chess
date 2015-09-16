@@ -1,24 +1,11 @@
 import java.util.*;
-import java.text.*;
- 
 import java.util.Scanner;                                                       // Import Scanner class
-import java.io.*;
-
-/// From frames
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;  //notice javax
-
+import javax.swing.*;                                                           //notice javax
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JFrame;
-import javax.swing.JTextField;
 
-//import javax.swing.*;
-//import java.awt.event.*;
 public class Chess
-
-//public class Chess extends JFrame implements ActionListener
 {
     public static final int MOVE_NOT_POSSIBLE           = 100000;
 
@@ -56,10 +43,6 @@ public class Chess
     public static long      UserTotal_ms;
     public static long      ComputerTotal_ms;
     
-    private static Position myPosition = new Position();
- 
-    //JLabel answer           = new JLabel("");             // create pane object
-    //JPanel pane             = new JPanel();
     JButton pressme         = new JButton("Press Me");
 
     public static String str = "Leo test \n new line";
@@ -68,7 +51,6 @@ public class Chess
     public static UserInterface ui = new UserInterface();
      
     public static Scanner scanner             = new Scanner(System.in);
-        
     
     public static void Info()
     { 
@@ -78,28 +60,9 @@ public class Chess
         System.out.println();
     }
     
-    Chess() // the frame constructor method
+    Chess()
     {
-        //super("Event Handler Demo"); 
-        //setBounds(100,100,300,200);
-        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //Container con = this.getContentPane(); // inherit main frame
-        //con.add(pane); // add the panel to frame
-        // customize panel here
-        // pane.add(someWidget);
-        
-        
-        ///pressme.setMnemonic('P'); // associate hotkey to button
-        //pane.add(pressme); 
-        //pressme.addActionListener(this);   // register button listener
-        ///pane.add(answer); 
-        //pane.add(pressme); 
-        //pressme.requestFocus();
-        
-        //pressme.requestFocus();
-        
-        
-        //setVisible(true); // display this frame
+
     }
    
     public static void main(String[] args)
@@ -123,7 +86,7 @@ public class Chess
         
         char P;
         char Px;
-        int MoveNumber = 0;
+        int MoveNumber;
         
         long UserBegin_ms;
         long UserEnd_ms;
@@ -133,23 +96,11 @@ public class Chess
         float SecondsUsedFloat;
         float RatingFloat;
         
-        
-        //JFrame frame = new JFrame("Leo Java Chess");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        //UserInterface ui = new UserInterface();
         frame.add(ui);
-        
-        
-        //JTextField textField = new JTextField();
-        //textField.addKeyListener(new MyKeyListener());
-        //frame.add(textField);
-        //frame.setSize(Position.COLS * UserInterface.SQUARE_SIZE + 10, Position.ROWS * UserInterface.SQUARE_SIZE + 100);
-        
         
         frame.setSize(Position.COLS * UserInterface.SQUARE_SIZE + 100, Position.ROWS * UserInterface.SQUARE_SIZE + 200);
         frame.setVisible(true);
-        
        
         System.out.println(new Date( ));
         System.out.println();
@@ -164,7 +115,6 @@ public class Chess
         String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
         
 
-        
         do{                                                                     // New Game
             Move.EmptyMoveList(MovePath);
             Move.EmptyMoveList(MoveBest);          
@@ -207,23 +157,21 @@ public class Chess
                                 NewGame = false;
                                 GetNewUserMove = false;
                                 Back = false;
-                                break;  // Leaves switch()
+                                break;                                          // Leaves switch()
                          
                             case '2':            
-                                //Move.RevertMove(Pos, MoveHistory);
                                 Move.RevertMove(Pos, MovePath);                                
                                 ui.repaintWindow(Pos);
                                 
                                 GetNewUserMove = true;
                                 Back = true;
-                                break;  // Leaves switch()       
+                                break;                                          // Leaves switch()       
                             
                             case 'x':
                                 System.out.println("Entered x: Exit program!");
                                 NewGame = true;
                                 GetNewUserMove = false;
                                 Back = false;
-                                //return;
                                 break;
                         }        
                     }while(GetNewUserMove);
@@ -258,8 +206,8 @@ public class Chess
                     }
             
                     System.out.println("\nDepth  Moves   Rating   MoveBest") ;
-                    // Generate Computer move
-                    for(MoveDepth = 1; MoveDepth <= MaxMoveDepth; MoveDepth++)
+                 
+                    for(MoveDepth = 1; MoveDepth <= MaxMoveDepth; MoveDepth++)  // Generate Computer move
                     {
                         alpha = -(Rating.CHECKMATE_RATING + 1);                 // alpha = min, min is smaller than checkmate rating such that a checkmate rating triggers an update of alpha
                         beta  =   Rating.CHECKMATE_RATING + 1;                  // beta = max,  max is larger  than checkmate rating such that a checkmate rating triggers an update of beta
@@ -291,7 +239,7 @@ public class Chess
                             }
                         }
             
-                        if((Total_Move_Counter >= MaxMoves) || (SecondsUsed >= MaxSeconds))  // 
+                        if((Total_Move_Counter >= MaxMoves) || (SecondsUsed >= MaxSeconds))
                         {
                             break;
                         }
@@ -392,26 +340,14 @@ public class Chess
     {    
         int[][] MoveRating          = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds move that the computer is currently analyzing 
         int[][] MovesPosition       = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];           // Holds all possible moves for one position
-        int[] CastlingLocal         = new int[4];        
         int minmax                  = 0;
         int RatingScore;
-        int Figure;
-        int TempPawn                = 0;
-        int temp_ep;
         int ReturnValue             = 0;      
-        int EnPassantStatus         = 0;
-        int RepetitivePositionsCounterLocal;
-        int FiftyMoveCounterLocal;       
-        int i;
         int p;
-        int row;
-        int col;
-        int Figure_p; 
-        int Figure_n;                 
-        int row_n;
-        int col_n;  
         boolean ReturnOnFirstMovePossible = false;
-                
+        
+        int[][] PosStore = new int[Position.ROWS + 1][Position.COLS + 1];
+        
         Move.EmptyMoveList(MoveRating);    
         Move.EmptyMoveList(MovesPosition);  
         Move.MoveListIteration  = 1;   
@@ -450,10 +386,6 @@ public class Chess
         {    
             if(Total_Move_Counter > MaxMoves - 1)
             {
-                if(DebugLevel > Settings.MEDIUM)
-                {
-                    System.out.println("Reached max Moves = " + Total_Move_Counter);
-                }       
                 return MOVE_NOT_POSSIBLE;                  
             }
 
@@ -461,10 +393,6 @@ public class Chess
             SecondsUsed = MilliSecondsUsed / 1000; 
             if(SecondsUsed >= MaxSeconds)
             {
-                if(DebugLevel > Settings.MEDIUM)
-                {
-                    System.out.println("Reached max seconds allowed = " + MaxSeconds);
-                }  
                 return MOVE_NOT_POSSIBLE ;    
             }
             
@@ -473,100 +401,31 @@ public class Chess
             Display_Move_Counter[Iteration] ++;                                 // Increase count of moves in current iteration level      
           
             Move.SetMove(MovesPosition, p, MovePath, Ply + Iteration - 1);      // Adds move p from MovesPosition to MovePath and sets reminder of MovePath to 0  
-    
-            if(ShowStatus > Settings.LOW)
-            {
-                System.out.print("Move " + Total_Move_Counter + "\t Iteration[" + Iteration + "] \t");
-                Move.DisplayMoveList(MovePath, Move.ALL, 0, Move.LINE, Move.SHOW_RATING_LAST_MOVE);
-            }     
             
             if((MovesPosition[p][Move.POSITION_STATUS] == Position.NO_CONDITION) && (Iteration < MoveDepth))   
             {                                                                   // Parentnode, create children  
+                Position.CopyPosition(Pos, PosStore);                           // Store position
+                
                 Position.SwitchMoveColor(Pos);                                  // Switch move color
                 Iteration ++;                                                   // Increase counter for move iteration 
                 Iteration_Move_Counter[Iteration] = 0;                          // Reset counter for move iteration
                 Display_Move_Counter[Iteration] = 0;  
                 
-                Figure              = MovesPosition[p][Move.FIGURE];                 
-                row                 = MovesPosition[p][Move.ROW];
-                col                 = MovesPosition[p][Move.COL];
-                Figure_p            = MovesPosition[p][Move.FIGURE_P]; 
-                Figure_n            = MovesPosition[p][Move.FIGURE_N];                 
-                row_n               = MovesPosition[p][Move.ROW_N];
-                col_n               = MovesPosition[p][Move.COL_N];         
-                
-                if(((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n) && (Figure_p == Position.EMPTY))
-                {
-                    TempPawn = Pos[row][col_n];                                 // Store pawn that got captured en passant
-                }
-               
-                if((Figure == Position.WHITE_ROOK) || (Figure == Position.BLACK_ROOK) || (Figure == Position.WHITE_KING) || (Figure == Position.BLACK_KING))                               
-                {
-                    Position.StoreCastling(CastlingLocal, Pos);                 // Store castling settings
-                }                 
-                temp_ep                     = Position.GetColumnPawnMovedTwoRows(Pos);                          // save previous column where pawn moved two steps in temp_ep
-                RepetitivePositionsCounterLocal = Position.GetNumberOfRepetitivePositions(Pos);                
-                FiftyMoveCounterLocal       = Position.GetNumberOfMovesWithNoPawnMoveOrCapture(Pos);                
-                
-                Move.MakeMove(Pos, row, col, Figure_n, row_n, col_n, MovePath, Move.DO_NOT_ADD_TO_MOVE_HISTORY);  
+                Move.MakeMove(Pos,  MovesPosition[p][Move.ROW],
+                                    MovesPosition[p][Move.COL], 
+                                    MovesPosition[p][Move.FIGURE_N], 
+                                    MovesPosition[p][Move.ROW_N], 
+                                    MovesPosition[p][Move.COL_N], 
+                                    MovePath, 
+                                    Move.DO_NOT_ADD_TO_MOVE_HISTORY);  
                 RatingScore = IterateMove(Pos, alpha, beta, MovePath, MoveRating);   
 
-                Position.SwitchMoveColor(Pos);                                  // Switch move color back 
                 Iteration--;                                                    // Decrease counter for move iteration
                 Iteration_Move_Counter[Iteration + 1] = 0;                      // Not sure if required
                 Display_Move_Counter[Iteration + 1] = 0;                        // Not sure if required
 
-                // Revert Move
-                Pos[row][col]       = Figure;
-                Pos[row_n][col_n]   = Figure_p;
-                
-                if(EnPassantStatus == Position.EN_PASSANT)
-                {
-                    Pos[row][col_n] = TempPawn;
-                }
-   
-                if((Figure == Position.WHITE_KING) && (col == Position.E))
-                {
-                    switch(col_n)
-                    {
-                        case Position.C:                                        // 0-0
-                            Pos[Position.WHITE_CASTLING_ROW][Position.A] = Position.WHITE_ROOK;
-                            Pos[Position.WHITE_CASTLING_ROW][Position.D] = Position.EMPTY;
-                            break;
-                        
-                        case Position.G:                                        // 0-0-O
-                            Pos[Position.WHITE_CASTLING_ROW][Position.H] = Position.WHITE_ROOK;
-                            Pos[Position.WHITE_CASTLING_ROW][Position.F] = Position.EMPTY;
-                            break;
-                    }
-                }
-                
-                if((Figure == Position.BLACK_KING) && (col == Position.E))
-                {
-                    switch(col_n)
-                    {
-                        case Position.C:                                        // 0-0
-                            Pos[Position.BLACK_CASTLING_ROW][Position.A] = Position.BLACK_ROOK;
-                            Pos[Position.BLACK_CASTLING_ROW][Position.D] = Position.EMPTY;
-                            break;
-                        
-                        case Position.G:                                        // 0-0-0
-                            Pos[Position.BLACK_CASTLING_ROW][Position.H] = Position.BLACK_ROOK;
-                            Pos[Position.BLACK_CASTLING_ROW][Position.F] = Position.EMPTY;
-                            break;
-                    }
-                }  
-                        
-                // Restore position settings
-                Position.SetColumnPawnMovedTwoRows(Pos, temp_ep);               // Restore column where pawn moved two steps in temp_ep
-                
-                if((Figure == Position.WHITE_ROOK) || (Figure == Position.BLACK_ROOK) || (Figure == Position.WHITE_KING) || (Figure == Position.BLACK_KING))                               
-                {
-                    Position.RestoreCastling(CastlingLocal, Pos);
-                }            
-                Position.SetNumberOfRepetitivePositions(Pos, RepetitivePositionsCounterLocal);                        
-                Position.SetNumberOfMovesWithNoPawnMoveOrCapture(Pos, FiftyMoveCounterLocal);
-                
+                Position.CopyPosition(PosStore, Pos);                           // Restore position          
+            
             }
             else                                                                // Child node
             {

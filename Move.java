@@ -641,7 +641,6 @@ public class Move
     
     public static void DisplayCheckStatus(int Check, int Mate)
     {      
-        //System.out.println("Check =" + Check + " Mate =" + Mate );    
         if(Check == Position.CHECK)             
         {
             System.out.print("+");    
@@ -709,154 +708,11 @@ public class Move
         }                
     } 
 
-    public static int GenerateMoveListOld(int[][] Pos, int[][] MovesPosition, int[][] MovePath)
-    {
-        int l;
-        int[][] CandidateMoveList   = new int[MAX_NUMBER_MOVE_LIST][ENTRIES_MOVE_LIST];
-        
-        EmptyMoveList(CandidateMoveList);  
-
-        Position.GenerateCandidateMoveList(Pos, CandidateMoveList);
-        
-        for(l = 0; CandidateMoveList[l][FIGURE] != Position.EMPTY; l++)
-        {      
-            IfNoReceivingCheckAddMoveToMoveList(
-                Pos, 
-                CandidateMoveList[l][ROW],
-                CandidateMoveList[l][COL],
-                CandidateMoveList[l][FIGURE_N],
-                CandidateMoveList[l][ROW_N],
-                CandidateMoveList[l][COL_N],
-                MovesPosition,
-                MovePath);
-        }
-        return 0;
-    } 
-    
-    public static void IfNoReceivingCheckAddMoveToMoveList(int[][] Pos, int row, int col, int Figure_n, int row_n, int col_n, int[][] MovesPosition, int[][] MovePath)
-    {
-        boolean Status;
-        int EnPassantStatus;
-        int Figure;
-        int Figure_p;   
-        int TempPawn = 0;
-        int MoveNumber;
-        int i;
-        int temp_ep;
-        int[] CastlingLocal         = new int[4];    
-        int RepetitivePositionCounterLocal;
-        int FiftyMoveCounterLocal;
-        
-        Figure_p            = Pos[row_n][col_n];
-        Figure              = Pos[row][col];  
-
-        if(((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n) && (Figure_p == Position.EMPTY))
-        {
-            TempPawn = Pos[row][col_n];
-            EnPassantStatus = Position.EN_PASSANT;
-        }
-        else
-        {
-            EnPassantStatus = Position.NO_EN_PASSANT; 
-        }        
-
-
-        if((Figure == Position.WHITE_ROOK) || (Figure == Position.BLACK_ROOK) || (Figure == Position.WHITE_KING) || (Figure == Position.BLACK_KING))                               
-        {
-            Position.StoreCastling(CastlingLocal, Pos);
-        }                        
-        temp_ep = Position.GetColumnPawnMovedTwoRows(Pos);                      // save previous column where pawn moved two steps in temp_ep
-        RepetitivePositionCounterLocal = Position.GetNumberOfRepetitivePositions(Pos);
-        FiftyMoveCounterLocal = Position.GetNumberOfMovesWithNoPawnMoveOrCapture(Pos);
-        
-        //System.out.println("In IfNoReceivingCheckAddMoveToMoveList() calling MakeMove()");
-        
-        MakeMove(Pos, row, col, Figure_n, row_n, col_n, MovePath, DO_NOT_ADD_TO_MOVE_HISTORY);     // Creates new position which needs to be investigated if own king can be captured 
-        
-        if(!Position.Check(Pos, Position.RECEIVING_CHECK))                                                  // Check for receiving check
-        {                                                                                                   // No receiving check, add move to MovesPosition
-            for(MoveNumber = 0; MovesPosition[MoveNumber][FIGURE] != Position.EMPTY; MoveNumber++)          // Go to next available Move
-            {
-                //  System.out.println("Checking MoveList entry " + MoveNumber);
-            }
-            MovesPosition[MoveNumber][FIGURE]                = Figure;
-            MovesPosition[MoveNumber][ROW]                   = row;
-            MovesPosition[MoveNumber][COL]                   = col;
-            MovesPosition[MoveNumber][FIGURE_P]              = Figure_p;       
-            MovesPosition[MoveNumber][FIGURE_N]              = Figure_n;
-            MovesPosition[MoveNumber][ROW_N]                 = row_n;
-            MovesPosition[MoveNumber][COL_N]                 = col_n;
-            MovesPosition[MoveNumber][EN_PASSANT_STATUS]     = EnPassantStatus;                                                             // Needed to display e.p. as part of move          
-            MovesPosition[MoveNumber][POSITION_STATUS]       = Position.GetPositionStatus(Pos, MovePath);                                   // Needed to diplay checkmate of draw as part of move 
-            MovesPosition[MoveNumber][CHECK_STATUS]          = Position.GetCheckStatus(Pos, MovesPosition[MoveNumber][POSITION_STATUS]);    // Needed to display check as part of move
-            MovesPosition[MoveNumber][RATING]                = Rating.GetRating(Pos, MovesPosition[MoveNumber][POSITION_STATUS]);           // Needed to display rating as part of move
-        }
-
-        // revert move
-        Pos[row][col]       = Figure;
-        Pos[row_n][col_n]   = Figure_p;
-        
-        if(EnPassantStatus == Position.EN_PASSANT)
-        {
-            Pos[row][col_n] = TempPawn;
-        }
-        
-        if((Figure == Position.WHITE_KING) && (col == Position.E))
-        {
-            switch(col_n)
-            {
-                case Position.C:
-                    //System.out.println("0-0");
-                    Pos[Position.WHITE_CASTLING_ROW][Position.A] = Position.WHITE_ROOK;
-                    Pos[Position.WHITE_CASTLING_ROW][Position.D] = Position.EMPTY;
-                    break;
-                        
-                case Position.G:
-                    //System.out.println("0-0-O");
-                    Pos[Position.WHITE_CASTLING_ROW][Position.H] = Position.WHITE_ROOK;
-                    Pos[Position.WHITE_CASTLING_ROW][Position.F] = Position.EMPTY;
-                    break;
-            }
-        }
-        
-        if((Figure == Position.BLACK_KING) && (col == Position.E))
-        {
-            switch(col_n)
-            {
-                case Position.C:
-                    //System.out.println("0-0");
-                    Pos[Position.BLACK_CASTLING_ROW][Position.A] = Position.BLACK_ROOK;
-                    Pos[Position.BLACK_CASTLING_ROW][Position.D] = Position.EMPTY;
-                    break;
-                        
-                case Position.G:
-                    //System.out.println("0-0-O");
-                    Pos[Position.BLACK_CASTLING_ROW][Position.H] = Position.BLACK_ROOK;
-                    Pos[Position.BLACK_CASTLING_ROW][Position.F] = Position.EMPTY;
-                    break;
-            }
-        }        
-  
-        Position.SetColumnPawnMovedTwoRows(Pos, temp_ep);                       // Restore column where pawn moved two steps in temp_ep
-                
-        if((Figure == Position.WHITE_ROOK) || (Figure == Position.BLACK_ROOK) || (Figure == Position.WHITE_KING) || (Figure == Position.BLACK_KING))                               
-        {
-            Position.RestoreCastling(CastlingLocal, Pos);
-        }
-        Position.SetNumberOfRepetitivePositions(Pos, RepetitivePositionCounterLocal);        
-        Position.SetNumberOfMovesWithNoPawnMoveOrCapture(Pos, FiftyMoveCounterLocal);
-    }
-    
     public static void AddMoveToMoveList(int[][] MoveList, int Figure, int row, int col, int Figure_p, int Figure_n, int col_n, int row_n)
     {
-        int l;
+        int l = IndexOfLastMove(MoveList) + 1;
         int i;
         
-        //System.out.println("AddMoveToMoveList");
-        for(l = 0; MoveList[l][FIGURE] != Position.EMPTY; l++)
-        {
-          //  System.out.println("Checking MoveList entry " + MoveNumber);
-        }
         MoveList[l][FIGURE]     = Figure;
         MoveList[l][ROW]        = row;
         MoveList[l][COL]        = col;
@@ -864,20 +720,13 @@ public class Move
         MoveList[l][FIGURE_N]   = Figure_n;
         MoveList[l][ROW_N]      = row_n;
         MoveList[l][COL_N]      = col_n;
-        //System.out.print("Added Move " + MoveNumber);          
-        //System.out.println("\t Rating = " + MoveList[l][RATING]);         
     }
     
     public static void AddMove(int[][] Move, int m, int[][] List)
     {
-        int l;
+        int l = IndexOfLastMove(Move) + 1;
         int i;
-        
-        for(l = 0; List[l][FIGURE] != Position.EMPTY; l++)
-        {
-          //  System.out.println("Move to end of list");
-        }
-        
+
         for(i = 0; i < ENTRIES_MOVE_LIST; i++)
         {
             Move[l][i] = List[m][i];
@@ -891,7 +740,6 @@ public class Move
         for(i = 0; i < ENTRIES_MOVE_LIST; i++)
         {
             MovePath[l][i] = Move[m][i];
-            //System.out.println("l =" + l + "Copy " + List[l][i]);
         }
        
         for(l++; l < MovePath.length; l++)                                      // Sets remainder of MovePath to 0
@@ -912,21 +760,7 @@ public class Move
             MovePath[p][i] = 0;
         }
     }
-        
-    public static boolean IdenticalMove(int[][] MoveList, int a, int b)
-    {
-        int e;
-        
-        for(e = 0; e < ENTRIES_MOVE_LIST; e++)      
-        {
-            if(MoveList[a][e] != MoveList[b][e])
-            {
-                return false;
-            }
-        }
-        return true;
-    }   
-      
+
     public static int IndexOfLastMove(int[][] MovePath)
     {
         int i;
@@ -942,11 +776,6 @@ public class Move
     {
         int RepetitivePositionCounter; 
         int p = IndexOfLastMove(MovePath);                                                                                                                                         
-    
-              
-        //System.out.println("In RepetitivePositions ... before DisplayMoveList()");
-        //DisplayMoveList(MovePath,  ALL, 0, TABLE, SHOW_NO_RATING);
-        //System.out.println("In RepetitivePositions ... after DisplayMoveList()");
 
         for(RepetitivePositionCounter = 1; ((RepetitivePositionCounter < NUMBER_REPETIVE_POSITIONS_TO_CAUSE_DRAW) && ((RepetitivePositionCounter * PLYS_PER_REPETITIVE_MOVE) + 1 <= p)); RepetitivePositionCounter++)
         {
@@ -989,10 +818,7 @@ public class Move
     {
         int list = 0;
         int row = 0;
-        
-        //System.out.println("Enter Castling ...");
-        //Position.DisplayPosition(Pos);
-       
+
         switch(Position.GetMoveColor(Pos))
         {
             case Position.WHITE_MOVE:
@@ -1019,9 +845,6 @@ public class Move
             (Pos[Position.BLACK_CASTLING_ROW][Position.D]   == Position.EMPTY)                      && 
             (Pos[Position.BLACK_CASTLING_ROW][Position.E]   == Position.BLACK_KING)))                    
         {                                                                       //Long Castling
-
-            //System.out.println("Message from King: Neither King nor Rook has moved before and fields between King and Rook are Position.EMPTY for Long Castling.");
-            //System.out.println("Checking now if King is under check or if King would travel over a fields that is under check for Long Castling.");
             if(CastlingFieldsCheckFree(Pos, Position.LONG_CASTLING))
             {
                 CastlingList[list++] = Position.LONG_CASTLING;
@@ -1041,18 +864,11 @@ public class Move
             (Pos[Position.BLACK_CASTLING_ROW][Position.G]   == Position.EMPTY)                      && 
             (Pos[Position.BLACK_CASTLING_ROW][Position.H]   == Position.BLACK_ROOK)))
         {                                                                       //Short Castling 
-            //System.out.println("Message from King: Neither King nor Rook has moved before and fields between King and Rook are Position.EMPTY for Short Castling.");
-            //System.out.println("Checking now if King is under check or if King would travel over a fields that is under check for Short Castling.");
-
             if(CastlingFieldsCheckFree(Pos, Position.SHORT_CASTLING))
             {
                 CastlingList[list++] = Position.SHORT_CASTLING;
             }
         }
-        //System.out.println("Castling List lenght =" + CastlingList.length);
-        //System.out.println("list =" + list);
-        //System.out.println("Leaving Castling ...");
-        //Position.DisplayPosition(Pos);        
         return(list);
     }
         
@@ -1118,9 +934,9 @@ public class Move
         int BlackLongCastlingPreviousPosition           = 0;
         int BlackShortCastlingPreviousPosition          = 0;
         int ColumnPawnMovedTwoStepsPreviousPosition     = 0;
-        int RepetitivePositionCounterPreviousPosition       = 0;
+        int RepetitivePositionCounterPreviousPosition   = 0;
         int FifyMoveCounterPreviousPosition             = 0;
-        
+       
         if(AddMoveToHistory == ADD_TO_MOVE_HISTORY)                             // Save postion status information from the previous position before move is made to local variables
         {                                                                       // The position status information from the previous position is used to reconstruct the previoosu position if moves are going backwards             
             WhiteLongCastlingPreviousPosition                       = Position.GetWhiteLongCastling(Pos);
@@ -1233,10 +1049,6 @@ public class Move
         
         if(AddMoveToHistory == ADD_TO_MOVE_HISTORY)
         {
-            //for(m = 0; MovePath[m][FIGURE] != Position.EMPTY; m++)              // Go to next available Move
-           // {
-            //}
-
             m = Chess.Ply;
             MovePath[m][Move.FIGURE]                    = Figure;                 
             MovePath[m][Move.ROW]                       = row;
@@ -1256,7 +1068,6 @@ public class Move
             MovePath[m][RATING]                         = Rating.GetRating(Pos, MovePath[m][POSITION_STATUS]);  
             MovePath[m][REPETITIVE_POSITION_COUNTER]    = RepetitivePositionCounterPreviousPosition;
             MovePath[m][FIFTY_MOVE_COUNTER]             = FifyMoveCounterPreviousPosition;
-                        
             Chess.Ply++;
         }
         Position.SetNumberOfRepetitivePositions(Pos, RepetitivePositions(MovePath)); //    
@@ -1284,7 +1095,7 @@ public class Move
             }   
         }
         System.out.println("Incorrect user Move.");
-        System.out.println("row = " + row + " col = " + col + "Figure_n = " + Figure_n + " row_n = " + row_n + " col_n = " + col_n);
+        //System.out.println("row = " + row + " col = " + col + "Figure_n = " + Figure_n + " row_n = " + row_n + " col_n = " + col_n);
         return false;
     }  
     
@@ -1341,7 +1152,7 @@ public class Move
     
     public static void RevertMove(int[][] Pos, int[][] MovePath)
     {
-        int m;
+        int m = IndexOfLastMove(MovePath);
         int e;
         int Figure;
         int row;
@@ -1349,11 +1160,7 @@ public class Move
         int Figure_p;
         int row_n;
         int col_n;
-        
-        for(m = 0; MovePath[m][FIGURE] != Position.EMPTY; m++)                  // Go to last nove
-        {
-        }
-        m--;
+
         if(m == -1)                                                             // No move 
         {
             return;

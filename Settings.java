@@ -36,8 +36,6 @@ public class Settings
     public static final int NO_HEADER                   = 0;
     public static final int HEADER                      = 1;
     
-    //public static Runtime getRuntime;
-        
     public static void Settings(int[][] Pos)
     {
         ShowPosition(HEADER);
@@ -197,7 +195,7 @@ public class Settings
        
     public static void UserSetPosition(int[][] Pos)
     {  
-        boolean InputValid = false;
+        boolean InputValid;
         String inputString;
         Scanner scanner             = new Scanner(System.in);
         int UserInput;
@@ -293,7 +291,6 @@ public class Settings
     public static void UserSetMaxMoves(int[][] Pos)
     {            
         boolean InputValid = false;
-        char[] ch                   = new char[100];  
         String inputString;
         Scanner scanner             = new Scanner(System.in);
         do
@@ -304,7 +301,6 @@ public class Settings
             System.out.print("Integer\t ");
             
             inputString = scanner.nextLine();     
-            ch[0] = inputString.charAt(0);   
 
             try 
             {
@@ -319,11 +315,10 @@ public class Settings
                 System.out.println("MaxMoves is set to " + Chess.MaxMoves);
                 System.out.println("ABSOLUTE_MOVES is" + ABSOLUTE_MAX_MOVES);
                 System.out.println("Please lower MaxMoves");
-                continue;
             }
             else
             {
-                InputValid = true;;
+                InputValid = true;
             }
         }
         while(!InputValid);
@@ -332,9 +327,8 @@ public class Settings
     public static void UserSetMaxMoveDepth(int[][] Pos)
     {
         int i;
-        boolean InputValid = false;;
+        boolean InputValid = false;
         int number;
-        char[] ch                   = new char[100];  
         String inputString;
         Scanner scanner             = new Scanner(System.in);
         do
@@ -346,8 +340,6 @@ public class Settings
 
             inputString = scanner.nextLine();     
             
-            ch[0] = inputString.charAt(0);   
-
             try 
             {
                 Chess.MaxMoveDepth = Integer.parseInt(inputString);
@@ -363,11 +355,10 @@ public class Settings
                 ShowMaxMoveDepth(HEADER);
                 System.out.println("ABSOLUTE_MAX_MOVES_DEPTH is = " + ABSOLUTE_MAX_MOVE_DEPTH);
                 System.out.println("Please lower MaxMoveDepth");
-                continue;
             }
             else
             {
-                InputValid = true;;
+                InputValid = true;
             }
         }
         while(!InputValid);    
@@ -378,7 +369,6 @@ public class Settings
         int i;
         boolean InputValid = false;
         int number;
-        char[] ch                   = new char[100];  
         String inputString;
         Scanner scanner             = new Scanner(System.in);
         do
@@ -390,8 +380,6 @@ public class Settings
             
             inputString = scanner.nextLine();     
         
-            ch[0] = inputString.charAt(0);   
-
             try 
             {
                 Chess.MaxSeconds = Integer.parseInt(inputString);
@@ -405,13 +393,11 @@ public class Settings
             {
                 System.out.println("ABSOLUTE_MAX_SECONDS is = " + ABSOLUTE_MAX_SECONDS);
                 System.out.println("0 < Max Computer Seconds < " + ABSOLUTE_MAX_SECONDS);
-                continue;
             }
             else
             {
                 InputValid = true;
             }            
-
         }
         while(!InputValid);   
     }
@@ -419,7 +405,7 @@ public class Settings
     public static void UserSetDecisionRule(int[][] Pos)
     {      
         boolean InputValid = false;
-        char ch = 0;
+        char ch;
         String inputString;
         Scanner scanner             = new Scanner(System.in);
         
@@ -432,8 +418,7 @@ public class Settings
             System.out.println("2 \t Alpha Beta Pruning");
             
             inputString = scanner.nextLine();      
-            ch = inputString.charAt(0);   
-            switch(ch)
+            switch(inputString.charAt(0))   
             {
                 case '1':
                     Chess.DecisionRule = MINMAX;
@@ -451,7 +436,7 @@ public class Settings
     
     public static void UserSetMoveColor(int[][] Pos)
     {
-        char ch = 0;
+        char ch;
         boolean InputValid = false;
         String inputString;
         Scanner scanner             = new Scanner(System.in);
@@ -465,8 +450,7 @@ public class Settings
             System.out.println("2 \t Black move");
             
             inputString = scanner.nextLine();     
-            ch = inputString.charAt(0);   
-            switch(ch)
+            switch(inputString.charAt(0))   
             {
                 case '1':
                     Position.SetMoveColor(Pos, Position.WHITE_MOVE); 
@@ -487,7 +471,7 @@ public class Settings
     
     public static void UserSetPlayMode(int[][] Pos)
     {
-        char ch = 0;
+        char ch;
         boolean InputValid = false;
         String inputString;
         Scanner scanner             = new Scanner(System.in);
@@ -502,8 +486,7 @@ public class Settings
             System.out.println("3 \t Computer against computer" );
             
             inputString = scanner.nextLine();     
-            ch = inputString.charAt(0);   
-            switch(ch)
+            switch(inputString.charAt(0)) 
             {
                 case '1':
                     Chess.PlayMode = PLAYER_PLAYER;
@@ -526,7 +509,7 @@ public class Settings
     
     public static void UserSetFirstMove(int[][] Pos)
     {
-        char ch = 0;
+        char ch;
         boolean InputValid = false;
         String inputString;
         Scanner scanner             = new Scanner(System.in);
@@ -539,8 +522,7 @@ public class Settings
             System.out.println("2 \t Computer to make first move");
             
             inputString = scanner.nextLine();     
-            ch = inputString.charAt(0);   
-            switch(ch)
+            switch(inputString.charAt(0)) 
             {
                 case '1':
                     Chess.FirstMove = PLAYER;

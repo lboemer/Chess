@@ -303,13 +303,11 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             for(col = 0; col <= Position.COLS; col++)        
             {
                 PosDrawBuffer[row][col] = Pos[row][col];
-                //System.out.println(Pos[row][col]);
             }
         }        
         
         //System.out.println("Generate Movelist in GetUserMoveFromMouseInput()");        
         Move.EmptyMoveList(FillMoveList);                                       // paint uses FillMoveList to draw possible move to fields green
-        //Position.GenerateMoveList(Pos, FillMoveList, FillMoveHistory, ReturnOnFirstMovePossible);              // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
         Position.GenerateMoveList(Pos, FillMoveList, MovePath, ReturnOnFirstMovePossible);              // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
         //Move.DisplayMoveList(FillMoveList, Move.ALL, 0, Move.LIST, Move.SHOW_NO_RATING); 
 
