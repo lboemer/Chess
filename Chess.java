@@ -64,7 +64,7 @@ public class Chess
     {
 
     }
-   
+    
     public static void main(String[] args)
     {
         int col;
@@ -114,7 +114,6 @@ public class Chess
         
         String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
         
-
         do{                                                                     // New Game
             Move.EmptyMoveList(MovePath);
             Move.EmptyMoveList(MoveBest);          
@@ -142,10 +141,10 @@ public class Chess
                 {
                     do
                     {
-                        switch(ui.GetUserMoveFromMouseInput(Pos, MovePath, MoveBestFinishedIteration, Back))
+                        switch(ui.GetUserMoveFromMouseInput(Pos, MovePath, MoveTable, MoveBestFinishedIteration, Back))
                         {
                             case '0':                                           // User made a valid move
-                                Move.DisplayMoveList(MovePath, Move.STOP, Ply, Move.TABLE, Move.SHOW_NO_RATING);  
+                                Move.DisplayMoveTable(MovePath, Move.STOP, Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);  
                                 Position.SwitchMoveColor(Pos);                  // Switch move color
                                 ui.repaintWindow(Pos); 
                                 NewGame = false;
@@ -261,7 +260,7 @@ public class Chess
                         {
                             System.out.format("   %+.3f   ", RatingFloat);   
                         }
-                        Move.DisplayMoveList(MoveBest, Move.ALL, 0, Move.LINE, Move.SHOW_NO_RATING);                                        
+                        Move.DisplayMoveTable(MoveBest, Move.ALL, Ply, MoveTable, Move.LINE, Move.SHOW_NO_RATING);   
 
                         if((LocalRating == Rating.CHECKMATE_RATING) || (LocalRating == -Rating.CHECKMATE_RATING))
                         {
@@ -347,6 +346,8 @@ public class Chess
         boolean ReturnOnFirstMovePossible = false;
         
         int[][] PosStore = new int[Position.ROWS + 1][Position.COLS + 1];
+        String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
+        
         
         Move.EmptyMoveList(MoveRating);    
         Move.EmptyMoveList(MovesPosition);  
@@ -450,7 +451,7 @@ public class Chess
                         {                        
                             System.out.print("Iteration[" + Iteration + "] \t New Minmax = " + minmax + "\t");                        
                             System.out.print("MoveBestUpper[" + Iteration +"] ");
-                            Move.DisplayMoveList(MoveBestUpper, Move.ALL, 0, Move.LINE, Move.SHOW_RATING_LAST_MOVE);     
+                            Move.DisplayMoveTable(MoveBestUpper, Move.ALL, Ply, MoveTable, Move.LINE, Move.SHOW_RATING_LAST_MOVE);   
                         }
                     }                                           
                     break;

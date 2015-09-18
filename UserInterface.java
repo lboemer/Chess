@@ -263,40 +263,20 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
        
     }
 
-    public int GetUserMoveFromMouseInput(int[][] Pos, int[][] MovePath, int[][] MoveBest, boolean Back)
+    public int GetUserMoveFromMouseInput(int[][] Pos, int[][] MovePath, String[] MoveTable, int[][] MoveBest, boolean Back)
     {
         int row;
         int col;
         int i;
         boolean ReturnOnFirstMovePossible = false;
-        
-        //String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
-        
-        Scanner scanner             = new Scanner(System.in);
 
         Settings.ClearScreen(Pos);  
         if(!Back)
         {
-            Move.DisplayMoveList(MoveBest, Move.ALL, 0, Move.LINE, Move.SHOW_RATING_LAST_MOVE);              // Displays MoveBest
+            Move.DisplayMoveTable(MoveBest, Move.ALL, Chess.Ply, MoveTable, Move.LINE, Move.SHOW_RATING_LAST_MOVE);              // Displays MoveBest
         }
-        
-        /*
-        System.out.println("Ply in GetUserMoveFromMouseInput = " + Chess.Ply);
-        System.out.println("In GetUserMoveFromMouseInput going to careyt move table");    
-        scanner.nextLine();  
-                            
-        Move.CreateMoveTable(MovePath, Move.STOP, Chess.Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);  
-        System.out.println("In GetUserMoveFromMouseInput .. Created move table");          
-        scanner.nextLine();        
-        Move.DisplayMoveTableConsole(MoveTable);
-        System.out.println("In GetUserMoveFromMouseInput .. Displayed move table");                          
-        scanner.nextLine();          
-        
-        */
-                
         System.out.println(); 
-        Move.DisplayMoveList(MovePath, Move.STOP, Chess.Ply, Move.TABLE, Move.SHOW_NO_RATING);                     // Displays MoveHistory
-        //System.out.println("in  GetUserMoveFromMouseInput()");
+        Move.DisplayMoveTable(MovePath, Move.STOP, Chess.Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);                     // Displays MoveHistory
         
         for(row = 0; row <= Position.ROWS; row++)                               // Copies Pos[][] into PosDrawBuffer[][]
         {  
@@ -305,12 +285,8 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
                 PosDrawBuffer[row][col] = Pos[row][col];
             }
         }        
-        
-        //System.out.println("Generate Movelist in GetUserMoveFromMouseInput()");        
         Move.EmptyMoveList(FillMoveList);                                       // paint uses FillMoveList to draw possible move to fields green
         Position.GenerateMoveList(Pos, FillMoveList, MovePath, ReturnOnFirstMovePossible);              // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
-        //Move.DisplayMoveList(FillMoveList, Move.ALL, 0, Move.LIST, Move.SHOW_NO_RATING); 
-
         do
         {
             MouseInputActive = true;                                            // Get mouse input

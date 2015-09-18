@@ -1580,7 +1580,7 @@ public class Position
                 case BLACK_ROOK:
                     for(dir = 1; dir <= 4; dir++)                              // Loop over all four directions
                     {
-                        for(i = 1; i < COLS; i++)                              // Loop over all PawnSteps in one direction         
+                        for(i = 1; i < COLS; i++)                              // Loop over all PawnSteps in one direction   
                         {
                             switch(dir)
                             {
@@ -1604,6 +1604,8 @@ public class Position
                                     row_n = row;
                                     break;
                             } 
+                            
+                            
                          
                             if(OffBoardOrOwnFigure(Pos, row_n, col_n))
                             {
@@ -1614,6 +1616,7 @@ public class Position
                             {
                                 return true;
                             }
+                            
                             if(OpponentFigure(Pos, row_n, col_n))               // Took oponent figure away, stop to moving in this direction
                             {                               
                                 break;

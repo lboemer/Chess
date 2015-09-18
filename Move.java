@@ -98,243 +98,156 @@ public class Move
         }
     }
 
-    public static void CreateMoveTable(int[][] MovePath, int BoundryType, int BoundryValue, String[] MoveTable, int ListFormat, int RatingFormat)    
-    {                                                                           //Write move from MoveList[][] as string into MoveTable[] wich is a global list of strings
+    public static void DisplayMoveTable(int[][] MovePath, int BoundryType, int BoundryValue, String[] MoveTable, int ListFormat, int RatingFormat)    
+    {                                                                           //Write move from MovePath[][] as string into MoveTable[]
         int l;
         int begin   = 0;
         int end     = 0;
         int t;
         String str;
-        
-        for(t = 0; t  < MAX_NUMBER_MOVE_LIST; t++)
+        int MoveStart = 0;
+ 
+        for(t = 0; t  < MoveTable.length; t++)
         {
             MoveTable[t] = "0";
         }
         
         switch(BoundryType)
         {
+            case ALL: 
+                begin       = 0;
+                end         = IndexOfLastMove(MovePath) + 1;
+                MoveStart   = BoundryValue;
+                break;
+            
             case START:
-                begin = BoundryValue - 1;
-                for(end = BoundryValue - 1; MovePath[end][FIGURE] != Position.EMPTY; end++)     
-                {
-                }
+                begin       = BoundryValue - 1;
+                end         = IndexOfLastMove(MovePath);
+                MoveStart   = 0;
                 break;
                 
             case STOP:
-                begin = 0;
-                end = BoundryValue;
+                begin       = 0;
+                end         = BoundryValue;
+                MoveStart   = 0;
                 break;       
         }        
-        
-        for(l = begin; l <= end; l++)     
+        //System.out.println("begin = " + begin + "end = " + end);
+        for(l = begin; l < end; l++)     
         {
-            
             if(Position.GetFigureColor(MovePath[0][FIGURE]) == Position.WHITE_FIGURE)
             {                                                                   // White move is first move
                 switch(ListFormat)
                 {
                     case LINE:
                         t = 0;
-                        break;
-                        
-                    case TABLE:
-                        t = 1 + (l / 2);
-                        break;
-                }
-                
-                if((l % 2) == 0)
-                {
-                    switch(ListFormat)
-                    {
-                        case LINE:
+                        if((l % 2) == 0)
+                        {
                             if (l  == 0)
                             {
-                                MoveTable[t] = String.format("%2d. ", (l / 2) + 1);
+                                //System.out.println("White Move LINE MoveStart = " + MoveStart);
+                                MoveTable[t] = String.format("%2d. ", (MoveStart + 1)/2 + 1);
                             }
                             else
                             {
-                                str = String.format("%2d. ", (l / 2) + 1);
+                                
+                                //System.out.println("White Move LINE l = " + l);
+                                str = String.format("%2d. ", (MoveStart + 1) / 2 + 1 + (l / 2));
                                 MoveTable[t] = MoveTable[t].concat(str);
                             }
-                            break;
-                            
-                        case TABLE:
+                        }
+                        break;
+                        
+                    case TABLE:
+                        t = l / 2;
+                        if((l % 2) == 0)
+                        {
                             MoveTable[t] = String.format("%2d. ", (l / 2) + 1);
-                            break;
-                    }
-                }    
-                else
-                {                                                               // Black is first move
-                    switch(ListFormat)
-                    {
-                        case LINE:
-                            t = 0;
-                            break;
-                        
-                        case TABLE:
-                            t = 1 + (l / 2);
-                            break;
-                    }                    
-                    
-                    if(l == 0)
-                    {
-                        MoveTable[t] = String.format("1. ...     ");
-                    }
-                    
-                    if((l % 2) == 1)
-                    {     
-                        str = String.format("%2d. ", (l+1) / 2 + 1);
-                        MoveTable[t] = MoveTable[t].concat(str);            
-                    }     
-                }
-
-                if(((MovePath[l][FIGURE] == Position.WHITE_KING) || (MovePath[l][FIGURE] == Position.BLACK_KING)) && 
-                    (MovePath[l][COL] == Position.E) && 
-                    ((MovePath[l][COL_N] == Position.C) || (MovePath[l][COL_N] == Position.G)))
-                {
-                    switch(MovePath[l][COL_N])
-                    {
-                        case Position.C:
-                            MoveTable[t] = MoveTable[t].concat(" 0-0-0");                    
-                            break;
-                        
-                        case Position.G:
-                            MoveTable[t] = MoveTable[t].concat("   0-0");                                       
-                            break;
-                    }
-                }                
-                else
-                {            
-                    DisplayFigureTable(             MoveTable, t, MovePath[l][FIGURE]);
-                    DisplayColTable(                MoveTable, t, MovePath[l][COL]);
-                    DisplayRowTable(                MoveTable, t, MovePath[l][ROW]);
-                    DisplayMoveTypeTable(           MoveTable, t, MovePath[l][FIGURE], MovePath[l][FIGURE_P], MovePath[l][COL], MovePath[l][COL_N]);
-                    DisplayColTable(                MoveTable, t, MovePath[l][COL_N]);
-                    DisplayRowTable(                MoveTable, t, MovePath[l][ROW_N]);  
-                    if((MovePath[l][FIGURE] == Position.WHITE_PAWN) && (MovePath[l][ROW_N] == Position.WHITE_PAWN_PROMOTION_ROW) ||
-                        (MovePath[l][FIGURE] == Position.BLACK_PAWN) && (MovePath[l][ROW_N] == Position.BLACK_PAWN_PROMOTION_ROW))
-                    {
-                        DisplayFigureTable(         MoveTable, t, MovePath[l][FIGURE_N]);
-                    }
-                    DisplayEnPassantStatusTable(    MoveTable, t, MovePath[l][EN_PASSANT_STATUS]);                 // .... replace with pawn query....     
-                    DisplayCheckStatusTable(        MoveTable, t, MovePath[l][CHECK_STATUS], MovePath[l][POSITION_STATUS]);              
-                    DisplayPositionStatusTable(     MoveTable, t, MovePath[l][POSITION_STATUS]);  
-                    DisplayRatingTable(             MoveTable, t, MovePath, l, MovePath[l][RATING], RatingFormat);
+                        }
+                        break;
                 }
             }
+            else
+            {                                                               // Black is first move
+                switch(ListFormat)
+                {
+                    case LINE:
+                        t = 0;
+                        if(l == 0)
+                        {
+                            //MoveTable[t] = String.format(" 1.   ...   ");
+                            MoveTable[t] = String.format("%2d.   ...   ", (MoveStart + 1) / 2);
+                        }
+                        if((l % 2) == 1)
+                        {     
+                            str = String.format("%2d. ", ((MoveStart + 1) / 2) + (l+1) / 2);
+                            MoveTable[t] = MoveTable[t].concat(str);  
+                        }
+                        break;
+
+                    case TABLE:
+                        t = (l + 1) / 2;
+                        
+                        if(l == 0)
+                        {
+                            MoveTable[t] = String.format(" 1.   ...   ");
+                        }
+
+                        if((l % 2) == 1)
+                        {     
+                            MoveTable[t] = String.format("%2d. ", (l + 1) / 2 + 1); 
+                        }
+                        break;
+                }                    
+            }
+
+            if(((MovePath[l][FIGURE] == Position.WHITE_KING) || (MovePath[l][FIGURE] == Position.BLACK_KING)) && 
+                (MovePath[l][COL] == Position.E) && 
+                ((MovePath[l][COL_N] == Position.C) || (MovePath[l][COL_N] == Position.G)))
+            {
+                switch(MovePath[l][COL_N])
+                {
+                    case Position.C:
+                        MoveTable[t] = MoveTable[t].concat(" 0-0-0");                    
+                        break;
+
+                    case Position.G:
+                        MoveTable[t] = MoveTable[t].concat("   0-0");                                       
+                        break;
+                }
+            }                
+            else
+            {            
+                DisplayFigureTable(             MoveTable, t, MovePath[l][FIGURE]);
+                DisplayColTable(                MoveTable, t, MovePath[l][COL]);
+                DisplayRowTable(                MoveTable, t, MovePath[l][ROW]);
+                DisplayMoveTypeTable(           MoveTable, t, MovePath[l][FIGURE], MovePath[l][FIGURE_P], MovePath[l][COL], MovePath[l][COL_N]);
+                DisplayColTable(                MoveTable, t, MovePath[l][COL_N]);
+                DisplayRowTable(                MoveTable, t, MovePath[l][ROW_N]);  
+                if((MovePath[l][FIGURE] == Position.WHITE_PAWN) && (MovePath[l][ROW_N] == Position.WHITE_PAWN_PROMOTION_ROW) ||
+                    (MovePath[l][FIGURE] == Position.BLACK_PAWN) && (MovePath[l][ROW_N] == Position.BLACK_PAWN_PROMOTION_ROW))
+                {
+                    DisplayFigureTable(         MoveTable, t, MovePath[l][FIGURE_N]);
+                }
+                DisplayEnPassantStatusTable(    MoveTable, t, MovePath[l][EN_PASSANT_STATUS]);                 // .... replace with pawn query....     
+                DisplayCheckStatusTable(        MoveTable, t, MovePath[l][CHECK_STATUS], MovePath[l][POSITION_STATUS]);              
+                DisplayPositionStatusTable(     MoveTable, t, MovePath[l][POSITION_STATUS]);  
+                DisplayRatingTable(             MoveTable, t, MovePath, l, MovePath[l][RATING], RatingFormat);
+            }
         } 
+        DisplayMoveTableConsole(MoveTable);
     }
     
-    public static void DisplayMoveTableConsole(String[] MoveTable)              //Display MoveTable[] wich is a global list of strings to console
+    public static void DisplayMoveTableConsole(String[] MoveTable)              //Display MoveTable[] wich is a list of strings to console
     {
         int t;  
-        Scanner scanner             = new Scanner(System.in);
-        
-        System.out.println("In DisplayMoveTabelConsole..befinning");
-        
+     
         for(t = 0; MoveTable[t] != "0"; t++)
-        {
-            System.out.println("t = " + t);
+        {      
             System.out.println(MoveTable[t]);
         }
-        System.out.println("In DisplayMoveTabelConsole...end"); 
-        scanner.nextLine();  
     }
-    
-    public static void DisplayMoveList(int[][] MoveList, int BoundryType, int BoundryValue, int ListFormat, int RatingFormat)  
-    {                                                                           //Display DisplayMoveLis[][] to console    ................... replace with MoveTable later
-        int l;
-        int i = 0;
-        int j;
-        int begin = 0;
-        int end   = 0;
-
-        switch(BoundryType)
-        {
-            case ALL: 
-                begin   = 0;
-                end     = IndexOfLastMove(MoveList);
-                break;
-    
-            case START:
-                begin   = BoundryValue - 1;
-                end     = IndexOfLastMove(MoveList);
-                
-            case STOP:
-                begin   = 0;
-                end     = BoundryValue - 1;
-                break;       
-        }        
-        
-        for(l = begin; l <= end; l++)           
-        {
-            switch(ListFormat)
-            {
-                case LIST:  
-                    System.out.format("%2d. ", l + 1);
-                    DisplayMove(MoveList, l, RatingFormat); 
-                    System.out.println();
-                    break;
    
-                case LINE:
-                case TABLE:
-                    i = l + 1;
-                    if(Position.GetFigureColor(MoveList[0][FIGURE]) == Position.WHITE_FIGURE)
-                    {   // White move is first move
-                        if((i % 2) == 1)
-                        {
-                            System.out.format("%2d. ", i/2 +1);
-                        }
-                    }    
-                    else
-                    {   // Black is first move
-                        if(i == 1)
-                        {
-                            System.out.print   (" 1. ...     "); 
-                        }
-                        if((i % 2) == 0)
-                        {
-                            System.out.format("%2d. ", i/2 +1);                    
-                        }                          
-                    }
-                    
-                    DisplayMove(MoveList, l, RatingFormat);               
-                    System.out.print    (" ");
-
-                    if(((Position.GetFigureColor(MoveList[0][FIGURE]) == Position.WHITE_FIGURE) && ((i % 2) == 0)) ||
-                       ((Position.GetFigureColor(MoveList[0][FIGURE]) == Position.BLACK_FIGURE) && ((i % 2) == 1)))
-                    {
-                        switch (ListFormat)
-                        {
-                            case LINE:                           
-                                System.out.print(" ");
-                                
-                                break;
-                                
-                            case TABLE:
-                                System.out.println();
-                                break;
-                        }                        
-                    }
-                    break;
-            }      
-        }
-         
-        switch(ListFormat)
-        {     
-            case LINE:
-                System.out.println();                                    
-                break;            
-            case TABLE: 
-                if(((Position.GetFigureColor(MoveList[0][FIGURE]) == Position.WHITE_FIGURE) && ((i % 2) == 1)) ||
-                   ((Position.GetFigureColor(MoveList[0][FIGURE]) == Position.BLACK_FIGURE) && ((i % 2) == 0)))        
-                {
-                    System.out.println();                                    
-                    break;
-                }
-        }     
-    }     
-    
     public static void DisplayFigureTable(String[] MoveTable, int t, int figure)
     {
         switch(figure)
@@ -381,7 +294,7 @@ public class Move
                 break;
                 
             case Position.B:
-                MoveTable[t] = MoveTable[t].concat("b ");                
+                MoveTable[t] = MoveTable[t].concat("b");                
                 break;        
                 
             case Position.C:
@@ -397,7 +310,7 @@ public class Move
                 break;
                 
             case Position. F:
-                MoveTable[t] = MoveTable[t].concat("f ");                
+                MoveTable[t] = MoveTable[t].concat("f");                
                 break;      
                 
             case Position.G:
@@ -508,206 +421,7 @@ public class Move
                 break;
         }                
     } 
-     
-    public static void DisplayMove(int[][] MoveList, int l, int RatingFormat)
-    {
-        if(((MoveList[l][FIGURE] == Position.WHITE_KING) || (MoveList[l][FIGURE] == Position.BLACK_KING)) && 
-            (MoveList[l][COL] == Position.E) && 
-            ((MoveList[l][COL_N] == Position.C) || (MoveList[l][COL_N] == Position.G)))
-        {
-            switch(MoveList[l][COL_N])
-            {
-                case Position.C:
-                    System.out.print(" 0-0-0");
-                    break;
-                        
-                case Position.G:
-                    System.out.print("   0-0");
-                    break;
-            }
-        }                
-        else
-        {
-            DisplayFigure(          MoveList[l][FIGURE]);
-            DisplayCol(             MoveList[l][COL]);
-            DisplayRow(             MoveList[l][ROW]);
-            DisplayMoveType(        MoveList[l][FIGURE], MoveList[l][FIGURE_P], MoveList[l][COL], MoveList[l][COL_N]);
-            DisplayCol(             MoveList[l][COL_N]);
-            DisplayRow(             MoveList[l][ROW_N]);  
-            if((MoveList[l][FIGURE] == Position.WHITE_PAWN) && (MoveList[l][ROW_N] == Position.WHITE_PAWN_PROMOTION_ROW) ||
-                (MoveList[l][FIGURE] == Position.BLACK_PAWN) && (MoveList[l][ROW_N] == Position.BLACK_PAWN_PROMOTION_ROW))
-            {
-                DisplayFigure(      MoveList[l][FIGURE_N]);
-            }
-            DisplayEnPassantStatus( MoveList[l][EN_PASSANT_STATUS]);
-        }
-        DisplayCheckStatus(     MoveList[l][CHECK_STATUS], MoveList[l][POSITION_STATUS]);              
-        DisplayPositionStatus(  MoveList[l][POSITION_STATUS]);  
-        DisplayRating(          MoveList, l, MoveList[l][RATING], RatingFormat);
-    }
-        
-    public static void DisplayFigure(int figure)
-    {
-        switch(figure)
-        {
-            case Position.WHITE_PAWN:
-            case Position.BLACK_PAWN:
-                System.out.print(" ");
-                break;
-                        
-            case Position.WHITE_ROOK:
-            case Position.BLACK_ROOK:   
-                System.out.print("R");
-                break;                        
-                                              
-            case Position.WHITE_KNIGHT:
-            case Position.BLACK_KNIGHT:
-                System.out.print("N");
-                break;
-                                              
-            case Position.WHITE_BISHOP:
-            case Position.BLACK_BISHOP:  
-                System.out.print("B");
-                break;
-                                              
-            case Position.WHITE_QUEEN:
-            case Position.BLACK_QUEEN:  
-                System.out.print("Q");
-                break;
-                     
-            case Position.WHITE_KING:
-            case Position.BLACK_KING:   
-                System.out.print("K");
-                break;          
-        }
-    }
-        
-    public static void DisplayCol(int col)
-    {
-        switch (col)
-        {
-            case Position.A:
-                System.out.print("a");
-                break;
-            case Position.B:
-                System.out.print("b");
-                break;                
-            case Position.C:
-                System.out.print("c");
-                break;
-            case Position.D:
-                System.out.print("d");
-                break;        
-            case Position.E:
-                System.out.print("e");
-                break;
-            case Position. F:
-                System.out.print("f");
-                break;                
-            case Position.G:
-                System.out.print("g");
-                break;
-            case Position.H:
-                System.out.print("h");
-                break;     
-        }
-    }
-    
-    public static void DisplayRow(int row)
-    {
-        System.out.print(row);
-    }
-    
-    public static void DisplayMoveType(int Figure, int Figure_p, int col, int col_n)
-    {      
-            if((Figure_p != Position.EMPTY) ||                                  // Took opponent figure away
-            (((Figure_p == Position.EMPTY) && ((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n))))
-        {
-            System.out.print("x");    
-        }
-        else
-        {
-            System.out.print("-");
-        }
-    }
-        
-    public static void DisplayEnPassantStatus(int EnPassant)
-    {      
-        if(EnPassant == Position.EN_PASSANT)             
-        {
-            System.out.print("e.p.");    
-        }
-    }
-    
-    public static void DisplayCheckStatus(int Check, int Mate)
-    {      
-        if(Check == Position.CHECK)             
-        {
-            System.out.print("+");    
-        }
-        else
-        {
-            if(Mate != Position.CHECKMATE)
-            {
-                System.out.print(" ");
-            }
-        }
-    }
-    
-    public static void DisplayPositionStatus(int PositionStatus)
-    {      
-        switch(PositionStatus)
-        {
-            case Position.NO_CONDITION:
-                break;
-                
-            case Position.CHECKMATE:
-                System.out.print("#"); 
-                break;
-
-           case Position.STALEMATE:   
-                System.out.print(" 1/2-1/2 (Stalemate)");
-                break;
-                
-           case Position.INSUFFICIENT_MATERIAL:   
-                System.out.print(" 1/2-1/2 (Insufficient material)");
-                break; 
-                
-           case Position.THREE_POSITION_REPETITION:
-                System.out.print(" 1/2-1/2 (Three position repeat)");
-                break;
-                
-           case Position.FIFTY_MOVE:
-                System.out.print(" 1/2-1/2 (Fifty move rule)");
-                break;                
-        }
-    }
-        
-    public static void DisplayRating(int[][] MoveList, int l, int Rating, int RatingFormat)
-    {      
-        float RatingFloat;
-        
-        RatingFloat = Rating;
-        RatingFloat /= 100;
-
-        switch(RatingFormat)
-        {
-            case SHOW_NO_RATING:
-                break;
-                        
-            case SHOW_RATING_LAST_MOVE:
-                if(MoveList[l+1][FIGURE] == Position.EMPTY)
-                {
-                    System.out.format(" Rating = %.2f", RatingFloat);                       
-                }
-                break;
-                        
-            case SHOW_RATING_EVERY_MOVE: 
-                System.out.format(" Rating = %.2f", RatingFloat);
-                break;
-        }                
-    } 
-
+ 
     public static void AddMoveToMoveList(int[][] MoveList, int Figure, int row, int col, int Figure_p, int Figure_n, int col_n, int row_n)
     {
         int l = IndexOfLastMove(MoveList) + 1;
@@ -1081,7 +795,7 @@ public class Move
 
         EmptyMoveList(UserMovesPosition);       
         Position.GenerateMoveList(Pos, UserMovesPosition, MovePath, ReturnOnFirstMovePossible);
-        Move.DisplayMoveList(UserMovesPosition, Move.ALL, 0, Move.LIST, Move.SHOW_NO_RATING); 
+        //Move.DisplayMoveList(UserMovesPosition, Move.ALL, 0, Move.LIST, Move.SHOW_NO_RATING); 
         for(m = 0; UserMovesPosition[m][Move.FIGURE] != Position.EMPTY; m++)
         {
             if((UserMovesPosition[m][ROW]       == row)         &&

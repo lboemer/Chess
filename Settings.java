@@ -109,7 +109,7 @@ public class Settings
         do{
             ClearScreen(Pos);
                                 
-            Move.DisplayMoveList(MoveHistory, Move.ALL, 0, Move.TABLE, Move.SHOW_NO_RATING);
+            //Move.DisplayMoveList(MoveHistory, Move.ALL, 0, Move.TABLE, Move.SHOW_NO_RATING);
             
             System.out.println();
             System.out.println("Enter");
@@ -551,6 +551,8 @@ public class Settings
         char PromotionFigure;
         int Figure_n = 0;
         int h;     
+        String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
+        
 
         do
         {                   
@@ -558,12 +560,14 @@ public class Settings
             
             if(!Back)
             {
-                Move.DisplayMoveList(MoveBest, Move.ALL, 0, Move.LINE, Move.SHOW_RATING_LAST_MOVE); 
+                //Move.DisplayMoveList(MoveBest, Move.ALL, 0, Move.LINE, Move.SHOW_RATING_LAST_MOVE); 
+                Move.DisplayMoveTable(MoveBest, Move.ALL, 0, MoveTable, Move.LINE, Move.SHOW_RATING_LAST_MOVE); 
             }
             
             System.out.println();
 
-            Move.DisplayMoveList(MovePath, Move.ALL, 0, Move.TABLE, Move.SHOW_NO_RATING);
+            //Move.DisplayMoveList(MovePath, Move.ALL, 0, Move.TABLE, Move.SHOW_NO_RATING);
+            Move.DisplayMoveTable(MovePath, Move.ALL, 0, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);
             
             System.out.print("\nEnter \t ");
            
