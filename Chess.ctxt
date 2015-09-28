@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.params=
+comment0.target=void\ Info()
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=Pos\ alpha\ beta\ MovePath\ MoveBestUpper
+comment2.target=int\ Iterate(int[][],\ int,\ int,\ int[][],\ int[][])
+comment3.params=Pos
+comment3.target=boolean\ SetBoard(int[][])
+numComments=4

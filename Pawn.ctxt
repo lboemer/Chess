@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.params=Pos\ row\ col\ GamePhase
+comment0.target=int\ Rating(int[][],\ int,\ int,\ int)
+comment1.params=Pos\ row\ col
+comment1.target=int\ PawnPositionType(int[][],\ int,\ int)
+comment2.params=Pos\ row\ col
+comment2.target=int\ NumberOfFellowPawnsInFront(int[][],\ int,\ int)
+comment3.params=Pos\ row\ col\ File\ Type
+comment3.target=boolean\ PawnOnFile(int[][],\ int,\ int,\ int,\ int)
+comment4.params=Pos\ row\ col\ Type
+comment4.target=void\ ShowPawnType(int[][],\ int,\ int,\ int)
+numComments=5

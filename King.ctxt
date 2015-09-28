@@ -1,0 +1,4 @@
+#BlueJ class context
+comment0.params=Pos\ row\ col\ GamePhase
+comment0.target=int\ Rating(int[][],\ int,\ int,\ int)
+numComments=1

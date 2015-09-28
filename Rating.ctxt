@@ -1,0 +1,24 @@
+#BlueJ class context
+comment0.params=Pos\ PositionStatus
+comment0.target=int\ Rating(int[][],\ int)
+comment1.params=Pos
+comment1.target=int\ GamePhase(int[][])
+comment10.params=Phase
+comment10.target=void\ ShowGamePhase(int)
+comment2.params=Pos
+comment2.target=int\ PositionType(int[][])
+comment3.params=Pos
+comment3.target=int\ CenterPawnsBlocked(int[][])
+comment4.params=Pos\ col
+comment4.target=boolean\ BlockedPawn(int[][],\ int)
+comment5.params=Pos
+comment5.target=int\ CenterPawnExchanges(int[][])
+comment6.params=Pos
+comment6.target=int\ PawnExchanges(int[][])
+comment7.params=Pos
+comment7.target=int\ CenterPawns(int[][])
+comment8.params=Pos\ col
+comment8.target=int\ FileType(int[][],\ int)
+comment9.params=Type
+comment9.target=void\ ShowPositionType(int)
+numComments=11

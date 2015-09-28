@@ -1,0 +1,15 @@
+8  BR  BN  BB  BQ  BK  BB  BN  BR
+7  BP  BP  BP  BP  BP  BP  BP  BP
+6  --  --  --  --  --  --  --  --
+5  --  --  --  --  --  --  --  --
+4  --  --  --  --  --  --  --  --
+3  --  --  --  --  --  --  --  --
+2  WP  WP  WP  WP  WP  WP  WP  WP
+1  WR  WN  WB  WQ  WK  WB  WN  WR
+   a   b   c   d   e   f   g   h 
+WHITE_MOVE
+0
+WRA1_AND_WKE1_DID_NOT_MOVE
+WRH1_AND_WKE1_DID_NOT_MOVE
+BRA8_AND_BKE8_DID_NOT_MOVE
+BRH8_AND_BKE8_DID_NOT_MOVE

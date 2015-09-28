@@ -4,6 +4,16 @@ import javax.swing.*;                                                           
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JFrame;
+import java.util.Hashtable;
+
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.io.*;
+import java.util.Scanner;
+import javax.swing.JTextArea;
+
 
 public class Chess
 {
@@ -43,29 +53,26 @@ public class Chess
     public static long      UserTotal_ms;
     public static long      ComputerTotal_ms;
     
-    JButton pressme         = new JButton("Press Me");
+    public static HashMap<String, Integer> PositionCache = new HashMap<String, Integer>();
+    
+    JButton pressme          = new JButton("Press Me");
 
     public static String str = "Leo test \n new line";
     
-    public static JFrame frame = new JFrame("Leo Java Chess");
+    public static JFrame frame     = new JFrame("Leo Java Chess");
+ 
     public static UserInterface ui = new UserInterface();
      
-    public static Scanner scanner             = new Scanner(System.in);
+    public static Scanner scanner   = new Scanner(System.in);
     
     public static void Info()
     { 
-        System.out.println("Chess Program by Leopold Boemer");
-        System.out.println("Version V6.6");
-        System.out.println("Date 2015-04-21");        
+        System.out.println("Chess Program by Fabian Boemer and Leopold Boemer");
+        System.out.println("Date 2015-09-27");        
         System.out.println();
     }
     
-    Chess()
-    {
-
-    }
-    
-    public static void main(String[] args)
+    public static void main(String[] args) throws FileNotFoundException
     {
         int col;
         int i;
@@ -81,6 +88,21 @@ public class Chess
         Start                       = System.currentTimeMillis( );
         char[] ch                   = new char[100];  
         int[][] Pos                 = new int[Position.ROWS + 1][Position.COLS + 1];
+        // ==========
+        Scanner user_input = new Scanner(System.in);
+        JFrame window = new JFrame("Move History");
+        String all = new Scanner(new File("textExample.txt")).useDelimiter("\\A").next(); 
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        final JTextArea textArea = new JTextArea(10, 20);
+        JScrollPane scroll = new JScrollPane(textArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        textArea.setText(all);
+        textArea.setLineWrap(false);
+        textArea.setWrapStyleWord(true);
+        window.add(scroll);
+        window.setSize(200, 500);
+        window.setVisible(true);
+        window.setLocationRelativeTo(null);
+        // ==========
         boolean ShowPositionStatus;
         Scanner scanner             = new Scanner(System.in);
         
@@ -115,19 +137,14 @@ public class Chess
         String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
         
         do{                                                                     // New Game
-            Move.EmptyMoveList(MovePath);
-            Move.EmptyMoveList(MoveBest);          
-            Move.EmptyMoveList(MoveBestFinishedIteration);            
-            
+            Move.EmptyList(MovePath);
+            Move.EmptyList(MoveBest);          
+            Move.EmptyList(MoveBestFinishedIteration);            
             Ply = 0;
             Iteration_Move_Counter[0] = 1;
             MoveNumber        = 0;
-      
-            Settings.InitiateSettings(Pos);
-            
+            Settings.Initiate(Pos);
             Settings.GetUserInput(Pos);
-
-      
             UserTotal_ms = 0;
             ComputerTotal_ms = 0;
                           
@@ -144,7 +161,7 @@ public class Chess
                         switch(ui.GetUserMoveFromMouseInput(Pos, MovePath, MoveTable, MoveBestFinishedIteration, Back))
                         {
                             case '0':                                           // User made a valid move
-                                Move.DisplayMoveTable(MovePath, Move.STOP, Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);  
+                                Move.Display(MovePath, Move.STOP, Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);  
                                 Position.SwitchMoveColor(Pos);                  // Switch move color
                                 ui.repaintWindow(Pos); 
                                 NewGame = false;
@@ -159,7 +176,7 @@ public class Chess
                                 break;                                          // Leaves switch()
                          
                             case '2':            
-                                Move.RevertMove(Pos, MovePath);                                
+                                Move.Revert(Pos, MovePath);                                
                                 ui.repaintWindow(Pos);
                                 
                                 GetNewUserMove = true;
@@ -180,7 +197,7 @@ public class Chess
                         break;                                                  // Leaves do loop to start new game
                     }
 
-                    if(Position.EndPosition(Pos, MovePath, ShowPositionStatus))
+                    if(Position.End(Pos, MovePath))
                     {
                         System.out.println("After user move: Game ended!");
                         break;
@@ -196,7 +213,6 @@ public class Chess
                 {                                                               // Computer to make move
                     Start = System.currentTimeMillis( );
                     Total_Move_Counter = 0;
-        
                     Iteration = 1;
             
                     for(i = 0; i < MaxMoveDepth; i++)
@@ -218,7 +234,7 @@ public class Chess
                             System.out.print("\n");
                         }
 
-                        LocalRating = IterateMove(Pos, alpha, beta, MovePath, MoveBest);                       
+                        LocalRating = Iterate(Pos, alpha, beta, MovePath, MoveBest);                       
                         
                         if(ShowStatus > Settings.LOW)
                         {
@@ -243,9 +259,8 @@ public class Chess
                             break;
                         }
   
-                        Move.CopyMoveList(MoveBest, 0, MoveBestFinishedIteration);                              
-                        
-                        
+                        Move.CopyList(MoveBest, 0, MoveBestFinishedIteration);                              
+                                              
                         System.out.print(MoveDepth);                            // Only show finished MoveDepth evaluation
                         System.out.format("  %9d", Total_Move_Counter); 
                         
@@ -260,7 +275,7 @@ public class Chess
                         {
                             System.out.format("   %+.3f   ", RatingFloat);   
                         }
-                        Move.DisplayMoveTable(MoveBest, Move.ALL, Ply, MoveTable, Move.LINE, Move.SHOW_NO_RATING);   
+                        Move.Display(MoveBest, Move.ALL, Ply, MoveTable, Move.LINE, Move.SHOW_NO_RATING);   
 
                         if((LocalRating == Rating.CHECKMATE_RATING) || (LocalRating == -Rating.CHECKMATE_RATING))
                         {
@@ -299,7 +314,7 @@ public class Chess
                         System.out.println("Evaluated " + MoveDepth + " of allowed " + MaxMoveDepth + " half moves ahead.\n");
                     }
                     
-                    Move.MakeMove(Pos,   
+                    Move.Make(Pos,   
                              MoveBestFinishedIteration[0][Move.ROW],                                     
                              MoveBestFinishedIteration[0][Move.COL],      
                              MoveBestFinishedIteration[0][Move.FIGURE_N],      
@@ -310,7 +325,7 @@ public class Chess
                     Position.SwitchMoveColor(Pos); 
                     ShowPositionStatus = false;
 
-                    if(Position.EndPosition(Pos, MovePath, ShowPositionStatus))
+                    if(Position.End(Pos, MovePath))
                     {
                         ComputerEnd_ms = System.currentTimeMillis( );                  
                         ComputerTotal_ms += (ComputerEnd_ms - ComputerBegin_ms);                 
@@ -335,7 +350,7 @@ public class Chess
         System.out.println("Ended Program");   
     } 
 
-    public static int IterateMove(int[][] Pos, int alpha, int beta, int[][] MovePath, int[][] MoveBestUpper)
+    public static int Iterate(int[][] Pos, int alpha, int beta, int[][] MovePath, int[][] MoveBestUpper)
     {    
         int[][] MoveRating          = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds move that the computer is currently analyzing 
         int[][] MovesPosition       = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];           // Holds all possible moves for one position
@@ -347,15 +362,14 @@ public class Chess
         
         int[][] PosStore = new int[Position.ROWS + 1][Position.COLS + 1];
         String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
-        
-        
-        Move.EmptyMoveList(MoveRating);    
-        Move.EmptyMoveList(MovesPosition);  
+                
+        Move.EmptyList(MoveRating);    
+        Move.EmptyList(MovesPosition);  
         Move.MoveListIteration  = 1;   
         
         Position.GenerateMoveList(Pos, MovesPosition, MovePath, ReturnOnFirstMovePossible);                    // Generates all possible moves for one position into MovesPosition
              
-        Move.SortMoveList(MovesPosition);                                       // Sorts the move list and places best move first
+        Move.SortList(MovesPosition);                                           // Sorts the move list and places best move first
 
         switch(DecisionRule)
         {  
@@ -401,37 +415,37 @@ public class Chess
             Iteration_Move_Counter[Iteration] ++;                               // Increase count of moves in current iteration level
             Display_Move_Counter[Iteration] ++;                                 // Increase count of moves in current iteration level      
           
-            Move.SetMove(MovesPosition, p, MovePath, Ply + Iteration - 1);      // Adds move p from MovesPosition to MovePath and sets reminder of MovePath to 0  
+            Move.Set(MovesPosition, p, MovePath, Ply + Iteration - 1);          // Adds move p from MovesPosition to MovePath and sets reminder of MovePath to 0  
             
             if((MovesPosition[p][Move.POSITION_STATUS] == Position.NO_CONDITION) && (Iteration < MoveDepth))   
             {                                                                   // Parentnode, create children  
-                Position.CopyPosition(Pos, PosStore);                           // Store position
+                Position.Copy(Pos, PosStore);                                   // Store position
                 
                 Position.SwitchMoveColor(Pos);                                  // Switch move color
                 Iteration ++;                                                   // Increase counter for move iteration 
                 Iteration_Move_Counter[Iteration] = 0;                          // Reset counter for move iteration
                 Display_Move_Counter[Iteration] = 0;  
                 
-                Move.MakeMove(Pos,  MovesPosition[p][Move.ROW],
+                Move.Make(Pos,  MovesPosition[p][Move.ROW],
                                     MovesPosition[p][Move.COL], 
                                     MovesPosition[p][Move.FIGURE_N], 
                                     MovesPosition[p][Move.ROW_N], 
                                     MovesPosition[p][Move.COL_N], 
                                     MovePath, 
                                     Move.DO_NOT_ADD_TO_MOVE_HISTORY);  
-                RatingScore = IterateMove(Pos, alpha, beta, MovePath, MoveRating);   
+                RatingScore = Iterate(Pos, alpha, beta, MovePath, MoveRating);   
 
                 Iteration--;                                                    // Decrease counter for move iteration
                 Iteration_Move_Counter[Iteration + 1] = 0;                      // Not sure if required
                 Display_Move_Counter[Iteration + 1] = 0;                        // Not sure if required
 
-                Position.CopyPosition(PosStore, Pos);                           // Restore position          
+                Position.Copy(PosStore, Pos);                                   // Restore position          
             
             }
             else                                                                // Child node
             {
                 RatingScore = MovesPosition[p][Move.RATING];  
-                Move.CopyMoveList(MovePath, Ply, MoveRating);                   // Copies move under investigation to MoveRating                       
+                Move.CopyList(MovePath, Ply, MoveRating);                       // Copies move under investigation to MoveRating                       
             }
             
             if(RatingScore == MOVE_NOT_POSSIBLE)
@@ -445,13 +459,13 @@ public class Chess
                     if(((Position.GetMoveColor(Pos) == Position.WHITE_MOVE) && (RatingScore > minmax)) || ((Position.GetMoveColor(Pos) == Position.BLACK_MOVE) && (RatingScore < minmax)))
                     {                     
                         minmax = RatingScore;    
-                        Move.CopyMoveList(MoveRating, 0, MoveBestUpper);
+                        Move.CopyList(MoveRating, 0, MoveBestUpper);
                         
                         if(ShowStatus > Settings.LOW)
                         {                        
                             System.out.print("Iteration[" + Iteration + "] \t New Minmax = " + minmax + "\t");                        
                             System.out.print("MoveBestUpper[" + Iteration +"] ");
-                            Move.DisplayMoveTable(MoveBestUpper, Move.ALL, Ply, MoveTable, Move.LINE, Move.SHOW_RATING_LAST_MOVE);   
+                            Move.Display(MoveBestUpper, Move.ALL, Ply, MoveTable, Move.LINE, Move.SHOW_RATING_LAST_MOVE);   
                         }
                     }                                           
                     break;
@@ -460,12 +474,12 @@ public class Chess
                     if((Position.GetMoveColor(Pos) == Position.WHITE_MOVE) && (RatingScore > alpha))
                     {                                                           // Max node
                         alpha = RatingScore;                         
-                        Move.CopyMoveList(MoveRating, 0, MoveBestUpper);
+                        Move.CopyList(MoveRating, 0, MoveBestUpper);
                     }
                     if((Position.GetMoveColor(Pos) == Position.BLACK_MOVE) && (RatingScore < beta))                                                    
                     {                                                           // Min node
                         beta = RatingScore;
-                        Move.CopyMoveList(MoveRating, 0, MoveBestUpper);
+                        Move.CopyList(MoveRating, 0, MoveBestUpper);
                     }
                     if((alpha >= beta) || (alpha == Rating.CHECKMATE_RATING) || (beta == -Rating.CHECKMATE_RATING))             
                     {                                                           // No more siblings also called alpha-beta pruned
@@ -500,19 +514,4 @@ public class Chess
         return (((Chess.FirstMove == Settings.PLAYER)      && (Position.GetMoveColor(Pos) == Position.WHITE_MOVE)) ||
                 ((Chess.FirstMove == Settings.COMPUTER)    && (Position.GetMoveColor(Pos) == Position.BLACK_MOVE)));  
     } 
-}
-
-class MyKeyListener implements KeyListener {
-  public void keyTyped(KeyEvent e) {
-    char c = e.getKeyChar();
-    System.out.println("Key Typed: " + c);
-  }
-  public void keyPressed(KeyEvent e) {
-    char c = e.getKeyChar();
-    System.out.println("Key Pressed: " + c);
-  }
-  public void keyReleased(KeyEvent e) {
-    char c = e.getKeyChar();
-    System.out.println("Key Released: " + c);
-  }
 }

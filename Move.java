@@ -51,6 +51,42 @@ public class Move
                                                             Position.BLACK_KNIGHT, 
                                                             Position.BLACK_BISHOP};
                                                             
+    public static int[][] KingMove                      = new int[][]{ 
+                                                            { 0,  1},       // Move east
+                                                            {-1,  1},       // Move southeast
+                                                            {-1,  0},       // Move south
+                                                            {-1, -1},       // Move southwest
+                                                            { 0, -1},       // Move west
+                                                            { 1, -1},       // Move northwest
+                                                            { 1,  0},       // Move north
+                                                            { 1,  1}        // Move northeast
+                                                        };
+                                                        
+    public static int[][] KnightMove                    = new int[][]{ 
+                                                            { 2,  1},       // Move north northeast
+                                                            { 1,  2},       // Move east  northeast
+                                                            {-1,  2},       // Move east  southeast
+                                                            {-2,  1},       // Move south southeast
+                                                            {-2, -1},       // Move south southwest
+                                                            {-1, -2},       // Move west  southwest
+                                                            { 1, -2},       // Move west  northwest
+                                                            { 2, -1}        // Move north northwest
+                                                        };    
+                                                        
+    public static int[][] BishopDirection               = new int[][]{ 
+                                                            { 1,  1},       // Move northeast
+                                                            {-1,  1},       // Move southheast
+                                                            {-1, -1},       // Move southwest
+                                                            { 1, -1},       // Move northwest
+                                                        };                                                    
+                                                        
+    public static int[][] RookDirection               = new int[][]{ 
+                                                            { 0,  1},       // Move east
+                                                            {-1,  0},       // Move south
+                                                            { 0, -1},       // Move west
+                                                            { 1,  0},       // Move north
+                                                        };     
+                                                        
     // Move list display format 
     public static final int LINE                                = 0;
     public static final int LIST                                = 1;    
@@ -71,20 +107,11 @@ public class Move
     public static final int START                               = 1;
     public static final int STOP                                = 2;    
     
-    public static final int NUMBER_REPETIVE_POSITIONS_TO_CAUSE_DRAW = 3; 
+    public static final int DRAW_REPETIVE_POSITIONS             = 3; 
     public static final int PLYS_PER_REPETITIVE_MOVE            = 4;     
     public static final int PLY_PER_MOVE                        = 2;
-    
-    
-    //public static String[] MoveTable = new String[MAX_NUMBER_MOVE_LIST];
-    
-    public static void Move()
-    {
-        // initialise instance variables
-        //int x = 0;
-    }
-        
-    public static void EmptyMoveList(int[][] MoveList)
+
+    public static void EmptyList(int[][] MoveList)
     {
         int l;
         int j;                
@@ -97,9 +124,10 @@ public class Move
             }
         }
     }
-
-    public static void DisplayMoveTable(int[][] MovePath, int BoundryType, int BoundryValue, String[] MoveTable, int ListFormat, int RatingFormat)    
-    {                                                                           //Write move from MovePath[][] as string into MoveTable[]
+    
+    //Write move from MovePath[][] as string into MoveTable[]
+    public static void Display(int[][] MovePath, int BoundryType, int BoundryValue, String[] MoveTable, int ListFormat, int RatingFormat)    
+    {                                                                           
         int l;
         int begin   = 0;
         int end     = 0;
@@ -116,13 +144,13 @@ public class Move
         {
             case ALL: 
                 begin       = 0;
-                end         = IndexOfLastMove(MovePath) + 1;
+                end         = LastIndex(MovePath) + 1;
                 MoveStart   = BoundryValue;
                 break;
             
             case START:
                 begin       = BoundryValue - 1;
-                end         = IndexOfLastMove(MovePath);
+                end         = LastIndex(MovePath);
                 MoveStart   = 0;
                 break;
                 
@@ -132,7 +160,7 @@ public class Move
                 MoveStart   = 0;
                 break;       
         }        
-        //System.out.println("begin = " + begin + "end = " + end);
+
         for(l = begin; l < end; l++)     
         {
             if(Position.GetFigureColor(MovePath[0][FIGURE]) == Position.WHITE_FIGURE)
@@ -145,13 +173,10 @@ public class Move
                         {
                             if (l  == 0)
                             {
-                                //System.out.println("White Move LINE MoveStart = " + MoveStart);
                                 MoveTable[t] = String.format("%2d. ", (MoveStart + 1)/2 + 1);
                             }
                             else
                             {
-                                
-                                //System.out.println("White Move LINE l = " + l);
                                 str = String.format("%2d. ", (MoveStart + 1) / 2 + 1 + (l / 2));
                                 MoveTable[t] = MoveTable[t].concat(str);
                             }
@@ -218,27 +243,27 @@ public class Move
             }                
             else
             {            
-                DisplayFigureTable(             MoveTable, t, MovePath[l][FIGURE]);
-                DisplayColTable(                MoveTable, t, MovePath[l][COL]);
-                DisplayRowTable(                MoveTable, t, MovePath[l][ROW]);
-                DisplayMoveTypeTable(           MoveTable, t, MovePath[l][FIGURE], MovePath[l][FIGURE_P], MovePath[l][COL], MovePath[l][COL_N]);
-                DisplayColTable(                MoveTable, t, MovePath[l][COL_N]);
-                DisplayRowTable(                MoveTable, t, MovePath[l][ROW_N]);  
+                DisplayFigure(              MoveTable, t, MovePath[l][FIGURE]);
+                DisplayCol(                 MoveTable, t, MovePath[l][COL]);
+                DisplayRow(                 MoveTable, t, MovePath[l][ROW]);
+                DisplayType(                MoveTable, t, MovePath[l][FIGURE], MovePath[l][FIGURE_P], MovePath[l][COL], MovePath[l][COL_N]);
+                DisplayCol(                 MoveTable, t, MovePath[l][COL_N]);
+                DisplayRow(                 MoveTable, t, MovePath[l][ROW_N]);  
                 if((MovePath[l][FIGURE] == Position.WHITE_PAWN) && (MovePath[l][ROW_N] == Position.WHITE_PAWN_PROMOTION_ROW) ||
                     (MovePath[l][FIGURE] == Position.BLACK_PAWN) && (MovePath[l][ROW_N] == Position.BLACK_PAWN_PROMOTION_ROW))
                 {
-                    DisplayFigureTable(         MoveTable, t, MovePath[l][FIGURE_N]);
+                    DisplayFigure(          MoveTable, t, MovePath[l][FIGURE_N]);
                 }
-                DisplayEnPassantStatusTable(    MoveTable, t, MovePath[l][EN_PASSANT_STATUS]);                 // .... replace with pawn query....     
-                DisplayCheckStatusTable(        MoveTable, t, MovePath[l][CHECK_STATUS], MovePath[l][POSITION_STATUS]);              
-                DisplayPositionStatusTable(     MoveTable, t, MovePath[l][POSITION_STATUS]);  
-                DisplayRatingTable(             MoveTable, t, MovePath, l, MovePath[l][RATING], RatingFormat);
+                DisplayEnPassantStatus(     MoveTable, t, MovePath[l][EN_PASSANT_STATUS]);                 // .... replace with pawn query....     
+                DisplayCheckStatus(         MoveTable, t, MovePath[l][CHECK_STATUS], MovePath[l][POSITION_STATUS]);              
+                DisplayPositionStatus(      MoveTable, t, MovePath[l][POSITION_STATUS]);  
+                DisplayRating(              MoveTable, t, MovePath, l, MovePath[l][RATING], RatingFormat);
             }
         } 
-        DisplayMoveTableConsole(MoveTable);
+        DisplayConsole(MoveTable);
     }
     
-    public static void DisplayMoveTableConsole(String[] MoveTable)              //Display MoveTable[] wich is a list of strings to console
+    public static void DisplayConsole(String[] MoveTable)              //Display MoveTable[] wich is a list of strings to console
     {
         int t;  
      
@@ -248,44 +273,12 @@ public class Move
         }
     }
    
-    public static void DisplayFigureTable(String[] MoveTable, int t, int figure)
+    public static void DisplayFigure(String[] MoveTable, int t, int figure)
     {
-        switch(figure)
-        {
-            case Position.WHITE_PAWN:
-            case Position.BLACK_PAWN:
-                MoveTable[t] = MoveTable[t].concat(" ");                
-                break;
-                        
-            case Position.WHITE_ROOK:
-            case Position.BLACK_ROOK:   
-                MoveTable[t] = MoveTable[t].concat("R");                                
-                break;                        
-                                              
-            case Position.WHITE_KNIGHT:
-            case Position.BLACK_KNIGHT:
-                MoveTable[t] = MoveTable[t].concat("N");                                
-                break;
-                                              
-            case Position.WHITE_BISHOP:
-            case Position.BLACK_BISHOP:  
-                MoveTable[t] = MoveTable[t].concat("B");                                
-                break;
-                                              
-            case Position.WHITE_QUEEN:
-            case Position.BLACK_QUEEN:  
-                MoveTable[t] = MoveTable[t].concat("Q");                                
-                break;
-                     
-            case Position.WHITE_KING:
-            case Position.BLACK_KING:   
-                System.out.print("K");
-                MoveTable[t] = MoveTable[t].concat("K");                                
-                break;          
-        }
+        MoveTable[t] = MoveTable[t].concat(Piece.Pieces[figure].getNotation());
     }
         
-    public static void DisplayColTable(String[] MoveTable, int t, int col)
+    public static void DisplayCol(String[] MoveTable, int t, int col)
     {
         switch (col)
         {
@@ -323,14 +316,14 @@ public class Move
         }
     }
     
-    public static void DisplayRowTable(String[] MoveTable, int t, int row)
+    public static void DisplayRow(String[] MoveTable, int t, int row)
     {
         String str;
         str = String.format("%1d", row);
         MoveTable[t] = MoveTable[t].concat(str);                
     }
     
-    public static void DisplayMoveTypeTable(String[] MoveTable, int t, int Figure, int Figure_p, int col, int col_n)
+    public static void DisplayType(String[] MoveTable, int t, int Figure, int Figure_p, int col, int col_n)
     {      
         if((Figure_p != Position.EMPTY) ||                                      // Took opponent figure away
             (((Figure_p == Position.EMPTY) && ((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n))))
@@ -343,7 +336,7 @@ public class Move
         }
     }
         
-    public static void DisplayEnPassantStatusTable(String[] MoveTable, int t, int EnPassant)
+    public static void DisplayEnPassantStatus(String[] MoveTable, int t, int EnPassant)
     {      
         if(EnPassant == Position.EN_PASSANT)             
         {
@@ -351,7 +344,7 @@ public class Move
         }
     }
     
-    public static void DisplayCheckStatusTable(String[] MoveTable, int t, int Check, int Mate)
+    public static void DisplayCheckStatus(String[] MoveTable, int t, int Check, int Mate)
     {      
         if(Check == Position.CHECK)             
         {
@@ -366,7 +359,7 @@ public class Move
         }
     }
     
-    public static void DisplayPositionStatusTable(String[] MoveTable, int t, int PositionStatus)
+    public static void DisplayPositionStatus(String[] MoveTable, int t, int PositionStatus)
     {      
         switch(PositionStatus)
         {
@@ -395,14 +388,10 @@ public class Move
         }
     }
         
-    public static void DisplayRatingTable(String[] MoveTable, int t, int[][] MoveList, int l, int Rating, int RatingFormat)
+    public static void DisplayRating(String[] MoveTable, int t, int[][] MoveList, int l, int Rating, int RatingFormat)
     {      
-        float RatingFloat;
-        String str;
-
-        RatingFloat = Rating;
-        RatingFloat /= 100;
-        str = String.format(" Rating = %.2f", RatingFloat);
+        float RatingFloat = Rating / 100;;
+        String str = String.format(" Rating = %.2f", RatingFloat);
         
         switch(RatingFormat)
         {
@@ -422,32 +411,7 @@ public class Move
         }                
     } 
  
-    public static void AddMoveToMoveList(int[][] MoveList, int Figure, int row, int col, int Figure_p, int Figure_n, int col_n, int row_n)
-    {
-        int l = IndexOfLastMove(MoveList) + 1;
-        int i;
-        
-        MoveList[l][FIGURE]     = Figure;
-        MoveList[l][ROW]        = row;
-        MoveList[l][COL]        = col;
-        MoveList[l][FIGURE_P]   = Figure_p;       
-        MoveList[l][FIGURE_N]   = Figure_n;
-        MoveList[l][ROW_N]      = row_n;
-        MoveList[l][COL_N]      = col_n;
-    }
-    
-    public static void AddMove(int[][] Move, int m, int[][] List)
-    {
-        int l = IndexOfLastMove(Move) + 1;
-        int i;
-
-        for(i = 0; i < ENTRIES_MOVE_LIST; i++)
-        {
-            Move[l][i] = List[m][i];
-        }
-    }
-    
-    public static void SetMove(int[][] Move, int m, int[][] MovePath, int l)    // Copies Move[m] to MovePath[l]
+    public static void Set(int[][] Move, int m, int[][] MovePath, int l)    // Copies Move[m] to MovePath[l]
     {
         int i;
         
@@ -465,7 +429,7 @@ public class Move
         }
     }   
     
-    public static void ClearMove(int[][] MovePath, int p)
+    public static void Clear(int[][] MovePath, int p)
     {
         int i;
         
@@ -475,7 +439,7 @@ public class Move
         }
     }
 
-    public static int IndexOfLastMove(int[][] MovePath)
+    public static int LastIndex(int[][] MovePath)
     {
         int i;
           
@@ -489,11 +453,12 @@ public class Move
     public static int RepetitivePositions(int[][] MovePath)  
     {
         int RepetitivePositionCounter; 
-        int p = IndexOfLastMove(MovePath);                                                                                                                                         
+        int p = LastIndex(MovePath);                                                                                                                                         
 
-        for(RepetitivePositionCounter = 1; ((RepetitivePositionCounter < NUMBER_REPETIVE_POSITIONS_TO_CAUSE_DRAW) && ((RepetitivePositionCounter * PLYS_PER_REPETITIVE_MOVE) + 1 <= p)); RepetitivePositionCounter++)
+        for(RepetitivePositionCounter = 1; ((RepetitivePositionCounter < DRAW_REPETIVE_POSITIONS) &&
+                                           ((RepetitivePositionCounter * PLYS_PER_REPETITIVE_MOVE) + 1 <= p)); RepetitivePositionCounter++)
         {
-            if(!MovedToSamePosition(MovePath, p - ((RepetitivePositionCounter - 1) * PLYS_PER_REPETITIVE_MOVE)))
+            if(!SamePosition(MovePath, p - ((RepetitivePositionCounter - 1) * PLYS_PER_REPETITIVE_MOVE)))
             {
                 break;
             }
@@ -501,7 +466,7 @@ public class Move
         return(RepetitivePositionCounter);
     }
     
-    public static boolean MovedToSamePosition(int[][] MovePath, int p)     
+    public static boolean SamePosition(int[][] MovePath, int p)     
     {
         return((MovePath[p    ][FIGURE] == MovePath[p -     PLYS_PER_REPETITIVE_MOVE][FIGURE])  &&      // Same figure type moved to same field than two moves before
                (MovePath[p    ][COL_N]  == MovePath[p -     PLYS_PER_REPETITIVE_MOVE][COL_N])   &&      // Moved to same column than two moves before 
@@ -511,13 +476,13 @@ public class Move
                (MovePath[p - 1][ROW_N]  == MovePath[p - 1 - PLYS_PER_REPETITIVE_MOVE][ROW_N]));   
     }
 
-    public static void CopyMoveList(int[][] FromMoveList, int CopyStart, int[][] ToMoveList)
+    public static void CopyList(int[][] FromMoveList, int CopyStart, int[][] ToMoveList)
     {
         int l;
         int e;
         int r;
         
-        EmptyMoveList(ToMoveList);
+        EmptyList(ToMoveList);
 
         for(l = CopyStart; FromMoveList[l][FIGURE] != Position.EMPTY; l++)
         {
@@ -636,7 +601,7 @@ public class Move
         return(CastlingPossible);
     }
     
-    public static void MakeMove(int[][] Pos, int row, int col, int Figure_n, int row_n, int col_n, int[][] MovePath, int AddMoveToHistory)
+    public static void Make(int[][] Pos, int row, int col, int Figure_n, int row_n, int col_n, int[][] MovePath, int AddMoveToHistory)
     {                                                                           // Makes the move by updating the position in Pos[][] 
         int m;                                                                  // Is called by user makes move or by computer makes move and move is added to move path
         int Figure;
@@ -666,7 +631,7 @@ public class Move
         Figure              = Pos[row][col];
         Figure_p            = Pos[row_n][col_n];        
         Pos[row][col]       = Position.EMPTY;
-        Pos[row_n][col_n]   = Figure_n; 
+        Pos[row_n][col_n]   = Figure_n;
         
         if(((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n) && (Figure_p == Position.EMPTY))
         {
@@ -734,7 +699,7 @@ public class Move
         {                                                                       // WKe1 moved, White short and long castling not possible anymore
             Position.SetWhiteLongCastling(Pos, Position.WRA1_OR_WKE1_DID_MOVE);
             Position.SetWhiteShortCastling(Pos, Position.WRA1_OR_WKE1_DID_MOVE);
-        }     
+        }
                                         
         if((Figure == Position.BLACK_KING) && (col == Position.E) && (row == Position.BLACK_CASTLING_ROW))        
         {                                                                       // BKe8 moved, Black short and long castling not possible anymore
@@ -777,9 +742,9 @@ public class Move
             MovePath[m][BLACK_LONG_CASTLING]            = BlackLongCastlingPreviousPosition;                                    
             MovePath[m][BLACK_SHORT_CASTLING]           = BlackShortCastlingPreviousPosition;                                      
             MovePath[m][COLUMN_PAWN_MOVED_TWO_STEPS]    = ColumnPawnMovedTwoStepsPreviousPosition;                                    
-            MovePath[m][POSITION_STATUS]                = Position.GetPositionStatus(Pos, MovePath);       
+            MovePath[m][POSITION_STATUS]                = Position.GetStatus(Pos, MovePath);       
             MovePath[m][CHECK_STATUS]                   = Position.GetCheckStatus(Pos, MovePath[m][POSITION_STATUS]);
-            MovePath[m][RATING]                         = Rating.GetRating(Pos, MovePath[m][POSITION_STATUS]);  
+            MovePath[m][RATING]                         = Rating.Rating(Pos, MovePath[m][POSITION_STATUS]);  
             MovePath[m][REPETITIVE_POSITION_COUNTER]    = RepetitivePositionCounterPreviousPosition;
             MovePath[m][FIFTY_MOVE_COUNTER]             = FifyMoveCounterPreviousPosition;
             Chess.Ply++;
@@ -787,13 +752,13 @@ public class Move
         Position.SetNumberOfRepetitivePositions(Pos, RepetitivePositions(MovePath)); //    
     }
         
-    public static boolean UserMoveSuccessful(int[][] Pos, int row, int col, int Figure_n, int row_n, int col_n, int[][] MovePath)       
+    public static boolean UserSuccessful(int[][] Pos, int row, int col, int Figure_n, int row_n, int col_n, int[][] MovePath)       
     {        
         int[][] UserMovesPosition            = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];
         int m;
         boolean ReturnOnFirstMovePossible = false;
 
-        EmptyMoveList(UserMovesPosition);       
+        EmptyList(UserMovesPosition);       
         Position.GenerateMoveList(Pos, UserMovesPosition, MovePath, ReturnOnFirstMovePossible);
         //Move.DisplayMoveList(UserMovesPosition, Move.ALL, 0, Move.LIST, Move.SHOW_NO_RATING); 
         for(m = 0; UserMovesPosition[m][Move.FIGURE] != Position.EMPTY; m++)
@@ -804,16 +769,15 @@ public class Move
                (UserMovesPosition[m][ROW_N]     == row_n)       &&          
                (UserMovesPosition[m][COL_N]     == col_n))
             {
-                Move.MakeMove(Pos, row, col, Figure_n, row_n, col_n, MovePath, Move.ADD_TO_MOVE_HISTORY);
+                Move.Make(Pos, row, col, Figure_n, row_n, col_n, MovePath, Move.ADD_TO_MOVE_HISTORY);
                 return true;
             }   
         }
         System.out.println("Incorrect user Move.");
-        //System.out.println("row = " + row + " col = " + col + "Figure_n = " + Figure_n + " row_n = " + row_n + " col_n = " + col_n);
         return false;
     }  
     
-    public static void SortMoveList(int[][] MoveList)
+    public static void SortList(int[][] MoveList)
     {
         int m;
         int n;
@@ -829,7 +793,7 @@ public class Move
                     if(MoveList[n][RATING] > MaxRating)
                     {
                         MaxRating = MoveList[n][RATING];
-                        SwapMove(MoveList, m, n);
+                        Swap(MoveList, m, n);
                     }
                 }
             }    
@@ -844,14 +808,14 @@ public class Move
                     if(MoveList[n][RATING] < MaxRating)
                     {
                         MaxRating = MoveList[n][RATING];
-                        SwapMove(MoveList, m, n);
+                        Swap(MoveList, m, n);
                     }
                 }
             }                
         }
     }        
     
-    public static void SwapMove(int[][] MoveList, int m, int n)
+    public static void Swap(int[][] MoveList, int m, int n)
     {
         int Temp;
         int i;
@@ -864,9 +828,9 @@ public class Move
         }
     }
     
-    public static void RevertMove(int[][] Pos, int[][] MovePath)
+    public static void Revert(int[][] Pos, int[][] MovePath)
     {
-        int m = IndexOfLastMove(MovePath);
+        int m = LastIndex(MovePath);
         int e;
         int Figure;
         int row;

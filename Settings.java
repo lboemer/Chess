@@ -15,7 +15,7 @@ public class Settings
     public static final int DEFAULT_MAX_MOVE_DEPTH      = 50;   
     
     public static final long ABSOLUTE_MAX_SECONDS       = 60 * 60 * 24;         // 24 h 
-    public static final long DEFAULT_MAX_SECONDS        = 3;                    // per computer move 
+    public static final long DEFAULT_MAX_SECONDS        = 5;                    // per computer move 
     
     // Decision rule
     public static final int MINMAX                      = 0;                    // minmax
@@ -36,6 +36,11 @@ public class Settings
     public static final int NO_HEADER                   = 0;
     public static final int HEADER                      = 1;
     
+    // Empty "" so indices start from 1
+    public static final String[] positionMap = {"", "New", "Pawn", "En passant", "Promotion",
+								"Castling", "Insufficient material", "One Move Mate",
+								"Two Move Mate", "Three Move Mate"};
+    
     public static void Settings(int[][] Pos)
     {
         ShowPosition(HEADER);
@@ -48,11 +53,11 @@ public class Settings
         ShowFirstMove (HEADER);
     }
     
-    public static void InitiateSettings(int[][] Pos)
+    public static void Initiate(int[][] Pos)
     {
         Chess.ShowStatus        = LOW;                                          // Show criteria, implemented ZERO, LOW, MEDIUM, HIGH
         Chess.DebugLevel        = LOW;                                          // Debug level, implemented ZERO, LOW, MEDIUM, HIGH  
-        Position.SetPosition(Pos, Position.NEW_POSITION);                       // Initiate starting postion        
+        Position.SetFromFile(Pos, stringToFilename(positionMap[Position.NEW_POSITION]));          // Initiate starting postion        
         Chess.MaxMoves          = DEFAULT_MAX_MOVES;                            // Initiate MaxMoves
         Chess.MaxMoveDepth      = DEFAULT_MAX_MOVE_DEPTH;                       // Initiate MaxMoveDepth
         Chess.MaxSeconds        = DEFAULT_MAX_SECONDS;                          // Initiate Maxseconds
@@ -87,7 +92,7 @@ public class Settings
             switch(ch[0])
             {
                  case '1':
-                    UserSetSettings(Pos);
+                    Set(Pos);
                     continue;
                    
                  case 'x':
@@ -131,7 +136,7 @@ public class Settings
         while(true);
     }
     
-    public static void UserSetSettings(int[][] Pos)
+    public static void Set(int[][] Pos)
     {  
         Scanner scanner = new Scanner(System.in);
         String inputString;
@@ -158,65 +163,68 @@ public class Settings
             switch(UserInput)
             {
                     case '1':
-                        UserSetPosition(Pos);
+                        SetPosition(Pos);
                         break;
                                         
                     case '2':
-                        UserSetMaxMoves(Pos);
+                        SetMaxMoves(Pos);
                         break;                           
                         
                     case '3':
-                        UserSetMaxMoveDepth(Pos);
+                        SetMaxMoveDepth(Pos);
                         break;
                         
                     case '4':
-                        UserSetMaxSeconds(Pos);
+                        SetMaxSeconds(Pos);
                         break;
                     
                     case '5':
-                        UserSetDecisionRule(Pos);
+                        SetDecisionRule(Pos);
                         break;                        
                         
                     case '6':
-                        UserSetMoveColor(Pos);
+                        SetMoveColor(Pos);
                         break;                                         
                     
                     case '7':
-                        UserSetPlayMode(Pos);
+                        SetPlayMode(Pos);
                         break; 
                             
                     case '8':
-                        UserSetFirstMove(Pos);
+                        SetFirstMove(Pos);
                         break;
             }
         }
         while (UserInput != 'x');
-    }   
+    }
+    
+    public static String stringToFilename(String str)
+    {
+		return str.replace(" ", "_").concat(".txt");
+	}
        
-    public static void UserSetPosition(int[][] Pos)
+    public static void SetPosition(int[][] Pos)
     {  
+		
+		
         boolean InputValid;
         String inputString;
-        Scanner scanner             = new Scanner(System.in);
+        Scanner scanner     = new Scanner(System.in);
         int UserInput;
-        int[][] MoveHistory           = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];
+        int[][] MoveHistory = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];
+        int i;
         
         do
         {        
-            Move.EmptyMoveList(MoveHistory);
+            Move.EmptyList(MoveHistory);
 
             ClearScreen(Pos);
           
-            System.out.println("Enter \t\t Position");   
-            System.out.println("1 \t\t New");
-            System.out.println("2 \t\t Pawn");            
-            System.out.println("3 \t\t En passant");
-            System.out.println("4 \t\t Promotion");
-            System.out.println("5 \t\t Castling");
-            System.out.println("6 \t\t Isufficient material");
-            System.out.println("7 \t\t One Move Mate");
-            System.out.println("8 \t\t Two Move Mate");
-            System.out.println("9 \t\t Three Move Mate");
+            System.out.println("Enter \t\t Position");
+            for (i = 1; i < positionMap.length; i++)
+            {
+				System.out.println(i + " \t\t " + positionMap[i]);
+			}
             
             inputString = scanner.nextLine();     
             UserInput = Character.getNumericValue(inputString.charAt(0));
@@ -230,15 +238,16 @@ public class Settings
                 InputValid = true;
             }
             
-            Position.SetPosition(Pos, UserInput);
+            Position.SetFromFile(Pos, stringToFilename(positionMap[UserInput]));
             
-            if (Position.ValidatePosition(Pos) == false)
+            
+            if (Position.Validate(Pos) == false)
             {
                 System.out.println("Invalid position!");
                 InputValid = false;
             }
 
-            switch(Position.GetPositionStatus(Pos, MoveHistory))
+            switch(Position.GetStatus(Pos, MoveHistory))
             {
                 case Position.NO_CONDITION:
                     break;
@@ -288,7 +297,7 @@ public class Settings
         Chess.ui.repaintWindow(Pos); 
     }    
     
-    public static void UserSetMaxMoves(int[][] Pos)
+    public static void SetMaxMoves(int[][] Pos)
     {            
         boolean InputValid = false;
         String inputString;
@@ -324,7 +333,7 @@ public class Settings
         while(!InputValid);
     }
     
-    public static void UserSetMaxMoveDepth(int[][] Pos)
+    public static void SetMaxMoveDepth(int[][] Pos)
     {
         int i;
         boolean InputValid = false;
@@ -364,7 +373,7 @@ public class Settings
         while(!InputValid);    
     }
             
-    public static void UserSetMaxSeconds(int[][] Pos)
+    public static void SetMaxSeconds(int[][] Pos)
     {
         int i;
         boolean InputValid = false;
@@ -402,7 +411,7 @@ public class Settings
         while(!InputValid);   
     }
           
-    public static void UserSetDecisionRule(int[][] Pos)
+    public static void SetDecisionRule(int[][] Pos)
     {      
         boolean InputValid = false;
         char ch;
@@ -434,7 +443,7 @@ public class Settings
         while(!InputValid);   
     }
     
-    public static void UserSetMoveColor(int[][] Pos)
+    public static void SetMoveColor(int[][] Pos)
     {
         char ch;
         boolean InputValid = false;
@@ -469,7 +478,7 @@ public class Settings
         Chess.ui.repaintWindow(Pos);                                            // Draws beginning position
     }
     
-    public static void UserSetPlayMode(int[][] Pos)
+    public static void SetPlayMode(int[][] Pos)
     {
         char ch;
         boolean InputValid = false;
@@ -507,7 +516,7 @@ public class Settings
         while (!InputValid);  
     }
     
-    public static void UserSetFirstMove(int[][] Pos)
+    public static void SetFirstMove(int[][] Pos)
     {
         char ch;
         boolean InputValid = false;
@@ -552,7 +561,6 @@ public class Settings
         int Figure_n = 0;
         int h;     
         String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
-        
 
         do
         {                   
@@ -561,13 +569,13 @@ public class Settings
             if(!Back)
             {
                 //Move.DisplayMoveList(MoveBest, Move.ALL, 0, Move.LINE, Move.SHOW_RATING_LAST_MOVE); 
-                Move.DisplayMoveTable(MoveBest, Move.ALL, 0, MoveTable, Move.LINE, Move.SHOW_RATING_LAST_MOVE); 
+                Move.Display(MoveBest, Move.ALL, 0, MoveTable, Move.LINE, Move.SHOW_RATING_LAST_MOVE); 
             }
             
             System.out.println();
 
             //Move.DisplayMoveList(MovePath, Move.ALL, 0, Move.TABLE, Move.SHOW_NO_RATING);
-            Move.DisplayMoveTable(MovePath, Move.ALL, 0, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);
+            Move.Display(MovePath, Move.ALL, 0, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);
             
             System.out.print("\nEnter \t ");
            
@@ -779,7 +787,7 @@ public class Settings
                         break;                          
                 }
             }
-        }while(!Move.UserMoveSuccessful(Pos, row, col, Figure_n, row_p_n, col_p_n, MovePath));            
+        }while(!Move.UserSuccessful(Pos, row, col, Figure_n, row_p_n, col_p_n, MovePath));            
         Settings.ClearScreen(Pos);  
         return '0';
     }
@@ -813,7 +821,7 @@ public class Settings
                 break;   
                 
             case Position.INSUFFICIENT_MATERIAL_POSITION:
-                System.out.println("Isufficient material draw");
+                System.out.println("Insufficient material draw");
                 break;
                     
             case Position.ONE_MOVE_MATE_POSITION:
@@ -910,7 +918,7 @@ public class Settings
         switch (Chess.PlayMode)
         {
             case PLAYER_PLAYER:
-                System.out.println("Player againts player");
+                System.out.println("Player against player");
                 break;
                     
             case PLAYER_COMPUTER:
@@ -962,7 +970,7 @@ public class Settings
         Chess.Info();
         System.out.format("Player time \t Computer time \n");
         System.out.format("%.3f sec \t %.3f sec \n", UserTime, ComputerTime);        
-        Position.DisplayPosition(Pos);  
+        Position.Display(Pos);  
     }
   
 }

@@ -8,7 +8,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
     public static final int NUMBER_OF_PROMOTION_FIGURES         = 4;
     public static final int X_PROMOTION_FRAME_SQUARE_OFFSET     = 1;
     public static final int Y_PROMOTION_FRAME_SQUARE_OFFSET     = 3;    
-    public static final int PROMOTION_FRAME_SQUARE_LENGHT       = NUMBER_OF_PROMOTION_FIGURES + 1;
+    public static final int PROMOTION_FRAME_SQUARE_LENGTH       = NUMBER_OF_PROMOTION_FIGURES + 1;
     public static final int PROMOTION_FRAME_SQUARE_HEIGHT       = 2;  
     
     public static final int COL_FIRST_PROMOTION_FIGURE          = 3;      
@@ -35,13 +35,8 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         int row;
         int col;
         
-        for(row = 0; row <= Position.ROWS; row++)                               // Go through entire array, ROWS + 1 rows
-        {  
-            for(col = 0; col <= Position.COLS; col++)                           // Go through entire array, COLS + 1 cols
-            {
-                PosDrawBuffer[row][col] = Pos[row][col];                        // Copy position into PosDrawBuffer to ensure that the postion at this step in the program is drawn
-            }
-        }
+        Position.Copy(Pos, PosDrawBuffer);
+        
         repaint();                                                              // Draw position from PosDrawBuffer[][]
     }
 
@@ -54,7 +49,6 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         int row_d;
         int col_d;
         int m;
-        boolean empty;
         
         super.paintComponent(g);                                                // Redraws everytime, otherwise it would add to drawing
         this.setBackground(Color.yellow);
@@ -86,78 +80,27 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             }
         }            
         
-        Image chessPieceImage;
-        chessPieceImage = new ImageIcon("wk.png").getImage();                   // Default initialization
+        Image chessPieceImage  = new ImageIcon("wk.png").getImage();                   // Default initialization;
+        String imageString;
+        Piece piece;
         
         for(row_d = 0; row_d  < Position.ROWS; row_d++)       
         {
             for(col_d = 0; col_d < Position.COLS; col_d++)
             {
-                empty = false;    
-
-                switch(PosDrawBuffer[GetRowFromRowDraw(row_d)][GetColFromColDraw(col_d)])                           
-                {                                                               // Select image
-                    case Position.WHITE_KING:
-                        chessPieceImage = new ImageIcon("wk.png").getImage();
-                        break;
-                        
-                    case Position.WHITE_QUEEN:
-                        chessPieceImage = new ImageIcon("wq.png").getImage();                    
-                        break;
-                        
-                    case Position.WHITE_ROOK:
-                        chessPieceImage = new ImageIcon("wr.png").getImage();
-                        break;
-                        
-                    case Position.WHITE_KNIGHT:
-                        chessPieceImage = new ImageIcon("wn.png").getImage();
-                        break;
-                        
-                    case Position.WHITE_BISHOP:
-                        chessPieceImage = new ImageIcon("wb.png").getImage();
-                        break;
-                        
-                    case Position.WHITE_PAWN:
-                        chessPieceImage = new ImageIcon("wp.png").getImage();
-                        break;
-                        
-                    case Position.BLACK_KING:
-                        chessPieceImage = new ImageIcon("bk.png").getImage();
-                        break;
-                        
-                    case Position.BLACK_QUEEN:
-                        chessPieceImage = new ImageIcon("bq.png").getImage();
-                        break;
-                        
-                    case Position.BLACK_ROOK:
-                        chessPieceImage = new ImageIcon("br.png").getImage();
-                        break;
-                        
-                    case Position.BLACK_KNIGHT:
-                        chessPieceImage = new ImageIcon("bn.png").getImage();
-                        break;
-                        
-                    case Position.BLACK_BISHOP:
-                        chessPieceImage = new ImageIcon("bb.png").getImage();
-                        break;
-                        
-                    case Position.BLACK_PAWN:
-                        chessPieceImage = new ImageIcon("bp.png").getImage();
-                        break;
-                        
-                    default:
-                        empty = true;
-                        break;
-                } 
-            
-                if (!empty)                                                     // Draw image
+                piece = Piece.Pieces[PosDrawBuffer[GetRowFromRowDraw(row_d)][GetColFromColDraw(col_d)]];
+                
+                if (piece.getType() != Position.EMPTY)
                 {
-                    g.drawImage(chessPieceImage, col_d * SQUARE_SIZE, row_d * SQUARE_SIZE, 
+					imageString = piece.getImageString();
+					chessPieceImage = new ImageIcon(imageString).getImage();
+					
+					g.drawImage(chessPieceImage, col_d * SQUARE_SIZE, row_d * SQUARE_SIZE, 
                         (col_d +1) * SQUARE_SIZE, (row_d + 1) * SQUARE_SIZE,                   
                         0, 0,
                         SQUARE_SIZE, SQUARE_SIZE,
                         this);
-                }
+				}
             }
         }  
                 
@@ -168,7 +111,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             g.fillRect(
                 X_PROMOTION_FRAME_SQUARE_OFFSET * SQUARE_SIZE + SQUARE_SIZE / 2, 
                 Y_PROMOTION_FRAME_SQUARE_OFFSET * SQUARE_SIZE,                     
-                PROMOTION_FRAME_SQUARE_LENGHT * SQUARE_SIZE, 
+                PROMOTION_FRAME_SQUARE_LENGTH * SQUARE_SIZE, 
                 PROMOTION_FRAME_SQUARE_HEIGHT * SQUARE_SIZE
             );        
                     
@@ -180,53 +123,19 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             
             for(i = 0; i < NUMBER_OF_PROMOTION_FIGURES; i++)
             {
-                if(WhitePromotionFigure)                                        // Select whIte promotion image
+                if(WhitePromotionFigure)                                        // Select white promotion image
                 {
-                    switch(i)
-                    {
-                        case 0:                      
-                            chessPieceImage = new ImageIcon("wq.png").getImage();  
-                            break;
-                            
-                        case 1:
-                            chessPieceImage = new ImageIcon("wr.png").getImage();  
-                            break;  
-                            
-                        case 2:                      
-                            chessPieceImage = new ImageIcon("wn.png").getImage();  
-                            break;
-                            
-                        case 3:
-                            chessPieceImage = new ImageIcon("wb.png").getImage();  
-                            break;      
-                    }
+					chessPieceImage = new ImageIcon( Piece.WhitePromotionFigures[i].getImageString() ).getImage();
                 }
             
                 if(BlackPromotionFigure)                                        // Select black promotion image
                 {
-                    switch(i)
-                    {
-                        case 0:                      
-                            chessPieceImage = new ImageIcon("bq.png").getImage();  
-                            break;
-                            
-                        case 1:
-                            chessPieceImage = new ImageIcon("br.png").getImage();  
-                            break;  
-                            
-                        case 2:                      
-                            chessPieceImage = new ImageIcon("bn.png").getImage();  
-                            break;
-                            
-                        case 3:
-                            chessPieceImage = new ImageIcon("bb.png").getImage();  
-                            break;      
-                    }                    
+					chessPieceImage = new ImageIcon( Piece.BlackPromotionFigures[i].getImageString() ).getImage();
                 }            
                 g.drawImage(chessPieceImage,                                    // Draw promotion image
                     (X_PROMOTION_FRAME_SQUARE_OFFSET + 1 + i)      * SQUARE_SIZE, Y_PROMOTION_FRAME_SQUARE_OFFSET         * SQUARE_SIZE + SQUARE_SIZE / 2, 
                     (X_PROMOTION_FRAME_SQUARE_OFFSET + 2 + i)      * SQUARE_SIZE, (Y_PROMOTION_FRAME_SQUARE_OFFSET + 1)   * SQUARE_SIZE + SQUARE_SIZE / 2, 
-                    0, 0, SQUARE_SIZE, SQUARE_SIZE, this);   
+                    0, 0, SQUARE_SIZE, SQUARE_SIZE, this);
             }
         }        
         
@@ -273,19 +182,14 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         Settings.ClearScreen(Pos);  
         if(!Back)
         {
-            Move.DisplayMoveTable(MoveBest, Move.ALL, Chess.Ply, MoveTable, Move.LINE, Move.SHOW_RATING_LAST_MOVE);              // Displays MoveBest
+            Move.Display(MoveBest, Move.ALL, Chess.Ply, MoveTable, Move.LINE, Move.SHOW_RATING_LAST_MOVE);              // Displays MoveBest
         }
         System.out.println(); 
-        Move.DisplayMoveTable(MovePath, Move.STOP, Chess.Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);                     // Displays MoveHistory
+        Move.Display(MovePath, Move.STOP, Chess.Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);                     // Displays MoveHistory
         
-        for(row = 0; row <= Position.ROWS; row++)                               // Copies Pos[][] into PosDrawBuffer[][]
-        {  
-            for(col = 0; col <= Position.COLS; col++)        
-            {
-                PosDrawBuffer[row][col] = Pos[row][col];
-            }
-        }        
-        Move.EmptyMoveList(FillMoveList);                                       // paint uses FillMoveList to draw possible move to fields green
+        Position.Copy(Pos, PosDrawBuffer);  // Copies Pos[][] into PosDrawBuffer[][]
+        
+        Move.EmptyList(FillMoveList);                                       // paint uses FillMoveList to draw possible move to fields green
         Position.GenerateMoveList(Pos, FillMoveList, MovePath, ReturnOnFirstMovePossible);              // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
         do
         {
@@ -295,7 +199,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
                System.out.print ("");                                           // Somehow needs to do something to get out of loop ..... accidentially figured this out         
             }while(MouseInputActive);
             //System.out.println("Mouse input finished");        
-        }while(!Move.UserMoveSuccessful(Pos, row_f, col_f, Figure_n, row_n, col_n, MovePath));
+        }while(!Move.UserSuccessful(Pos, row_f, col_f, Figure_n, row_n, col_n, MovePath));
         repaint();                                                              // Draws position from PosDrawBuffer[][]
         Settings.ClearScreen(Pos); 
         return '0';
@@ -304,7 +208,6 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
     @Override
     public void mouseMoved(MouseEvent e)                                        // Runs when mouse moves
     {
-                          
     }
      
     @Override  
@@ -322,7 +225,6 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
                 col_f = GetColFromMouse(mouseX);
                 
                 Figure_n = PosDrawBuffer[row_f][col_f];                         // Default unless pawn promotion    
-                //System.out.println("col_f = " + col_f + " row_f = " + row_f);               
                 LeftMouseButtonPressed = true;                                  // Enables repaint() to highlight from-field and possible to-fields
                 repaint();
             }            
@@ -330,7 +232,6 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             {
                 row_f = 0;
                 col_f = 0;                                                      // Will result in an invalid move and trigger another mousePressed() event
-                //System.out.println("col_f = " + col_f + "row_f = " + row_f);
             }
         }
      
@@ -395,8 +296,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
                             break;     
                     }
                 }        
-                //System.out.println("Promotion figure = " + Figure_n);
-                
+                                
                 LeftMouseButtonPressed = true;                                  // Enables repaint() to highlight from-field and possible to-fields                
                 repaint();                                                      // Draw position from PosDrawBuffer[][]
             }
@@ -412,7 +312,6 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
     {     
         int mouseX = e.getX();
         int mouseY = e.getY();
-        //System.out.println("In mouseReleased(): mouseX = " + mouseX + " mouseY = " + mouseY);
 
         if (MouseInputActive && !WhitePromotionFigure && !BlackPromotionFigure) 
         {
@@ -420,25 +319,22 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             {                                                                   // Check valid input to 0 <= x < COLS, 0 <= y < ROWS
                 row_n = GetRowFromMouse(mouseY);
                 col_n = GetColFromMouse(mouseX);           
-                                  
-                //System.out.println("col_n = " + col_n + " row_n = " + row_n);        
-                
-                if(((Figure_n == Position.WHITE_PAWN) && (row_n == Position.WHITE_PAWN_PROMOTION_ROW)) || ((Figure_n == Position.BLACK_PAWN) && (row_n == Position.BLACK_PAWN_PROMOTION_ROW)))
+                                                  
+                if(((Figure_n == Position.WHITE_PAWN) && (row_n == Position.WHITE_PAWN_PROMOTION_ROW)) ||
+					((Figure_n == Position.BLACK_PAWN) && (row_n == Position.BLACK_PAWN_PROMOTION_ROW)))
                 {                                                               // repaint() to show pawn moved to promotion row
                     PosDrawBuffer[row_f][col_f]= Position.EMPTY;                // Move pawn to promotion row
                     PosDrawBuffer[row_n][col_n]= Figure_n;                      
-                    LeftMouseButtonPressed = false;                             // diables repaint() to highlight from-field and possible to-fields
+                    LeftMouseButtonPressed = false;                             // disables repaint() to highlight from-field and possible to-fields
                     
                     
                     if((Figure_n == Position.WHITE_PAWN) && (row_n == Position.WHITE_PAWN_PROMOTION_ROW))
                     {
                         WhitePromotionFigure = true;                            // Enables repaint() to draw white promotion figure selection
-                        //System.out.println("In MouseReleased() WhitePromotionFigure = " + WhitePromotionFigure);
                     }
                     if((Figure_n == Position.BLACK_PAWN) && (row_n == Position.BLACK_PAWN_PROMOTION_ROW))
                     {
                         BlackPromotionFigure = true;                            // Enables repaint() to draw black promotion figure selection
-                        //System.out.println("In MouseReleased() BlackPromotionFigure = " + BlackPromotionFigure);
                     }                
                     repaint();                                                  // Draws pawn on promotion row and promotion figure selection  
                     return;                                                     // Keeps MouseInputActive = true to allow user to select promtotion figure with mouse on mousePressed() event
@@ -452,7 +348,6 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             {
                 row_n = 0;                                                      // Will result in an invalid move and trigger anothrt mousePressed() event
                 col_n = 0;                                                      // Will result in an invalid move and trigger anothrt mousePressed() event
-                //System.out.println("col_n = " + col_n + " row_n = " + row_n);
             }
         }
         
@@ -470,10 +365,6 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
     @Override
     public void mouseClicked(MouseEvent e)                                      // Mouse button pressed and released at same location
     {
-       // x = e.getX();
-       // y = e.getY();
-       //repaint();         
-
     }
              
     @Override                                                                   // Runs when mouse button clicked and mouse moves
@@ -493,73 +384,31 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
    
     public static int GetRowFromMouse(int pixel_row)
     {
-        if(Chess.WhiteBoard)
-        {
-           return(Position.ROWS - (pixel_row / SQUARE_SIZE));              
-        }
-        else
-        {
-            return((pixel_row / SQUARE_SIZE) + 1);
-        }
+		return Chess.WhiteBoard ? Position.ROWS - (pixel_row / SQUARE_SIZE) : (pixel_row / SQUARE_SIZE) + 1;
     }    
 
     public static int GetColFromMouse(int pixel_col)
     {
-        if(Chess.WhiteBoard)
-        {
-           return((pixel_col / SQUARE_SIZE) + 1);
-        }
-        else
-        {
-           return(Position.ROWS - (pixel_col / SQUARE_SIZE));     
-        }
+		return Chess.WhiteBoard ? (pixel_col / SQUARE_SIZE) + 1 : Position.ROWS - (pixel_col / SQUARE_SIZE);
     }     
 
     public static int GetRowFromRowDraw(int row_d)
     {   
-        if(Chess.WhiteBoard)
-        {
-            return(Position.ROWS - row_d);  
-        }
-        else
-        {
-            return(row_d + 1);
-        }
+        return Chess.WhiteBoard ? Position.ROWS - row_d : row_d + 1;
     }    
     
     public static int GetColFromColDraw(int col_d)
     {   
-        if(Chess.WhiteBoard)
-        {
-            return(col_d + 1);               
-        }
-        else
-        {
-            return(Position.COLS - col_d);
-        }
+		return Chess.WhiteBoard ? col_d + 1 : Position.COLS - col_d;
     }    
     
     public static int GetRowDrawFromRow(int row)
     {
-        if(Chess.WhiteBoard)
-        {
-            return(Position.ROWS - row);              
-        }
-        else
-        {
-            return(row - 1);
-        }
+        return Chess.WhiteBoard ? Position.ROWS - row : row - 1;
     }    
     
     public static int GetColDrawFromCol(int col)
     {
-        if(Chess.WhiteBoard)
-        {
-            return(col - 1);               
-        }
-        else
-        {
-            return(Position.COLS - col);
-        }
+        return Chess.WhiteBoard ? col - 1 : Position.COLS - col;
     }    
 }

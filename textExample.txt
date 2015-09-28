@@ -1,0 +1,61 @@
+
+
+ 1.  d2-d3  e7-e5 
+ 2.  g2-g3 Bf8-c5 
+ 3.  b2-b3 Bc5-d4 
+ 4.  a2-a3 Bd4xa1 
+ 5. Bc1-d2 Ba1-d4 
+ 6.  c2-c4 Bd4-c5 
+ 7.  e2-e3  f7-f5 
+ 8.  b3-b4 Bc5-b6 
+ 9.  c4-c5  f5-f4 
+10.  c5xb6  a7xb6 
+11.  g3xf4  e5xf4 
+12.  e3xf4 Qd8-e7+
+13. Bd2-e3 Ke8-f8 
+14. Ng1-f3 Nb8-c6 
+15. Nf3-g5 Nc6xb4 
+16.  a3xb4 Qe7xb4+
+17. Be3-d2 Qb4-e7+
+18. Bf1-e2  h7-h6 
+19. Ng5-f3 Ra8-a2 
+20. Qd1-b3 Ra2xd2 
+21. Nb1xd2  g7-g5 
+22.  f4xg5  h6xg5 
+23. Rh1-g1 Rh8-h5 
+24. Qb3-b5  d7-d5 
+25. Qb5xd5  c7-c6 
+26. Qd5-d4  c6-c5 
+27. Qd4-d5 Ng8-f6 
+28. Qd5-c4  b6-b5 
+29. Qc4xb5 Bc8-d7 
+30. Qb5xb7 Qe7-e8 
+31. Nf3xg5 Rh5xh2 
+32. Qb7-f3  c5-c4 
+33.  d3xc4 Qe8-c8 
+34. Qf3xf6+Kf8-e8 
+35. Qf6-f7+Ke8-d8 
+36. Qf7-f8+Kd8-c7 
+37. Qf8-f4+Kc7-b7 
+38. Qf4xh2 Bd7-f5 
+39. Ng5-e4 Qc8-d8 
+40. Rg1-g7+Kb7-a8 
+41. Qh2-g3 Qd8-b6 
+42. Qg3-e5 Bf5-c8 
+43. Qe5-e8 Qb6-a6 
+44. Be2-g4 Qa6-a1+
+45. Ke1-e2 Qa1xg7 
+46. Qe8xc8+Ka8-a7 
+47. Qc8-d7+Qg7xd7 
+48. Bg4xd7 Ka7-b6 
+49.  f2-f4 Kb6-c7 
+50. Bd7-e6 Kc7-c6 
+51.  f4-f5 Kc6-b6 
+52.  f5-f6 Kb6-c6 
+53.  f6-f7 Kc6-b6 
+54.  f7-f8Q Kb6-a7 
+55. Qf8-d6 Ka7-a8 
+56. Qd6-d7 Ka8-b8 
+57. Ne4-c5 Kb8-a8 
+58. Qd7-b7#
+
