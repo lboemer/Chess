@@ -1,12 +1,12 @@
-8  BR  --  --  --  BK  --  --  BR 
-7  --  WP  BP  --  BP  BP  --  -- 
-6  --  --  --  BP  --  --  --  -- 
-5  --  --  --  --  --  --  BP  WP 
-4  BP  WP  --  --  --  --  --  -- 
-3  --  --  --  --  --  --  --  -- 
-2  --  --  WP  WP  WP  WP  WP  -- 
-1  --  --  --  --  WK  --  --  WR 
-   a   b   c   d   e   f   g   h
+8 r - - - k - - r 
+7 - P p - p p - - 
+6 - - - p - - - - 
+5 - - - - - - p P 
+4 p P - - - - - - 
+3 - - - - - - - - 
+2 - - P P P P P - 
+1 - - - - K - - R 
+  a b c d e f g h
 BLACK_MOVE
 2
 WRA1_OR_WKE1_DID_MOVE

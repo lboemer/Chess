@@ -147,20 +147,20 @@ public class Piece
     public static PieceMove BishopMove = new PieceMove(BishopDirections, 7);
     public static PieceMove PawnMove = new PieceMove(new int[][]{}, 1);
 
-    public static Piece empty        = new Piece(Position.EMPTY,      Position.EMPTY,   "", "--", " ", 0,   0,  0, Position.ROWS * Position.COLS, EmptyMove);
-    public static Piece white_king   = new Piece(Position.WHITE_KING, Position.WHITE,   "wk.png", "WK", "K", 400, 0, Position.MIN_WK, Position.MAX_WK, KingMove);
-    public static Piece white_queen  = new Piece(Position.WHITE_QUEEN, Position.WHITE,  "wq.png", "WQ", "Q", 880, 9, Position.MIN_WQ, Position.MAX_WQ, QueenMove);
-    public static Piece white_rook   = new Piece(Position.WHITE_ROOK, Position.WHITE,   "wr.png", "WR", "R", 510, 5, Position.MIN_WR, Position.MAX_WR, RookMove);
-    public static Piece white_knight = new Piece(Position.WHITE_KNIGHT, Position.WHITE, "wn.png", "WN", "N", 320, 3, Position.MIN_WN, Position.MAX_WN, KnightMove);
-    public static Piece white_bishop = new Piece(Position.WHITE_BISHOP, Position.WHITE, "wb.png", "WB", "B", 333, 3, Position.MIN_WB, Position.MAX_WB, BishopMove);
-    public static Piece white_pawn   = new Piece(Position.WHITE_PAWN, Position.WHITE,   "wp.png", "WP", " ", 100, 1, Position.MIN_WP, Position.MAX_WP, PawnMove);
+    public static Piece empty        = new Piece(Position.EMPTY,      Position.EMPTY,   "",       "-", " ", 0,   0,  0, Position.ROWS * Position.COLS, EmptyMove);
+    public static Piece white_king   = new Piece(Position.WHITE_KING, Position.WHITE,   "wk.png", "K", "K", 400, 0, Position.MIN_WK, Position.MAX_WK, KingMove);
+    public static Piece white_queen  = new Piece(Position.WHITE_QUEEN, Position.WHITE,  "wq.png", "Q", "Q", 880, 9, Position.MIN_WQ, Position.MAX_WQ, QueenMove);
+    public static Piece white_rook   = new Piece(Position.WHITE_ROOK, Position.WHITE,   "wr.png", "R", "R", 510, 5, Position.MIN_WR, Position.MAX_WR, RookMove);
+    public static Piece white_knight = new Piece(Position.WHITE_KNIGHT, Position.WHITE, "wn.png", "N", "N", 320, 3, Position.MIN_WN, Position.MAX_WN, KnightMove);
+    public static Piece white_bishop = new Piece(Position.WHITE_BISHOP, Position.WHITE, "wb.png", "B", "B", 333, 3, Position.MIN_WB, Position.MAX_WB, BishopMove);
+    public static Piece white_pawn   = new Piece(Position.WHITE_PAWN, Position.WHITE,   "wp.png", "P", " ", 100, 1, Position.MIN_WP, Position.MAX_WP, PawnMove);
     
-    public static Piece black_king   = new Piece(Position.BLACK_KING, Position.BLACK,   "bk.png", "BK", "K", -400, 0, Position.MIN_BK, Position.MAX_BK, KingMove);
-    public static Piece black_queen  = new Piece(Position.BLACK_QUEEN, Position.BLACK,  "bq.png", "BQ", "Q", -880, -9, Position.MIN_BQ, Position.MAX_BQ, QueenMove);
-    public static Piece black_rook   = new Piece(Position.BLACK_ROOK, Position.BLACK,   "br.png", "BR", "R", -510, -5, Position.MIN_BR, Position.MAX_BR, RookMove);
-    public static Piece black_knight = new Piece(Position.BLACK_KNIGHT, Position.BLACK, "bn.png", "BN", "N", -320, -3, Position.MIN_BN, Position.MAX_BN, KnightMove);
-    public static Piece black_bishop = new Piece(Position.BLACK_BISHOP, Position.BLACK, "bb.png", "BB", "B", -333, -3, Position.MIN_BB, Position.MAX_BB, BishopMove);
-    public static Piece black_pawn   = new Piece(Position.BLACK_PAWN, Position.BLACK,   "bp.png", "BP", " ", -100, -1, Position.MIN_BP, Position.MAX_BP, PawnMove);
+    public static Piece black_king   = new Piece(Position.BLACK_KING, Position.BLACK,   "bk.png", "k", "K", -400, 0, Position.MIN_BK, Position.MAX_BK, KingMove);
+    public static Piece black_queen  = new Piece(Position.BLACK_QUEEN, Position.BLACK,  "bq.png", "q", "Q", -880, -9, Position.MIN_BQ, Position.MAX_BQ, QueenMove);
+    public static Piece black_rook   = new Piece(Position.BLACK_ROOK, Position.BLACK,   "br.png", "r", "R", -510, -5, Position.MIN_BR, Position.MAX_BR, RookMove);
+    public static Piece black_knight = new Piece(Position.BLACK_KNIGHT, Position.BLACK, "bn.png", "n", "N", -320, -3, Position.MIN_BN, Position.MAX_BN, KnightMove);
+    public static Piece black_bishop = new Piece(Position.BLACK_BISHOP, Position.BLACK, "bb.png", "b", "B", -333, -3, Position.MIN_BB, Position.MAX_BB, BishopMove);
+    public static Piece black_pawn   = new Piece(Position.BLACK_PAWN, Position.BLACK,   "bp.png", "p", " ", -100, -1, Position.MIN_BP, Position.MAX_BP, PawnMove);
     
     public static Piece[] Pieces = 
     { 

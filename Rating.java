@@ -338,7 +338,7 @@ public class Rating
     
     public static void ShowPositionType(int Type)
     {
-        System.out.print("Position type:\t ");
+        System.out.print("Position Type:\t\t\t");
         switch(Type)
         {
             case UNDEFINED:
@@ -374,7 +374,7 @@ public class Rating
     
     public static void ShowGamePhase(int Phase)
     {
-        System.out.print("Game phase:\t ");
+        System.out.print("Game Phase:\t\t\t");
         switch(Phase)
         {
             case OPENING_GAME:

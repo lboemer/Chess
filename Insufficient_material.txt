@@ -1,15 +1,15 @@
-8  --  --  --  --  WB  --  --  -- 
-7  --  --  --  --  --  --  BK  -- 
-6  --  --  --  --  --  --  --  -- 
-5  --  --  --  --  --  --  --  -- 
-4  --  --  --  --  --  --  --  -- 
-3  --  --  --  --  --  --  --  -- 
-2  --  --  --  --  --  --  WK  -- 
-1  --  --  --  --  WN  --  --  -- 
-   a   b   c   d   e   f   g   h 
+8 - - - - Q - - - 
+7 - - - - - - k - 
+6 - - - - - - - - 
+5 - b - - - - - - 
+4 - - - - - - - - 
+3 - - - - - - - - 
+2 - - - - - - K - 
+1 - - - - N - - - 
+  a b c d e f g h 
 BLACK_MOVE
 0
-WRA1_OR_WKE1_DID_MOVE
-WRH1_OR_WKE1_DID_MOVE
-BRA8_OR_BKE8_DID_MOVE
-BRH8_OR_BKE8_DID_MOVE
+WRA1_OR_KE1_DID_MOVE
+WRH1_OR_KE1_DID_MOVE
+BRA8_OR_kE8_DID_MOVE
+BRH8_OR_kE8_DID_MOVE

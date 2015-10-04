@@ -1,11 +1,10 @@
 import java.util.*;
-import java.util.Scanner;                                                       // Import Scanner class
-import javax.swing.*;                                                           //notice javax
+import java.util.Scanner;      // Import Scanner class
+import javax.swing.*;       //notice javax
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import java.util.Hashtable;
-
 
 import java.awt.*;
 import java.awt.event.*;
@@ -13,7 +12,6 @@ import javax.swing.*;
 import java.io.*;
 import java.util.Scanner;
 import javax.swing.JTextArea;
-
 
 public class Chess
 {
@@ -129,14 +127,15 @@ public class Chess
         Info();        
         ShowPositionStatus = true;
         
-        int[][] MovePath                        = new int[Move.MAX_NUMBER_MOVE_LIST + Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds move history and move that the computer is currently analyzing 
-        int[][] MoveBest                        = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds best move
-        int[][] MoveBestFinishedIteration       = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds best move        
+        int[][] MovePath                    = new int[Move.MAX_NUMBER_MOVE_LIST + Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds move history and move that the computer is currently analyzing 
+        int[][] MoveBest                    = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds best move
+        int[][] MoveBestFinishedIteration   = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds best move        
         boolean Back = false;
         
         String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
         
-        do{                                                                     // New Game
+        do{   
+            // New Game
             Move.EmptyList(MovePath);
             Move.EmptyList(MoveBest);          
             Move.EmptyList(MoveBestFinishedIteration);            
@@ -160,20 +159,20 @@ public class Chess
                     {
                         switch(ui.GetUserMoveFromMouseInput(Pos, MovePath, MoveTable, MoveBestFinishedIteration, Back))
                         {
-                            case '0':                                           // User made a valid move
+                            case '0':   // User made a valid move
                                 Move.Display(MovePath, Move.STOP, Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);  
-                                Position.SwitchMoveColor(Pos);                  // Switch move color
+                                Position.SwitchMoveColor(Pos); 
                                 ui.repaintWindow(Pos); 
                                 NewGame = false;
                                 GetNewUserMove = false;
                                 Back = false;
                                 break;
                     
-                            case '1':                                           // Computer to make next move instead of player
+                            case '1':   // Computer to make next move instead of player
                                 NewGame = false;
                                 GetNewUserMove = false;
                                 Back = false;
-                                break;                                          // Leaves switch()
+                                break;  // Leaves switch()
                          
                             case '2':            
                                 Move.Revert(Pos, MovePath);                                
@@ -181,7 +180,7 @@ public class Chess
                                 
                                 GetNewUserMove = true;
                                 Back = true;
-                                break;                                          // Leaves switch()       
+                                break;  // Leaves switch()       
                             
                             case 'x':
                                 System.out.println("Entered x: Exit program!");
@@ -194,7 +193,7 @@ public class Chess
                     
                     if(NewGame)
                     {
-                        break;                                                  // Leaves do loop to start new game
+                        break;      // Leaves do loop to start new game
                     }
 
                     if(Position.End(Pos, MovePath))
@@ -210,7 +209,8 @@ public class Chess
                 ComputerBegin_ms = UserEnd_ms;
                 
                 if((PlayMode == Settings.PLAYER_COMPUTER) || (PlayMode == Settings.COMPUTER_COMPUTER))            
-                {                                                               // Computer to make move
+                {        
+                    // Computer to make move
                     Start = System.currentTimeMillis( );
                     Total_Move_Counter = 0;
                     Iteration = 1;
@@ -224,8 +224,11 @@ public class Chess
                  
                     for(MoveDepth = 1; MoveDepth <= MaxMoveDepth; MoveDepth++)  // Generate Computer move
                     {
-                        alpha = -(Rating.CHECKMATE_RATING + 1);                 // alpha = min, min is smaller than checkmate rating such that a checkmate rating triggers an update of alpha
-                        beta  =   Rating.CHECKMATE_RATING + 1;                  // beta = max,  max is larger  than checkmate rating such that a checkmate rating triggers an update of beta
+                        // Set alpha to min rating smaller than checkmate rating such that a checkmate rating triggers an update of alpha
+                        alpha = -(Rating.CHECKMATE_RATING + 1);    
+                        
+                        // Set beta to max rating larger than checkmate rating such that a checkmate rating triggers an update of beta
+                        beta  =   Rating.CHECKMATE_RATING + 1;                 
             
                         Iteration_Move_Counter[Iteration] = 0;
                         if(DebugLevel > Settings.LOW)
@@ -261,7 +264,7 @@ public class Chess
   
                         Move.CopyList(MoveBest, 0, MoveBestFinishedIteration);                              
                                               
-                        System.out.print(MoveDepth);                            // Only show finished MoveDepth evaluation
+                        System.out.print(MoveDepth);  // Only show finished MoveDepth evaluation
                         System.out.format("  %9d", Total_Move_Counter); 
                         
                         RatingFloat = LocalRating;
@@ -279,7 +282,7 @@ public class Chess
 
                         if((LocalRating == Rating.CHECKMATE_RATING) || (LocalRating == -Rating.CHECKMATE_RATING))
                         {
-                            break;                                              // ?? May I need EndPosition()   ?
+                            break;      // ?? May I need EndPosition()   ?
                         }                                              
                     }                      
                     
@@ -367,14 +370,16 @@ public class Chess
         Move.EmptyList(MovesPosition);  
         Move.MoveListIteration  = 1;   
         
-        Position.GenerateMoveList(Pos, MovesPosition, MovePath, ReturnOnFirstMovePossible);                    // Generates all possible moves for one position into MovesPosition
+        // Generate all possible moves for one position into MovesPosition
+        Position.GenerateMoveList(Pos, MovesPosition, MovePath, ReturnOnFirstMovePossible);                  
              
-        Move.SortList(MovesPosition);                                           // Sorts the move list and places best move first
+        // Sort the move list and place best move first
+        Move.SortList(MovesPosition);                                         
 
         switch(DecisionRule)
         {  
             case Settings.MINMAX:
-                if(Position.GetMoveColor(Pos) == Position.WHITE_MOVE)           // Max node
+                if(Position.GetMoveColor(Pos) == Position.WHITE_MOVE)  // Max node
                 {                                                               
                     minmax = - (Rating.CHECKMATE_RATING + 1);
                     if(ShowStatus > Settings.LOW)
@@ -382,7 +387,7 @@ public class Chess
                         System.out.println("Iteration " + Iteration + " Set minmax to " + minmax);  
                     }
                 }
-                else                                                            // Min node
+                else                                               // Min node
                 {                                                                                           
                     minmax = Rating.CHECKMATE_RATING + 1;
                     if(ShowStatus > Settings.LOW)
@@ -396,8 +401,9 @@ public class Chess
                 break;
         }        
         
-        loop_over_all_moves_in_one_position:                                    // Set break point 
-        for(p = 0; MovesPosition[p][Move.FIGURE] != Position.EMPTY; p++)        // Loop over all possible moves in one position
+        loop_over_all_moves_in_one_position:               // Set break point
+        // Loop over all possible moves in one position
+        for(p = 0; MovesPosition[p][Move.FIGURE] != Position.EMPTY; p++)        
         {    
             if(Total_Move_Counter > MaxMoves - 1)
             {
@@ -411,19 +417,20 @@ public class Chess
                 return MOVE_NOT_POSSIBLE ;    
             }
             
-            Total_Move_Counter++;                                               // Valid move, increase total move counter
-            Iteration_Move_Counter[Iteration] ++;                               // Increase count of moves in current iteration level
-            Display_Move_Counter[Iteration] ++;                                 // Increase count of moves in current iteration level      
+            Total_Move_Counter++;                   // Valid move, increase total move counter
+            Iteration_Move_Counter[Iteration] ++;   // Increase count of moves in current iteration level
+            Display_Move_Counter[Iteration] ++;     // Increase count of moves in current iteration level      
           
-            Move.Set(MovesPosition, p, MovePath, Ply + Iteration - 1);          // Adds move p from MovesPosition to MovePath and sets reminder of MovePath to 0  
+            Move.Set(MovesPosition, p, MovePath, Ply + Iteration - 1); // Adds move p from MovesPosition to MovePath and sets reminder of MovePath to 0  
             
             if((MovesPosition[p][Move.POSITION_STATUS] == Position.NO_CONDITION) && (Iteration < MoveDepth))   
-            {                                                                   // Parentnode, create children  
-                Position.Copy(Pos, PosStore);                                   // Store position
+            {                                                                   
+                // Parentnode, create children  
+                Position.Copy(Pos, PosStore);    // Store position
                 
-                Position.SwitchMoveColor(Pos);                                  // Switch move color
-                Iteration ++;                                                   // Increase counter for move iteration 
-                Iteration_Move_Counter[Iteration] = 0;                          // Reset counter for move iteration
+                Position.SwitchMoveColor(Pos);  // Switch move color
+                Iteration ++;                   // Increase counter for move iteration 
+                Iteration_Move_Counter[Iteration] = 0; // Reset counter for move iteration
                 Display_Move_Counter[Iteration] = 0;  
                 
                 Move.Make(Pos,  MovesPosition[p][Move.ROW],
@@ -435,17 +442,17 @@ public class Chess
                                     Move.DO_NOT_ADD_TO_MOVE_HISTORY);  
                 RatingScore = Iterate(Pos, alpha, beta, MovePath, MoveRating);   
 
-                Iteration--;                                                    // Decrease counter for move iteration
-                Iteration_Move_Counter[Iteration + 1] = 0;                      // Not sure if required
-                Display_Move_Counter[Iteration + 1] = 0;                        // Not sure if required
+                Iteration--;   // Decrease counter for move iteration
+                Iteration_Move_Counter[Iteration + 1] = 0; // Not sure if required
+                Display_Move_Counter[Iteration + 1] = 0;   // Not sure if required
 
-                Position.Copy(PosStore, Pos);                                   // Restore position          
+                Position.Copy(PosStore, Pos);  // Restore position          
             
             }
-            else                                                                // Child node
+            else        // Child node, no more iterations, return rating of ths position
             {
                 RatingScore = MovesPosition[p][Move.RATING];  
-                Move.CopyList(MovePath, Ply, MoveRating);                       // Copies move under investigation to MoveRating                       
+                Move.CopyList(MovePath, Ply, MoveRating); // Copies move under investigation to MoveRating                       
             }
             
             if(RatingScore == MOVE_NOT_POSSIBLE)
@@ -472,17 +479,20 @@ public class Chess
                                                 
                 case Settings.ALPHA_BETA:                
                     if((Position.GetMoveColor(Pos) == Position.WHITE_MOVE) && (RatingScore > alpha))
-                    {                                                           // Max node
+                    {   
+                        // Max node
                         alpha = RatingScore;                         
                         Move.CopyList(MoveRating, 0, MoveBestUpper);
                     }
                     if((Position.GetMoveColor(Pos) == Position.BLACK_MOVE) && (RatingScore < beta))                                                    
-                    {                                                           // Min node
+                    {                                                           
+                        // Min node
                         beta = RatingScore;
                         Move.CopyList(MoveRating, 0, MoveBestUpper);
                     }
                     if((alpha >= beta) || (alpha == Rating.CHECKMATE_RATING) || (beta == -Rating.CHECKMATE_RATING))             
-                    {                                                           // No more siblings also called alpha-beta pruned
+                    {                                                           
+                        // No more siblings also called alpha-beta pruned
                         AlphaBetaCounter[Iteration] ++;
                         break loop_over_all_moves_in_one_position;
                     }  
@@ -496,17 +506,17 @@ public class Chess
                 return minmax;
                           
             case Settings.ALPHA_BETA:
-                if(Position.GetMoveColor(Pos) == Position.WHITE_MOVE)           // Max node
+                if(Position.GetMoveColor(Pos) == Position.WHITE_MOVE)  // Max node
                 {                                 
                     return alpha;              
                 }
-                if(Position.GetMoveColor(Pos) == Position.BLACK_MOVE)           // Min node                              
+                if(Position.GetMoveColor(Pos) == Position.BLACK_MOVE)   // Min node                              
                 {                                    
                     return beta;
                 } 
                 break;  
         }
-        return 0;                                                               // This statement is not reached and is added to make compiler happy  
+        return 0; // This statement is not reached and is added to make compiler happy  
     }    
 
     public static boolean SetBoard(int[][] Pos)

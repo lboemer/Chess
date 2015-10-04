@@ -41,41 +41,6 @@ public class Position
     public static final int MIN_WK = 1, MAX_WK          = 1;
     public static final int MIN_BK = 1, MAX_BK          = 1;         
 
-    public static int[] WhiteFigure = 
-    { 
-        WHITE_KING, 
-        WHITE_QUEEN, 
-        WHITE_ROOK, 
-        WHITE_KNIGHT, 
-        WHITE_BISHOP, 
-        WHITE_PAWN
-    };
-                                                            
-    public static int[] BlackFigure = { 
-        BLACK_KING, 
-        BLACK_QUEEN, 
-        BLACK_ROOK, 
-        BLACK_KNIGHT, 
-        BLACK_BISHOP, 
-        BLACK_PAWN
-    };
-            
-    public static int[] WhitePromotionFigure = 
-    { 
-        WHITE_QUEEN, 
-        WHITE_ROOK, 
-        WHITE_KNIGHT, 
-        WHITE_BISHOP
-    };
-                                                            
-    public static int[] BlackPromotionFigure = 
-    { 
-        BLACK_QUEEN, 
-        BLACK_ROOK, 
-        BLACK_KNIGHT, 
-        BLACK_BISHOP
-    }; 
-
     public static final int A                           = 1;
     public static final int B                           = 2;
     public static final int C                           = 3;
@@ -171,7 +136,6 @@ public class Position
     public static final int NEW_POSITION                = 0;
     public static final int PAWN_POSITION               = 1;    
     public static final int EN_PASSANT_POSITION         = 2;
-    
     public static final int PROMOTION_POSITION          = 3;
     public static final int CASTLING_POSITION           = 4;
     public static final int INSUFFICIENT_MATERIAL_POSITION  = 5;
@@ -184,6 +148,54 @@ public class Position
     public static final int RECEIVING_CHECK             = 1;    
 
     public static int       BeginPosition;   
+    
+    public static int[] WhiteFigure = 
+    { 
+        WHITE_KING, 
+        WHITE_QUEEN, 
+        WHITE_ROOK, 
+        WHITE_KNIGHT, 
+        WHITE_BISHOP, 
+        WHITE_PAWN
+    };
+                                                            
+    public static int[] BlackFigure = { 
+        BLACK_KING, 
+        BLACK_QUEEN, 
+        BLACK_ROOK, 
+        BLACK_KNIGHT, 
+        BLACK_BISHOP, 
+        BLACK_PAWN
+    };
+            
+    public static int[] WhitePromotionFigure = 
+    { 
+        WHITE_QUEEN, 
+        WHITE_ROOK, 
+        WHITE_KNIGHT, 
+        WHITE_BISHOP
+    };
+                                                            
+    public static int[] BlackPromotionFigure = 
+    { 
+        BLACK_QUEEN, 
+        BLACK_ROOK, 
+        BLACK_KNIGHT, 
+        BLACK_BISHOP
+    }; 
+    
+    public static final String[] colStr = // used to display column notation
+    {
+        "a  ",
+        "b  ",
+        "c  ",
+        "d  ",
+        "e  ",
+        "f  ",
+        "g  ",
+        "h  "
+    };
+    
     
     public static String ToString(int[][] Pos)
     {
@@ -202,14 +214,22 @@ public class Position
         
         Clear(Pos);
 
-        try {
+        try
+        {
             Scanner sc = new Scanner(file);
-            for (int row = ROWS; row > 0; row--)
+            for(int row = ROWS; row > 0; row--)
             {
+                
                 sc.next(); // skip row number
-                for (int col = 1; col <= COLS; col++)
+                for(int col = 1; col <= COLS; col++)
                 {
                     Pos[row][col] = Piece.ConsoleNotationToType(sc.next());
+                    if(ValidPiece(Pos[row][col])) 
+                    {
+                        continue;    // Continues with next column
+                    }
+                    System.out.println("Pos[" + row + "][" + col + "] = " + Pos[row][col] + " is invalid. Please check input file."); 
+                    return;
                 } 
             }
             sc.nextLine(); // skip to end of row
@@ -230,11 +250,23 @@ public class Position
             SetBlackShortCastling(Pos, sc.next().equals("BRH8_AND_BKE8_DID_NOT_MOVE") ? 
                 BRH8_AND_BKE8_DID_NOT_MOVE : BRH8_OR_BKE8_DID_MOVE);
             
-        sc.close();
+            sc.close();
         } 
         catch (FileNotFoundException e) {
             System.out.println("File " + filename + " not found");
         }
+    }
+    
+    public static boolean ValidPiece(int Figure)
+    {
+        for(int pieceNumber = 0; pieceNumber < NUM_PIECES; pieceNumber++)
+        {
+            if(Figure == pieceNumber)
+            {
+                return true;     // Found valid piece
+            }
+        }
+        return false;    // No valid piece found
     }
     
     public static void Clear(int[][] Pos)
@@ -312,41 +344,19 @@ public class Position
             System.out.print(row + " ");
             for(col = 1; col <= COLS; col++)
             {
+                //System.out.println("Piece.Pieces[Pos[" + row +"][" + col + "]].getConsoleNotation() = ");
+                //System.out.println("Pos[" + row + "][" + col + "] = " + Pos[row][col]);
+                //System.out.print(Piece.Pieces[Pos[row][col]].getConsoleNotation());
                 System.out.print(" " + Piece.Pieces[Pos[row][col]].getConsoleNotation() + " ");
             }
             System.out.print ("\n");
         }
 
+        // Show column notation as a, b, c, ..., h
         System.out.print("   ");
-        for(col = 1; col <= COLS; col++)
+        for(col = 0; col < COLS; col++) // colStr starts at 0
         {
-            switch(col)
-            {
-                case 1:
-                    System.out.print("a   "); 
-                    break;
-                case 2:
-                    System.out.print("b   "); 
-                    break;                   
-                case 3:
-                    System.out.print("c   "); 
-                    break;
-                case 4:
-                    System.out.print("d   "); 
-                    break;                     
-                case 5:
-                    System.out.print("e   "); 
-                    break;
-                case 6:
-                    System.out.print("f   "); 
-                    break;                   
-                case 7:
-                    System.out.print("g   "); 
-                    break;
-                case 8:
-                    System.out.println("h   "); 
-                    break;             
-            }
+            System.out.print(colStr[col]); 
         }
         
         if(Chess.ShowStatus > Settings.HIGH)
@@ -382,12 +392,12 @@ public class Position
     
     public static void ShowNumberOfRepetitivePositions(int[][] Pos)
     {
-        System.out.println("RepetitivePositionCounter: " + GetNumberOfRepetitivePositions(Pos));
+        System.out.println("RepetitivePositionCounter: \t" + GetNumberOfRepetitivePositions(Pos));
     }        
     
     public static void ShowFiftyMoveCounter(int[][] Pos)
     {
-        System.out.println("FiftyMoveCounter: " + GetNumberOfMovesWithNoPawnMoveOrCapture(Pos));
+        System.out.println("FiftyMoveCounter: \t\t" + GetNumberOfMovesWithNoPawnMoveOrCapture(Pos));
     }
     
     public static void SetMoveColor(int[][] Pos, int color)
