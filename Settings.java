@@ -37,9 +37,19 @@ public class Settings
     public static final int HEADER                      = 1;
     
     // Empty "" so indices start from 1
-    public static final String[] positionMap = {"", "New", "Pawn", "En passant", "Promotion",
-								"Castling", "Insufficient material", "One Move Mate",
-								"Two Move Mate", "Three Move Mate"};
+    public static final String[] positionMap = 
+    {
+        "", 
+        "New", 
+        "Pawn", 
+        "En passant", 
+        "Promotion",
+        "Castling", 
+        "Insufficient material", 
+        "One Move Mate",
+        "Two Move Mate", 
+        "Three Move Mate"
+    };
     
     public static void Settings(int[][] Pos)
     {
@@ -223,8 +233,8 @@ public class Settings
             System.out.println("Enter \t\t Position");
             for (i = 1; i < positionMap.length; i++)
             {
-				System.out.println(i + " \t\t " + positionMap[i]);
-			}
+		System.out.println(i + " \t\t " + positionMap[i]);
+            }
             
             inputString = scanner.nextLine();     
             UserInput = Character.getNumericValue(inputString.charAt(0));

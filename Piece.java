@@ -97,7 +97,7 @@ public class Piece
         return -1;
     }
 
-    public static int[][] KingDirection = new int[][]
+    public static int[][] EightDirections = new int[][]
     {// row, col
         { 0,  1},       // Move east
         {-1,  1},       // Move southeast
@@ -109,7 +109,7 @@ public class Piece
         { 1,  1}        // Move northeast
     };
 
-    public static int[][] KnightDirection = new int[][]
+    public static int[][] KnightDirections = new int[][]
     {// row, col 
         { 2,  1},       // Move north northeast
         { 1,  2},       // Move east  northeast
@@ -121,7 +121,7 @@ public class Piece
         { 2, -1}        // Move north northwest
     };    
 
-    public static int[][] BishopDirection = new int[][]
+    public static int[][] BishopDirections = new int[][]
     {// row, col 
         { 1,  1},       // Move northeast
         {-1,  1},       // Move southheast
@@ -129,14 +129,15 @@ public class Piece
         { 1, -1},       // Move northeast
     };                                                    
 
-    public static int[][] RookDirection = new int[][]
+    public static int[][] RookDirections = new int[][]
     {// row, col
         { 0,  1},       // Move east
         {-1,  0},       // Move south
         { 0, -1},       // Move west
         { 1,  0},       // Move north
     };
-
+    
+    /*
     public static int[][] QueenDirection = new int[][]
     {// row, col 
         { 0,  1},       // Move east
@@ -148,15 +149,16 @@ public class Piece
         {-1, -1},       // Move southwest
         { 1, -1},       // Move northeast
     };
+    */
     
     public static int[][] Empty = new int[][]{};
 
     public static PieceMove EmptyMove = new PieceMove(Empty, 0);
-    public static PieceMove KingMove = new PieceMove(KingDirection, 1);
-    public static PieceMove QueenMove = new PieceMove(QueenDirection, 7);
-    public static PieceMove RookMove = new PieceMove(RookDirection, 7);
-    public static PieceMove KnightMove = new PieceMove(KnightDirection, 1);
-    public static PieceMove BishopMove = new PieceMove(BishopDirection, 7);
+    public static PieceMove KingMove = new PieceMove(EightDirections, 1);
+    public static PieceMove QueenMove = new PieceMove(EightDirections, 7);
+    public static PieceMove RookMove = new PieceMove(RookDirections, 7);
+    public static PieceMove KnightMove = new PieceMove(KnightDirections, 1);
+    public static PieceMove BishopMove = new PieceMove(BishopDirections, 7);
     public static PieceMove PawnMove = new PieceMove(new int[][]{}, 1);
 
     public static Piece empty        = new Piece(Position.EMPTY,      Position.EMPTY,   "", "--", " ", 0,   0,  0, Position.ROWS * Position.COLS, EmptyMove);
