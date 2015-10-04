@@ -50,43 +50,7 @@ public class Move
                                                             Position.BLACK_ROOK, 
                                                             Position.BLACK_KNIGHT, 
                                                             Position.BLACK_BISHOP};
-                                                            
-    public static int[][] KingMove                      = new int[][]{ 
-                                                            { 0,  1},       // Move east
-                                                            {-1,  1},       // Move southeast
-                                                            {-1,  0},       // Move south
-                                                            {-1, -1},       // Move southwest
-                                                            { 0, -1},       // Move west
-                                                            { 1, -1},       // Move northwest
-                                                            { 1,  0},       // Move north
-                                                            { 1,  1}        // Move northeast
-                                                        };
-                                                        
-    public static int[][] KnightMove                    = new int[][]{ 
-                                                            { 2,  1},       // Move north northeast
-                                                            { 1,  2},       // Move east  northeast
-                                                            {-1,  2},       // Move east  southeast
-                                                            {-2,  1},       // Move south southeast
-                                                            {-2, -1},       // Move south southwest
-                                                            {-1, -2},       // Move west  southwest
-                                                            { 1, -2},       // Move west  northwest
-                                                            { 2, -1}        // Move north northwest
-                                                        };    
-                                                        
-    public static int[][] BishopDirection               = new int[][]{ 
-                                                            { 1,  1},       // Move northeast
-                                                            {-1,  1},       // Move southheast
-                                                            {-1, -1},       // Move southwest
-                                                            { 1, -1},       // Move northwest
-                                                        };                                                    
-                                                        
-    public static int[][] RookDirection               = new int[][]{ 
-                                                            { 0,  1},       // Move east
-                                                            {-1,  0},       // Move south
-                                                            { 0, -1},       // Move west
-                                                            { 1,  0},       // Move north
-                                                        };     
-                                                        
+    
     // Move list display format 
     public static final int LINE                                = 0;
     public static final int LIST                                = 1;    
@@ -193,14 +157,13 @@ public class Move
                 }
             }
             else
-            {                                                               // Black is first move
+            {                                                                   // Black is first move
                 switch(ListFormat)
                 {
                     case LINE:
                         t = 0;
                         if(l == 0)
                         {
-                            //MoveTable[t] = String.format(" 1.   ...   ");
                             MoveTable[t] = String.format("%2d.   ...   ", (MoveStart + 1) / 2);
                         }
                         if((l % 2) == 1)
@@ -263,7 +226,7 @@ public class Move
         DisplayConsole(MoveTable);
     }
     
-    public static void DisplayConsole(String[] MoveTable)              //Display MoveTable[] wich is a list of strings to console
+    public static void DisplayConsole(String[] MoveTable)                       //Display MoveTable[] wich is a list of strings to console
     {
         int t;  
      
@@ -411,7 +374,7 @@ public class Move
         }                
     } 
  
-    public static void Set(int[][] Move, int m, int[][] MovePath, int l)    // Copies Move[m] to MovePath[l]
+    public static void Set(int[][] Move, int m, int[][] MovePath, int l)        // Copies Move[m][] to MovePath[l][]
     {
         int i;
         
@@ -749,7 +712,7 @@ public class Move
             MovePath[m][FIFTY_MOVE_COUNTER]             = FifyMoveCounterPreviousPosition;
             Chess.Ply++;
         }
-        Position.SetNumberOfRepetitivePositions(Pos, RepetitivePositions(MovePath)); //    
+        Position.SetNumberOfRepetitivePositions(Pos, RepetitivePositions(MovePath));  
     }
         
     public static boolean UserSuccessful(int[][] Pos, int row, int col, int Figure_n, int row_n, int col_n, int[][] MovePath)       

@@ -228,23 +228,23 @@ public class Position
         int row;
         int col;
       
-        for(row = 0; row <= ROWS; row++)                                       // Loop over total ROWS + 1
+        for(row = 0; row <= ROWS; row++)                                        // Loop over total ROWS + 1
         {   
-            for(col = 0; col <= COLS; col++)                                   // Loop over total COLS + 1 
+            for(col = 0; col <= COLS; col++)                                    // Loop over total COLS + 1 
             {
                 Pos[row][col] = EMPTY;
             }
         }    
     }
     
-    public static void Copy(int[][] Pos, int[][] PosStore)             // Copies Pos to PosStore
+    public static void Copy(int[][] Pos, int[][] PosStore)                      // Copies Pos to PosStore
     {
         int row;
         int col;
         
-        for(row = 0; row <= ROWS; row++)                                    // Loop over total ROWS + 1
+        for(row = 0; row <= ROWS; row++)                                        // Loop over total ROWS + 1
         {   
-            for(col = 0; col <= COLS; col++)                                // Loop over total COLS + 1 
+            for(col = 0; col <= COLS; col++)                                    // Loop over total COLS + 1 
             {
                 PosStore[row][col] = Pos[row][col];
             }
@@ -1035,14 +1035,14 @@ public class Position
                             break;
                     }                
                
-                    col_n = col;                                            // Move Pawn one field forward
+                    col_n = col;                                                // Move Pawn one field forward
                     row_n = row + PawnStep;      
                     if(Pos[row_n][col_n] == Position.EMPTY)                                                    
                     {
                         if((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))                        
-                        {                                                   // Convert Pawn
+                        {                                                       // Convert Pawn
                             for(i = 0; i < WhitePromotionFigure.length; i++)    
-                            {                                               // Loop for Queen, Rook, Knight, Bishop
+                            {                                                   // Loop for Queen, Rook, Knight, Bishop
                                 switch(GetMoveColor(Pos))
                                 {
                                     case WHITE_MOVE:
@@ -1072,7 +1072,7 @@ public class Position
                     }
                     
                     col_n = col;        
-                    row_n = row + 2 * PawnStep;                             // Move two PawnSteps forward
+                    row_n = row + 2 * PawnStep;                                 // Move two PawnSteps forward
                     if(((GetMoveColor(Pos) == WHITE_MOVE) && (row == WHITE_PAWN_INITIAL_ROW)) || 
                         ((GetMoveColor(Pos) == BLACK_MOVE) && (row == BLACK_PAWN_INITIAL_ROW)))
                     {
@@ -1086,13 +1086,13 @@ public class Position
                         }
                     }
                     
-                    for(i = -1; i < 2; i += 2)                                 // Pawn takes opponent figure away
+                    for(i = -1; i <= 1; i += 2)                                  // Pawn takes opponent figure away
                     {
                         col_n = col + i;
                         row_n = row + PawnStep;
                         if((col_n >= 1) && (col_n <= COLS) && (OpponentFigure(Pos, row_n, col_n)))
                         {
-                            if((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))                     // Convert Pawn                           
+                            if((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))      // Convert Pawn                           
                             {                                                   // Take away opponent figure
                                 for(i = 0; i < WhitePromotionFigure.length; i++)    // Loop for Queen, Rook, Knight, Bishop
                                 {                                               // .... and convert to new officer
@@ -1137,7 +1137,7 @@ public class Position
                         }                        
                     }                   
                     break;
-               
+               /*
                 case WHITE_ROOK:
                 case BLACK_ROOK:
                     if(DirectionMoves(Move.RookDirection, Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible))
@@ -1197,7 +1197,29 @@ public class Position
                             return true;
                         }
                     }
+                    */
                     
+                case WHITE_ROOK:
+                case BLACK_ROOK:
+                case WHITE_KNIGHT:
+                case BLACK_KNIGHT:
+                case WHITE_BISHOP:
+                case BLACK_BISHOP:
+                case WHITE_QUEEN:
+                case BLACK_QUEEN:        
+                    if(DirectionMoves(Piece.Pieces[Figure].getPieceMove(), Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible))
+                    {
+                        return true;
+                    }
+                    break;
+
+                case WHITE_KING:
+                case BLACK_KING:
+                    if(DirectionMoves(Piece.Pieces[Figure].getPieceMove(), Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible))
+                    {
+                        return true;
+                    }   
+                  
                     list = Move.Castling(Pos, CastlingList);
                     for(i = 0; i < list; i++)
                     {
@@ -1239,9 +1261,11 @@ public class Position
         }
         return false;                                                           // Only used by AnyMovePossible()
     }       
-        
-    public static boolean DirectionMoves(int[][] Direction, int[][]Pos, int row, int col, int Figure, int row_n, int col_n, int[][] MovesPosition, int[][]MovePath, boolean ReturnOnFirstMovePossible)
+    
+    //public static boolean DirectionMoves(int[][] Direction, int[][]Pos, int row, int col, int Figure, int row_n, int col_n, int[][] MovesPosition, int[][]MovePath, boolean ReturnOnFirstMovePossible)
+    public static boolean DirectionMoves(Piece.PieceMove piece_move, int[][]Pos, int row, int col, int Figure, int row_n, int col_n, int[][] MovesPosition, int[][]MovePath, boolean ReturnOnFirstMovePossible)
     {
+        int [][] Direction = piece_move.direction;
         int dir;
         int i;
         boolean MoveAdded;
@@ -1250,6 +1274,7 @@ public class Position
         {
             for(i = 1;!OffBoardOrOwnFigure(Pos, row + Direction[dir][0] * i, col + Direction[dir][1] * i); i++)      
             {
+                if( i > piece_move.max_steps) { break; }
                 MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row + Direction[dir][0] * i, col + Direction[dir][1] * i, MovesPosition, MovePath, ReturnOnFirstMovePossible);
                 if(ReturnOnFirstMovePossible && MoveAdded)
                 {
@@ -1275,7 +1300,7 @@ public class Position
         int i;
         int[][] PosStore = new int[Position.ROWS + 1][Position.COLS + 1];
         
-        Copy(Pos, PosStore);                                            // Store position
+        Copy(Pos, PosStore);                                                    // Store position
         Figure              = Pos[row][col]; 
         Figure_p            = Pos[row_n][col_n];
         if(((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n) && (Figure_p == Position.EMPTY))
@@ -1303,7 +1328,7 @@ public class Position
             MovesPosition[MoveNumber][Move.CHECK_STATUS]        = Position.GetCheckStatus(Pos, MovesPosition[MoveNumber][Move.POSITION_STATUS]);    // Needed to display check as part of move
             MovesPosition[MoveNumber][Move.RATING]              = Rating.Rating(Pos, MovesPosition[MoveNumber][Move.POSITION_STATUS]);           // Needed to display rating as part of move
         }
-        Copy(PosStore, Pos);                                            // Restore position
+        Copy(PosStore, Pos);                                                    // Restore position
         return AddMove;                                                         // Returns true if move was added
     }
 }
