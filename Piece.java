@@ -137,20 +137,6 @@ public class Piece
         { 1,  0},       // Move north
     };
     
-    /*
-    public static int[][] QueenDirection = new int[][]
-    {// row, col 
-        { 0,  1},       // Move east
-        {-1,  0},       // Move south
-        { 0, -1},       // Move west
-        { 1,  0},       // Move north
-        { 1,  1},       // Move northeast
-        {-1,  1},       // Move southheast
-        {-1, -1},       // Move southwest
-        { 1, -1},       // Move northeast
-    };
-    */
-    
     public static int[][] Empty = new int[][]{};
 
     public static PieceMove EmptyMove = new PieceMove(Empty, 0);

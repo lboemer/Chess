@@ -16,7 +16,7 @@ public class Settings
     public static final int DEFAULT_MAX_MOVE_DEPTH      = 50;   
     
     public static final long ABSOLUTE_MAX_SECONDS       = 60 * 60 * 24; // 24 h 
-    public static final long DEFAULT_MAX_SECONDS        = 5;  // per computer move 
+    public static final long DEFAULT_MAX_SECONDS        = 10;  // per computer move 
     
     // Decision rule
     public static final int MINMAX                      = 0;
@@ -33,11 +33,7 @@ public class Settings
     public static final int PLAYER                      = 0;
     public static final int COMPUTER                    = 1;
     public static final int DEFAULT_FIRST_MOVE          = PLAYER;
-     
-    public static final int NO_HEADER                   = 0;
-    public static final int HEADER                      = 1;
-    
-    // Empty "" so indices start from 1
+
     public static final String[] positionMap = 
     {
         "New", 
@@ -146,14 +142,14 @@ public class Settings
             ClearScreen(Pos);
             
             System.out.println("Enter\t Settings \t\t\t Current setting");
-            System.out.print("1 \t Set Position\t\t\t ");               ShowPosition(NO_HEADER);
-            System.out.print("2 \t Set Max Computer Moves\t\t ");       ShowMaxMoves(NO_HEADER);
-            System.out.print("3 \t Set Max Computer Move Depth\t ");    ShowMaxMoveDepth(NO_HEADER);
-            System.out.print("4 \t Set Max Computer Seconds\t ");       ShowMaxSeconds(NO_HEADER);
-            System.out.print("5 \t Set Decision Rule\t\t ");            ShowDecisionRule(NO_HEADER);
-            System.out.print("6 \t Set Move Color\t\t\t ");             ShowMoveColor(Pos, NO_HEADER);
-            System.out.print("7 \t Set Play Mode\t\t\t ");              ShowPlayMode(NO_HEADER); 
-            System.out.print("8 \t Set First Move\t\t\t ");             ShowFirstMove (NO_HEADER);
+            System.out.print("1 \t Set Position\t\t\t ");               ShowPosition();
+            System.out.print("2 \t Set Max Computer Moves\t\t ");       ShowMaxMoves();
+            System.out.print("3 \t Set Max Computer Move Depth\t ");    ShowMaxMoveDepth();
+            System.out.print("4 \t Set Max Computer Seconds\t ");       ShowMaxSeconds();
+            System.out.print("5 \t Set Decision Rule\t\t ");            ShowDecisionRule();
+            System.out.print("6 \t Set Move Color\t\t\t ");             ShowMoveColor(Pos);
+            System.out.print("7 \t Set Play Mode\t\t\t ");              ShowPlayMode(); 
+            System.out.print("8 \t Set First Move\t\t\t ");             ShowFirstMove ();
             System.out.println("x \t Exit");
                     
             inputString = scanner.nextLine(); 
@@ -358,7 +354,6 @@ public class Settings
             
             if (Chess.MaxMoveDepth > ABSOLUTE_MAX_MOVE_DEPTH -1)
             {
-                ShowMaxMoveDepth(HEADER);
                 System.out.println("ABSOLUTE_MAX_MOVES_DEPTH is = " + ABSOLUTE_MAX_MOVE_DEPTH);
                 System.out.println("Please lower MaxMoveDepth");
             }
@@ -789,48 +784,28 @@ public class Settings
         return '0';
     }
     
-    public static void ShowPosition(int type)
+    public static void ShowPosition()
     {       
-        if (type == HEADER)
-        {
-            System.out.print("Position:\t\t\t ");
-        }
         System.out.println(positionMap[Position.BeginPosition]);
     }
     
-    public static void ShowMaxMoves(int type)
+    public static void ShowMaxMoves()
     {
-        if(type == HEADER)
-        {        
-            System.out.print("Max Computer Moves: \t\t ");
-        }
         System.out.println(Chess.MaxMoves);        
     }
     
-    public static void ShowMaxMoveDepth(int type)
+    public static void ShowMaxMoveDepth()
     {
-        if(type == HEADER)
-        {
-            System.out.print("Max Computer Move Depth:\t ");
-        }
         System.out.println(Chess.MaxMoveDepth);
     }
     
-    public static void ShowMaxSeconds(int type)
+    public static void ShowMaxSeconds()
     {
-        if(type == HEADER)
-        {          
-            System.out.print("Max Computer Seconds\t\t ");
-        }
         System.out.println(Chess.MaxSeconds);
     }
     
-    public static void ShowDecisionRule(int type)
+    public static void ShowDecisionRule()
     {
-        if(type == HEADER)
-        {          
-            System.out.print("Decision Rule:\t\t\t ");        
-        }        
         switch(Chess.DecisionRule)
         {
             case MINMAX:
@@ -847,12 +822,8 @@ public class Settings
         }
     }
     
-    public static void ShowMoveColor(int[][] Pos, int type)
-    {
-        if(type == HEADER)
-        {          
-            System.out.print("Move Color:\t\t\t ");   
-        }     
+    public static void ShowMoveColor(int[][] Pos)
+    {     
         switch (Position.GetMoveColor(Pos))
         {
             case Position.WHITE_MOVE:
@@ -869,12 +840,8 @@ public class Settings
         }
     }
     
-    public static void ShowPlayMode(int type)
+    public static void ShowPlayMode()
     {
-        if(type == HEADER)
-        {          
-            System.out.print("Play Mode     \t\t ");
-        }    
         switch (Chess.PlayMode)
         {
             case PLAYER_PLAYER:
@@ -895,12 +862,8 @@ public class Settings
         } 
     }
     
-    public static void ShowFirstMove(int type)
+    public static void ShowFirstMove()
     {
-        if(type == HEADER)
-        {          
-            System.out.print("First Move: \t\t\t ");
-        }         
         switch (Chess.FirstMove)
         {
             case PLAYER:
