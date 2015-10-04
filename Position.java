@@ -1,180 +1,195 @@
-import java.lang.*;                                                             // For abs, Signum
+import java.lang.*;     // For abs, Signum
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 
 public class Position
 {
-    public static final int EMPTY                               = 0;
+    public static final int EMPTY                       = 0;
     
-    /* Use the following values to represent an int[][] Position, and
-     *  also as indices in Piece.Pieces */
-    public static final int WHITE_KING                          = 1;
-    public static final int WHITE_QUEEN                         = 2;
-    public static final int WHITE_ROOK                          = 3;
-    public static final int WHITE_KNIGHT                        = 4;
-    public static final int WHITE_BISHOP                        = 5;
-    public static final int WHITE_PAWN                          = 6;
+    /* Use the following values to represent an int[][] Position, 
+     *   and also as indices in Piece.Pieces */
+    public static final int WHITE_KING                  = 1;
+    public static final int WHITE_QUEEN                 = 2;
+    public static final int WHITE_ROOK                  = 3;
+    public static final int WHITE_KNIGHT                = 4;
+    public static final int WHITE_BISHOP                = 5;
+    public static final int WHITE_PAWN                  = 6;
     
-    public static final int BLACK_KING                          = 7;
-    public static final int BLACK_QUEEN                         = 8;
-    public static final int BLACK_ROOK                          = 9;
-    public static final int BLACK_KNIGHT                        = 10;
-    public static final int BLACK_BISHOP                        = 11;
-    public static final int BLACK_PAWN                          = 12;
+    public static final int BLACK_KING                  = 7;
+    public static final int BLACK_QUEEN                 = 8;
+    public static final int BLACK_ROOK                  = 9;
+    public static final int BLACK_KNIGHT                = 10;
+    public static final int BLACK_BISHOP                = 11;
+    public static final int BLACK_PAWN                  = 12;
     
-    public static final int NUM_PIECES                          = 13;
+    public static final int NUM_PIECES                  = 13;
     
-    public static final int WHITE                               = 1;
-    public static final int BLACK                               = -1;
+    public static final int WHITE                       = 1;
+    public static final int BLACK                       = -1;
     
-    public static final int MIN_WQ = 0, MAX_WQ                  = 9;
-    public static final int MIN_BQ = 0, MAX_BQ                  = 9;
-    public static final int MIN_WR = 0, MAX_WR                  = 9;
-    public static final int MIN_BR = 0, MAX_BR                  = 9;
-    public static final int MIN_WN = 0, MAX_WN                  = 9;
-    public static final int MIN_BN = 0, MAX_BN                  = 9;
-    public static final int MIN_WB = 0, MAX_WB                  = 9;
-    public static final int MIN_BB = 0, MAX_BB                  = 9;
-    public static final int MIN_WP = 0, MAX_WP                  = 8;
-    public static final int MIN_BP = 0, MAX_BP                  = 8;
-    public static final int MIN_WK = 1, MAX_WK                  = 1;
-    public static final int MIN_BK = 1, MAX_BK                  = 1;         
+    public static final int MIN_WQ = 0, MAX_WQ          = 9;
+    public static final int MIN_BQ = 0, MAX_BQ          = 9;
+    public static final int MIN_WR = 0, MAX_WR          = 9;
+    public static final int MIN_BR = 0, MAX_BR          = 9;
+    public static final int MIN_WN = 0, MAX_WN          = 9;
+    public static final int MIN_BN = 0, MAX_BN          = 9;
+    public static final int MIN_WB = 0, MAX_WB          = 9;
+    public static final int MIN_BB = 0, MAX_BB          = 9;
+    public static final int MIN_WP = 0, MAX_WP          = 8;
+    public static final int MIN_BP = 0, MAX_BP          = 8;
+    public static final int MIN_WK = 1, MAX_WK          = 1;
+    public static final int MIN_BK = 1, MAX_BK          = 1;         
 
-    public static int[] WhiteFigure                             = { WHITE_KING, 
-                                                                    WHITE_QUEEN, 
-                                                                    WHITE_ROOK, 
-                                                                    WHITE_KNIGHT, 
-                                                                    WHITE_BISHOP, 
-                                                                    WHITE_PAWN};
+    public static int[] WhiteFigure = 
+    { 
+        WHITE_KING, 
+        WHITE_QUEEN, 
+        WHITE_ROOK, 
+        WHITE_KNIGHT, 
+        WHITE_BISHOP, 
+        WHITE_PAWN
+    };
                                                             
-    public static int[] BlackFigure                             = { BLACK_KING, 
-                                                                    BLACK_QUEEN, 
-                                                                    BLACK_ROOK, 
-                                                                    BLACK_KNIGHT, 
-                                                                    BLACK_BISHOP, 
-                                                                    BLACK_PAWN};
+    public static int[] BlackFigure = { 
+        BLACK_KING, 
+        BLACK_QUEEN, 
+        BLACK_ROOK, 
+        BLACK_KNIGHT, 
+        BLACK_BISHOP, 
+        BLACK_PAWN
+    };
             
-    public static int[] WhitePromotionFigure                    = { WHITE_QUEEN, 
-                                                                    WHITE_ROOK, 
-                                                                    WHITE_KNIGHT, 
-                                                                    WHITE_BISHOP};
+    public static int[] WhitePromotionFigure = 
+    { 
+        WHITE_QUEEN, 
+        WHITE_ROOK, 
+        WHITE_KNIGHT, 
+        WHITE_BISHOP
+    };
                                                             
-    public static int[] BlackPromotionFigure                    = { BLACK_QUEEN, 
-                                                                    BLACK_ROOK, 
-                                                                    BLACK_KNIGHT, 
-                                                                    BLACK_BISHOP}; 
-                                                                    
-    public static final int A                                   = 1;
-    public static final int B                                   = 2;
-    public static final int C                                   = 3;
-    public static final int D                                   = 4;
-    public static final int E                                   = 5;
-    public static final int F                                   = 6;
-    public static final int G                                   = 7;
-    public static final int H                                   = 8;
-    
-    public static final int ROWS                                = 8;
-    public static final int COLS                                = 8;
-    
-    public static final int COLUMN_UP                           = 1;
-    public static final int COLUMN_DOWN                         = -1;
-    
-    public static final int WHITE_CASTLING_ROW                  = 1;
-    public static final int BLACK_CASTLING_ROW                  = 8;
-    public static final int KING_CASTLING_STEPS                 = 2;
-    
-    public static final int LONG_CASTLING                       = 0;
-    public static final int SHORT_CASTLING                      = 1;
-    public static int[] CASTLINGS                               = {LONG_CASTLING, 
-                                                                   SHORT_CASTLING};
-    
-    public static final int COLUMN_MOVE_COLOR                   = 0;
-    public static final int ROW_MOVE_COLOR                      = 0;
+    public static int[] BlackPromotionFigure = 
+    { 
+        BLACK_QUEEN, 
+        BLACK_ROOK, 
+        BLACK_KNIGHT, 
+        BLACK_BISHOP
+    }; 
 
-    public static final int COLUMN_WHITE_LONG_CASTLING          = 0;
-    public static final int ROW_WHITE_LONG_CASTLING             = 1;
+    public static final int A                           = 1;
+    public static final int B                           = 2;
+    public static final int C                           = 3;
+    public static final int D                           = 4;
+    public static final int E                           = 5;
+    public static final int F                           = 6;
+    public static final int G                           = 7;
+    public static final int H                           = 8;
     
-    public static final int COLUMN_WHITE_SHORT_CASTLING         = 0;
-    public static final int ROW_WHITE_SHORT_CASTLING            = 2;
+    public static final int ROWS                        = 8;
+    public static final int COLS                        = 8;
+    
+    public static final int COLUMN_UP                   = 1;
+    public static final int COLUMN_DOWN                 = -1;
+    
+    public static final int WHITE_CASTLING_ROW          = 1;
+    public static final int BLACK_CASTLING_ROW          = 8;
+    public static final int KING_CASTLING_STEPS         = 2;
+    
+    public static final int LONG_CASTLING               = 0;
+    public static final int SHORT_CASTLING              = 1;
+    public static int[] CASTLINGS = 
+    {
+        LONG_CASTLING, 
+        SHORT_CASTLING
+    };
+    
+    public static final int COLUMN_MOVE_COLOR           = 0;
+    public static final int ROW_MOVE_COLOR              = 0;
+
+    public static final int COLUMN_WHITE_LONG_CASTLING  = 0;
+    public static final int ROW_WHITE_LONG_CASTLING     = 1;
+    
+    public static final int COLUMN_WHITE_SHORT_CASTLING = 0;
+    public static final int ROW_WHITE_SHORT_CASTLING    = 2;
        
-    public static final int COLUMN_BLACK_LONG_CASTLING          = 0;
-    public static final int ROW_BLACK_LONG_CASTLING             = 3;
+    public static final int COLUMN_BLACK_LONG_CASTLING  = 0;
+    public static final int ROW_BLACK_LONG_CASTLING     = 3;
     
-    public static final int COLUMN_BLACK_SHORT_CASTLING         = 0;
-    public static final int ROW_BLACK_SHORT_CASTLING            = 4;
+    public static final int COLUMN_BLACK_SHORT_CASTLING = 0;
+    public static final int ROW_BLACK_SHORT_CASTLING    = 4;
     
-    public static final int COLUMN_EN_PASSANT                   = 0;
-    public static final int ROW_EN_PASSANT                      = 5;
+    public static final int COLUMN_EN_PASSANT           = 0;
+    public static final int ROW_EN_PASSANT              = 5;
     
-    public static final int COLUMN_FIFTY_MOVE                   = 0;
-    public static final int ROW_FIFTY_MOVE                      = 6;    
+    public static final int COLUMN_FIFTY_MOVE           = 0;
+    public static final int ROW_FIFTY_MOVE              = 6;    
       
-    public static final int COLUMN_REPETITIVE_POSITIONS         = 0;
-    public static final int ROW_REPETITIVE_POSITIONS            = 7;
+    public static final int COLUMN_REPETITIVE_POSITIONS = 0;
+    public static final int ROW_REPETITIVE_POSITIONS    = 7;
 
-    public static final int WHITE_MOVE                          = 1;
-    public static final int BLACK_MOVE                          = -1;
+    public static final int WHITE_MOVE                  = 1;
+    public static final int BLACK_MOVE                  = -1;
     
-    public static final int WHITE_FIGURE                        = 1;
-    public static final int BLACK_FIGURE                        = -1;    
+    public static final int WHITE_FIGURE                = 1;
+    public static final int BLACK_FIGURE                = -1;    
     
-    public static final int WRA1_AND_WKE1_DID_NOT_MOVE          = 0;            // White Long   Castling        possible, WRa1 and WKe1 did not move before
-    public static final int WRA1_OR_WKE1_DID_MOVE               = 1;            // White Long   Castling not    possible, WRa1 or WKe1  did     move before
-    public static final int WRH1_AND_WKE1_DID_NOT_MOVE          = 0;            // White Short  Castling        possible, WRh1 and WKe1 did not move before
-    public static final int WRH1_OR_WKE1_DID_MOVE               = 1;            // White Short  Castling not    possible, WRh8 or WKe1  did     move before
-    public static final int BRA8_AND_BKE8_DID_NOT_MOVE          = 0;            // Black Long   Castling        possible, WRh8 and BKe8 did not move before
-    public static final int BRA8_OR_BKE8_DID_MOVE               = 1;            // Black Long   Castling not    possible, WRh8 or BKe8  did     move before
-    public static final int BRH8_AND_BKE8_DID_NOT_MOVE          = 0;            // Black Short  Castling        possible, WRh8 and BKe8 did not move before
-    public static final int BRH8_OR_BKE8_DID_MOVE               = 1;            // Black Short  Casling  not    possible, WRh8 or BKe8  did     move before
+    // Castling possible, rook and king did not move before
+    public static final int WRA1_AND_WKE1_DID_NOT_MOVE  = 0;  
+    public static final int WRA1_OR_WKE1_DID_MOVE       = 1;    
+    public static final int WRH1_AND_WKE1_DID_NOT_MOVE  = 0;          
+    public static final int WRH1_OR_WKE1_DID_MOVE       = 1;    
+    public static final int BRA8_AND_BKE8_DID_NOT_MOVE  = 0;       
+    public static final int BRA8_OR_BKE8_DID_MOVE       = 1;           
+    public static final int BRH8_AND_BKE8_DID_NOT_MOVE  = 0;          
+    public static final int BRH8_OR_BKE8_DID_MOVE       = 1;          
 
-    public static final int WHITE_PAWN_PROMOTION_ROW            = 8;  
-    public static final int BLACK_PAWN_PROMOTION_ROW            = 1;  
+    public static final int WHITE_PAWN_PROMOTION_ROW    = 8;  
+    public static final int BLACK_PAWN_PROMOTION_ROW    = 1;  
         
-    public static final int WHITE_PAWN_INITIAL_ROW              = 2;  
-    public static final int BLACK_PAWN_INITIAL_ROW              = 7;  
+    public static final int WHITE_PAWN_INITIAL_ROW      = 2;  
+    public static final int BLACK_PAWN_INITIAL_ROW      = 7;  
     
     // Begin en passant status
-    public static final int NO_EN_PASSANT                       = 0;
-    public static final int EN_PASSANT                          = 1;    
+    public static final int NO_EN_PASSANT               = 0;
+    public static final int EN_PASSANT                  = 1;    
     
     // Begin check status
-    public static final int NO_CHECK                            = 0;
-    public static final int CHECK                               = 1;   
+    public static final int NO_CHECK                    = 0;
+    public static final int CHECK                       = 1;   
     
     // Begin position status
-    public static final int NO_CONDITION                        = 0;
-    public static final int CHECKMATE                           = 1;
-    public static final int STALEMATE                           = 2;
-    public static final int INSUFFICIENT_MATERIAL               = 3;
-    public static final int THREE_POSITION_REPETITION           = 4;    
-    public static final int FIFTY_MOVE                          = 5;
+    public static final int NO_CONDITION                = 0;
+    public static final int CHECKMATE                   = 1;
+    public static final int STALEMATE                   = 2;
+    public static final int INSUFFICIENT_MATERIAL       = 3;
+    public static final int THREE_POSITION_REPETITION   = 4;    
+    public static final int FIFTY_MOVE                  = 5;
     
-    public static final int REVERSABLE_MOVES_LIMIT              = 50;    
+    public static final int REVERSABLE_MOVES_LIMIT      = 50;    
     
     // Begin position names
-    public static final int NEW_POSITION                        = 1;
-    public static final int PAWN_POSITION                       = 2;    
-    public static final int EN_PASSANT_POSITION                 = 3;
-    public static final int PROMOTION_POSITION                  = 4;
-    public static final int CASTLING_POSITION                   = 5;
-    public static final int INSUFFICIENT_MATERIAL_POSITION      = 6;
-    public static final int ONE_MOVE_MATE_POSITION              = 7;
-    public static final int TWO_MOVE_MATE_POSITION              = 8;
-    public static final int THREE_MOVE_MATE_POSITION            = 9;    
+    public static final int NEW_POSITION                = 0;
+    public static final int PAWN_POSITION               = 1;    
+    public static final int EN_PASSANT_POSITION         = 2;
+    
+    public static final int PROMOTION_POSITION          = 3;
+    public static final int CASTLING_POSITION           = 4;
+    public static final int INSUFFICIENT_MATERIAL_POSITION  = 5;
+    public static final int ONE_MOVE_MATE_POSITION      = 6;
+    public static final int TWO_MOVE_MATE_POSITION      = 7;
+    public static final int THREE_MOVE_MATE_POSITION    = 8;    
   
     // Parameter for Check()
-    public static final int GIVING_CHECK                        = 0;
-    public static final int RECEIVING_CHECK                     = 1;    
+    public static final int GIVING_CHECK                = 0;
+    public static final int RECEIVING_CHECK             = 1;    
 
     public static int       BeginPosition;   
     
     public static String ToString(int[][] Pos)
     {
         String PosString = "";
-        int row, col;
-        for (row = 1; row <= ROWS; row++) {
-            for (col = 1; col <= COLS; col++) {
+        for (int row = 1; row <= ROWS; row++) {
+            for (int col = 1; col <= COLS; col++) {
                 PosString += " " + Integer.toString(Pos[row][col]);
             }
         }
@@ -183,17 +198,16 @@ public class Position
     
     public static void SetFromFile(int[][] Pos, String filename)
     {
-        int row, col;
         File file = new File(filename);
         
         Clear(Pos);
 
         try {
             Scanner sc = new Scanner(file);
-            for (row = ROWS; row > 0; row--)
+            for (int row = ROWS; row > 0; row--)
             {
                 sc.next(); // skip row number
-                for (col = 1; col <= COLS; col++)
+                for (int col = 1; col <= COLS; col++)
                 {
                     Pos[row][col] = Piece.ConsoleNotationToType(sc.next());
                 } 
@@ -225,26 +239,20 @@ public class Position
     
     public static void Clear(int[][] Pos)
     {
-        int row;
-        int col;
-      
-        for(row = 0; row <= ROWS; row++)                                        // Loop over total ROWS + 1
+        for(int row = 0; row <= ROWS; row++)        // Loop over total ROWS + 1
         {   
-            for(col = 0; col <= COLS; col++)                                    // Loop over total COLS + 1 
+            for(int col = 0; col <= COLS; col++)    // Loop over total COLS + 1 
             {
                 Pos[row][col] = EMPTY;
             }
         }    
     }
     
-    public static void Copy(int[][] Pos, int[][] PosStore)                      // Copies Pos to PosStore
+    public static void Copy(int[][] Pos, int[][] PosStore)  // Copies Pos to PosStore
     {
-        int row;
-        int col;
-        
-        for(row = 0; row <= ROWS; row++)                                        // Loop over total ROWS + 1
+        for(int row = 0; row <= ROWS; row++)                // Loop over total ROWS + 1
         {   
-            for(col = 0; col <= COLS; col++)                                    // Loop over total COLS + 1 
+            for(int col = 0; col <= COLS; col++)            // Loop over total COLS + 1 
             {
                 PosStore[row][col] = Pos[row][col];
             }
@@ -253,11 +261,10 @@ public class Position
     
     public static int[] CountPieces(int[][] Pos) {
         int counts[] = new int[NUM_PIECES];
-        int row, col;
         
-        for(row = 1; row <= ROWS; row++)
+        for(int row = 1; row <= ROWS; row++)
         {
-            for(col = 1; col <= COLS; col++)           
+            for(int col = 1; col <= COLS; col++)           
             {
                 counts[Piece.Pieces[Pos[row][col]].getType()]++;
             }
@@ -280,22 +287,26 @@ public class Position
             min_allowed = Piece.Pieces[i].getMinNum();
             if ( counts[i] < min_allowed || counts[i] > max_allowed )
             {
-                System.out.println("Nonvalid position: Number of " + Piece.Pieces[i].getConsoleNotation() + " is " + counts[i] + " and is not in the allowed range of " + min_allowed + " to " + max_allowed);
+                System.out.println
+                (
+                    "Nonvalid position: Number of " + 
+                    Piece.Pieces[i].getConsoleNotation() + 
+                    " is " + 
+                    counts[i] + 
+                    " and is not in the allowed range of " + 
+                    min_allowed + 
+                    " to " + max_allowed
+                );
                 valid = false;
             }
-            
         }
-        
         return(valid);
     }   
     
     public static void Display(int[][] Pos)
     {
-        int row;
-        int col;
-        int Type;
-
-        System.out.print ("\n");
+        int row, col;
+        
         for(row = ROWS; row > 0; row--)
         {
             System.out.print(row + " ");
@@ -366,6 +377,7 @@ public class Position
         ShowFiftyMoveCounter(Pos);
         Rating.ShowPositionType(Rating.PositionType(Pos));
         Rating.ShowGamePhase(Rating.GamePhase(Pos));
+        System.out.println();
     }
     
     public static void ShowNumberOfRepetitivePositions(int[][] Pos)
@@ -487,36 +499,37 @@ public class Position
     {
         int row;
         int col;
-        int row_s;                                                              // Row step
-        int col_s;                                                              // Column step       
-        int row_K = 0;                                                          // Row of opponent king 
-        int col_K = 0;                                                          // Column of opponent king
+        int row_s;          // Row step
+        int col_s;          // Column step       
+        int row_K = 0;      // Row of opponent king 
+        int col_K = 0;      // Column of opponent king
 
-        boolean CanTakeKing = false;                                            // False initialization is required
+        boolean CanTakeKing = false;    // False initialization is required
        
         if(Type == RECEIVING_CHECK)
         {
-            SwitchMoveColor(Pos);                                               // Switch to opponent move   
+            SwitchMoveColor(Pos);       // Switch to opponent move   
         }        
         
+        // Find row and column of opponent king
         loop:
-        for(row_K = 1; row_K <= ROWS; row_K++)                                  // Find row and column of opponent king
+        for(row_K = 1; row_K <= ROWS; row_K++)   
         {
             for(col_K = 1; col_K <= COLS; col_K++)
             {
                 if(OpponentKing(Pos, row_K, col_K))
                 {
-                    break loop;                                                 // Found row and column of opponent king
+                    break loop;     // Found row and column of opponent king
                 }
             }
         }
 
         loop_over_own_figures:
-        for(row = 1; row <= ROWS; row++)                                        // Go through all fields and find own figure
+        for(row = 1; row <= ROWS; row++)  // Go through all fields and find own figure
         {
             for(col = 1; col <= COLS; col++)
             {
-                if(OwnFigure(Pos, row, col))                                    // Found own figure
+                if(OwnFigure(Pos, row, col))    // Found own figure
                 {
                     switch(Pos[row][col])
                     {
@@ -532,7 +545,7 @@ public class Position
                             }
                             if(((row + row_s) == row_K) && (Math.abs(col - col_K) == 1))
                             {
-                                CanTakeKing = true;                             // Pawn can capture king
+                                CanTakeKing = true; // Pawn can capture king
                                 break loop_over_own_figures;
                             }
                             break;
@@ -541,7 +554,7 @@ public class Position
                         case BLACK_ROOK:
                             if(RookCanCaptureKing(Pos, row, col, row_K, col_K))
                             {
-                                CanTakeKing = true;                             // Rook can capture king
+                                CanTakeKing = true; // Rook can capture king
                                 break loop_over_own_figures;
                             }
                             break;
@@ -551,7 +564,7 @@ public class Position
                             if(((Math.abs(col - col_K) == 2) && (Math.abs(row - row_K) == 1)) ||
                                ((Math.abs(col - col_K) == 1) && (Math.abs(row - row_K) == 2)))
                             {
-                                CanTakeKing = true;                             // Knight can capture king
+                                CanTakeKing = true; // Knight can capture king
                                 break loop_over_own_figures;
                             }
                             break;
@@ -560,7 +573,7 @@ public class Position
                         case BLACK_BISHOP:
                             if(BishopCanCaptureKing(Pos, row, col, row_K, col_K))
                             {
-                                CanTakeKing = true;                             // Bishop can capture king  
+                                CanTakeKing = true; // Bishop can capture king  
                                 break loop_over_own_figures;
                             }
                             break;
@@ -569,42 +582,44 @@ public class Position
                         case BLACK_QUEEN:
                             if((BishopCanCaptureKing(Pos, row, col, row_K, col_K)) ||                           
                                (RookCanCaptureKing  (Pos, row, col, row_K, col_K)))
-                            {                                                   // Queen moves are the sum of rook or bishop moves
-                                CanTakeKing = true;                             // Queen can capture king 
+                            {   
+                                // Queen moves are the sum of rook or bishop moves
+                                CanTakeKing = true;     // Queen can capture king 
                                 break loop_over_own_figures;
                             }
                             break;
                             
                         case WHITE_KING:
-                        case BLACK_KING:            // Avoids that King can move next to opponent king
+                        case BLACK_KING:            
+                            // Avoids that own king can move next to opponent king
                             if((Math.abs(col - col_K) <= 1) && (Math.abs(row - row_K) <= 1))
                             {
-                                CanTakeKing = true;                             // King can capture king 
+                                CanTakeKing = true; // King can capture king 
                                 break loop_over_own_figures;                                
                             }
                             break;   
-                    }
-                }                                                               // Not own figure, continue loop
-            }                                                                   // end of col loop
-        }                                                                       // end of row loop
+                    }   // End of switch
+                }   // Not own figure, continue loop
+            }   // end of col loop
+        }   // end of row loop
         if(Type == RECEIVING_CHECK)
         {
-            SwitchMoveColor(Pos);                                               // Switch back to own move   
+            SwitchMoveColor(Pos);   // Switch back to own move   
         }   
         return CanTakeKing;
     }
         
     public static boolean RookCanCaptureKing(int[][] Pos, int row, int col, int row_K, int col_K)
     {
-        int row_s = Integer.signum(row_K - row);                                // row_s is row step
-        int col_s = Integer.signum(col_K - col);                                // col_s is col step
+        int row_s = Integer.signum(row_K - row);    // row_s is row step
+        int col_s = Integer.signum(col_K - col);    // col_s is col step
         
         return ((row_s * col_s == 0)) && CanCaptureKingMovingInThisDirection(Pos, row, col, row_s, col_s, row_K, col_K);         
     }
         
     public static boolean BishopCanCaptureKing(int[][] Pos, int row, int col, int row_K, int col_K)
     {   
-        if(Math.abs(row - row_K) == Math.abs(col - col_K))                      // King is on one bishop diagonale
+        if(Math.abs(row - row_K) == Math.abs(col - col_K))  // King is on one bishop diagonale
         {                             
             return(CanCaptureKingMovingInThisDirection(Pos, row, col, Integer.signum(row_K - row), Integer.signum(col_K - col), row_K, col_K));
         }
@@ -614,32 +629,20 @@ public class Position
     public static boolean CanCaptureKingMovingInThisDirection(int[][] Pos, int row, int col, int row_s, int col_s, int row_K, int col_K)
     {
         int i;
-        /* Debug begin
-        Scanner scanner             = new Scanner(System.in);
-        for(i = 1; ; i++)         // Move in this direction until reaching an occupied field
-        {     
-            if(((row + i * row_s) < 1) || ((row + i * row_s) > Position.ROWS) || ((col + i * col_s) < 1) || ((col + i * col_s) > Position.COLS))
-            {
-                System.out.println(" Error row = " + row + " i = " + i + " row_s = " + row_s + " col = " + col + " col_s = " + col_s);
-                Position.Display(Pos);
-                scanner.nextLine(); 
-            }
-            if (Pos[row + i * row_s][col + i * col_s] != EMPTY)
-            {
-                break; 
-            }
-        }   
-        */ // Debug ends
         
-        for(i = 1; Pos[row + i * row_s][col + i * col_s] == EMPTY; i++)         // Move in this direction until reaching an occupied field
-        {
+        for(i = 1; Pos[row + i * row_s][col + i * col_s] == EMPTY; i++)       
+        {     
+            // Moves in this direction until reaching an occupied field
+            // No need to check for off board since moving towards king is always on board
         } 
+        // Return true if occupied field has opponent King on it
         return(((row + i * row_s) == row_K) && ((col + i * col_s) == col_K));  
     }
     
     public static boolean AnyMovePossible(int[][] Pos, int[][] MovePath)  
     {
-        int[][] MovesPosition               = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];           // Holds all possible moves for one position
+        // MovesPosition[][] holds all possible moves for one position
+        int[][] MovesPosition               = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];          
         boolean ReturnOnFirstMovePossible   = true;
         boolean MovePossible;
         
@@ -648,8 +651,9 @@ public class Position
         return(GenerateMoveList(Pos, MovesPosition, MovePath, ReturnOnFirstMovePossible));       
     }
    
-    public static boolean InsufficientMaterial(int[][] Pos)                     // Detect Draw for not enough material on field    
+    public static boolean InsufficientMaterial(int[][] Pos)                      
     {
+        // Detect Draw for not enough material on field   
         int row;
         int col;
         int NumberWhiteKnights = 0;
@@ -785,7 +789,6 @@ public class Position
     public static boolean End(int[][] Pos, int[][] MovePath)
     {
         //System.out.println("Entering EndPosition()... Move Color = " + GetMoveColor(Pos));
-
         if(Checkmate(Pos, MovePath) || Draw(Pos, MovePath))
         {
            return true;
@@ -993,7 +996,8 @@ public class Position
     }
     
     public static boolean GenerateMoveList(int[][] Pos, int[][] MovesPosition, int[][] MovePath, boolean ReturnOnFirstMovePossible)
-    {                                                                           // Generates move list or returns on first move found    
+    {                                                                           
+        // Generates move list or returns on first move found    
         int col;
         int col_n = 0;
         int row;
@@ -1001,7 +1005,7 @@ public class Position
         int i;
         int PawnStep = 0;
         int FieldNo;
-        int dir;                                                                // Counter for going through all possible directions
+        int dir;    // Counter for going through all possible directions
         int Figure;
         int Figure_p = 0;
         int Figure_n = 0;
@@ -1035,14 +1039,16 @@ public class Position
                             break;
                     }                
                
-                    col_n = col;                                                // Move Pawn one field forward
+                    col_n = col;    // Move Pawn one field forward
                     row_n = row + PawnStep;      
                     if(Pos[row_n][col_n] == Position.EMPTY)                                                    
                     {
                         if((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))                        
-                        {                                                       // Convert Pawn
+                        {                                                       
+                            // Convert Pawn
                             for(i = 0; i < WhitePromotionFigure.length; i++)    
-                            {                                                   // Loop for Queen, Rook, Knight, Bishop
+                            {                                                   
+                                // Loop for Queen, Rook, Knight, Bishop
                                 switch(GetMoveColor(Pos))
                                 {
                                     case WHITE_MOVE:
@@ -1072,7 +1078,7 @@ public class Position
                     }
                     
                     col_n = col;        
-                    row_n = row + 2 * PawnStep;                                 // Move two PawnSteps forward
+                    row_n = row + 2 * PawnStep;     // Move two PawnSteps forward
                     if(((GetMoveColor(Pos) == WHITE_MOVE) && (row == WHITE_PAWN_INITIAL_ROW)) || 
                         ((GetMoveColor(Pos) == BLACK_MOVE) && (row == BLACK_PAWN_INITIAL_ROW)))
                     {
@@ -1086,16 +1092,17 @@ public class Position
                         }
                     }
                     
-                    for(i = -1; i <= 1; i += 2)                                  // Pawn takes opponent figure away
+                    for(i = -1; i <= 1; i += 2) // Pawn takes opponent figure away
                     {
                         col_n = col + i;
                         row_n = row + PawnStep;
                         if((col_n >= 1) && (col_n <= COLS) && (OpponentFigure(Pos, row_n, col_n)))
                         {
-                            if((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))      // Convert Pawn                           
-                            {                                                   // Take away opponent figure
-                                for(i = 0; i < WhitePromotionFigure.length; i++)    // Loop for Queen, Rook, Knight, Bishop
-                                {                                               // .... and convert to new officer
+                            if((row_n == WHITE_PAWN_PROMOTION_ROW) || (row_n == BLACK_PAWN_PROMOTION_ROW))                             
+                            {   
+                                // Take away opponent figure and promote pawn
+                                for(i = 0; i < WhitePromotionFigure.length; i++)    
+                                {        
                                     switch(GetMoveColor(Pos))
                                     {
                                         case WHITE_MOVE:
@@ -1115,6 +1122,7 @@ public class Position
                             }
                             else
                             {
+                                // Take away opponent figure
                                 MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
                                 if(ReturnOnFirstMovePossible && MoveAdded)
                                 {
@@ -1137,68 +1145,7 @@ public class Position
                         }                        
                     }                   
                     break;
-               /*
-                case WHITE_ROOK:
-                case BLACK_ROOK:
-                    if(DirectionMoves(Move.RookDirection, Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible))
-                    {
-                        return true;
-                    }
-                    break;                
-
-                case WHITE_KNIGHT:
-                case BLACK_KNIGHT:
-                    for(dir = 0; dir < Move.KnightMove.length; dir++)                              // Loop over all four directions
-                    {
-                        row_n = row + Move.KnightMove[dir][0];
-                        col_n = col + Move.KnightMove[dir][1];                             
-                        if(OffBoardOrOwnFigure(Pos, row_n, col_n))
-                        {
-                            continue;                                           // Continue with next direction
-                        }
-                        MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
-                        if(ReturnOnFirstMovePossible && MoveAdded)
-                        {
-                            return true;
-                        }                       
-                    }
-                    break;
-               
-                case WHITE_BISHOP:
-                case BLACK_BISHOP:
-                    if(DirectionMoves(Move.BishopDirection, Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible))
-                    {
-                        return true;
-                    }
-                    break;
-                    
-                case WHITE_QUEEN:
-                case BLACK_QUEEN:        
-                    if(DirectionMoves(Move.RookDirection, Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible) ||
-                        DirectionMoves(Move.BishopDirection, Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible))
-                    {
-                        return true;
-                    }
-                    break;
-
-                case WHITE_KING:
-                case BLACK_KING:
-                    for(dir = 0; dir < Move.KingMove.length; dir++)
-                    {
-                        row_n = row + Move.KingMove[dir][0];
-                        col_n = col + Move.KingMove[dir][1];
-                        if(OffBoardOrOwnFigure(Pos, row_n, col_n))
-                        {
-                            continue;                                           // Stop moving in this direction, continue with next direction
-                        } 
-                        MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
-                        if(ReturnOnFirstMovePossible && MoveAdded)
-                        {
-                            return true;
-                        }
-                    }
-                    */
-                    
+              
                 case WHITE_ROOK:
                 case BLACK_ROOK:
                 case WHITE_KNIGHT:
@@ -1226,11 +1173,11 @@ public class Position
                         switch(CastlingList[i])
                         {
                             case Position.LONG_CASTLING:
-                                col_n           = Position.C;                   //For King
+                                col_n           = Position.C; //For King
                                 break;
                                         
                             case Position.SHORT_CASTLING:
-                                col_n           = Position.G;                   //For King
+                                col_n           = Position.G; //For King
                                 break;
                         }
                                 
@@ -1259,10 +1206,9 @@ public class Position
                     break;                            
             }
         }
-        return false;                                                           // Only used by AnyMovePossible()
+        return false;   // Only used by AnyMovePossible()
     }       
     
-    //public static boolean DirectionMoves(int[][] Direction, int[][]Pos, int row, int col, int Figure, int row_n, int col_n, int[][] MovesPosition, int[][]MovePath, boolean ReturnOnFirstMovePossible)
     public static boolean DirectionMoves(Piece.PieceMove piece_move, int[][]Pos, int row, int col, int Figure, int row_n, int col_n, int[][] MovesPosition, int[][]MovePath, boolean ReturnOnFirstMovePossible)
     {
         int [][] Direction = piece_move.direction;
@@ -1270,7 +1216,7 @@ public class Position
         int i;
         boolean MoveAdded;
         
-        for(dir = 0; dir < Direction.length; dir++)                             // Loop over all directions
+        for(dir = 0; dir < Direction.length; dir++)  // Loop over all directions
         {
             for(i = 1;!OffBoardOrOwnFigure(Pos, row + Direction[dir][0] * i, col + Direction[dir][1] * i); i++)      
             {
@@ -1280,8 +1226,9 @@ public class Position
                 {
                     return true;
                 }   
-                if(OpponentFigure(Pos, row + Direction[dir][0] * i, col + Direction[dir][1] * i))                           // Took oponent figure away, stop to moving in this directio, continue with next direction
+                if(OpponentFigure(Pos, row + Direction[dir][0] * i, col + Direction[dir][1] * i))                          
                 {
+                    // Took oponent figure away, stop to moving in this direction, continue with next direction
                     break;
                 }
             }
@@ -1295,12 +1242,10 @@ public class Position
         int EnPassantStatus;
         int Figure;
         int Figure_p;   
-        int TempPawn = 0;
         int MoveNumber;
-        int i;
         int[][] PosStore = new int[Position.ROWS + 1][Position.COLS + 1];
         
-        Copy(Pos, PosStore);                                                    // Store position
+        Copy(Pos, PosStore);    // Store position
         Figure              = Pos[row][col]; 
         Figure_p            = Pos[row_n][col_n];
         if(((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n) && (Figure_p == Position.EMPTY))
@@ -1311,10 +1256,12 @@ public class Position
         {
             EnPassantStatus = Position.NO_EN_PASSANT; 
         }        
-        Move.Make(Pos, row, col, Figure_n, row_n, col_n, MovePath, Move.DO_NOT_ADD_TO_MOVE_HISTORY);     // Creates new position which needs to be investigated if own king can be captured 
-        AddMove = !Check(Pos, Position.RECEIVING_CHECK);                        // Check for receiving check
+        // Create new position which needs to be investigated if own king can be captured 
+        Move.Make(Pos, row, col, Figure_n, row_n, col_n, MovePath, Move.DO_NOT_ADD_TO_MOVE_HISTORY);    
+        AddMove = !Check(Pos, Position.RECEIVING_CHECK); // Check for receiving check
         if(!ReturnOnFirstMovePossible && AddMove)                                                  
-        {                                                                       // No receiving check, add move to MovesPosition
+        {   
+            // No receiving check, add move to MovesPosition
             MoveNumber                                          = Move.LastIndex(MovesPosition) + 1;
             MovesPosition[MoveNumber][Move.FIGURE]              = Figure;
             MovesPosition[MoveNumber][Move.ROW]                 = row;
@@ -1323,12 +1270,16 @@ public class Position
             MovesPosition[MoveNumber][Move.FIGURE_N]            = Figure_n;
             MovesPosition[MoveNumber][Move.ROW_N]               = row_n;
             MovesPosition[MoveNumber][Move.COL_N]               = col_n;
-            MovesPosition[MoveNumber][Move.EN_PASSANT_STATUS]   = EnPassantStatus;                                                             // Needed to display e.p. as part of move          
-            MovesPosition[MoveNumber][Move.POSITION_STATUS]     = GetStatus(Pos, MovePath);                                   // Needed to diplay checkmate of draw as part of move 
-            MovesPosition[MoveNumber][Move.CHECK_STATUS]        = Position.GetCheckStatus(Pos, MovesPosition[MoveNumber][Move.POSITION_STATUS]);    // Needed to display check as part of move
-            MovesPosition[MoveNumber][Move.RATING]              = Rating.Rating(Pos, MovesPosition[MoveNumber][Move.POSITION_STATUS]);           // Needed to display rating as part of move
+            // Need EN_PASSANT_STATUS to display e.p. as part of move  
+            MovesPosition[MoveNumber][Move.EN_PASSANT_STATUS]   = EnPassantStatus;  
+            // Need POSITION_STATUS to display checkmate of draw as part of move 
+            MovesPosition[MoveNumber][Move.POSITION_STATUS]     = GetStatus(Pos, MovePath);    
+            // Need CHECK_STATUS to display check as part of move
+            MovesPosition[MoveNumber][Move.CHECK_STATUS]        = Position.GetCheckStatus(Pos, MovesPosition[MoveNumber][Move.POSITION_STATUS]);   
+            // Needed to display rating as part of move
+            MovesPosition[MoveNumber][Move.RATING]              = Rating.Rating(Pos, MovesPosition[MoveNumber][Move.POSITION_STATUS]);           
         }
-        Copy(PosStore, Pos);                                                    // Restore position
-        return AddMove;                                                         // Returns true if move was added
+        Copy(PosStore, Pos);    // Restore position
+        return AddMove;         // Returns true if move was added
     }
 }

@@ -1,4 +1,4 @@
-import java.util.*;                                                             // For scanner
+import java.util.*; // For scanner
 
 public class Settings
 {
@@ -8,18 +8,19 @@ public class Settings
     public static final int HIGH                        = 3;
     public static final int VERYHIGH                    = 4;
     
-    public static final int ABSOLUTE_MAX_MOVES          = 2147483000;           // Java int:int is 32 bit signed type ranges from –2,147,483,648 to 2,147,483,647.
+    // Java int:int is 32 bit signed type ranges from –2,147,483,648 to 2,147,483,647.
+    public static final int ABSOLUTE_MAX_MOVES          = 2147483000;           
     public static final int DEFAULT_MAX_MOVES           = 10000000; 
         
     public static final int ABSOLUTE_MAX_MOVE_DEPTH     = 50; 
     public static final int DEFAULT_MAX_MOVE_DEPTH      = 50;   
     
-    public static final long ABSOLUTE_MAX_SECONDS       = 60 * 60 * 24;         // 24 h 
-    public static final long DEFAULT_MAX_SECONDS        = 5;                    // per computer move 
+    public static final long ABSOLUTE_MAX_SECONDS       = 60 * 60 * 24; // 24 h 
+    public static final long DEFAULT_MAX_SECONDS        = 5;  // per computer move 
     
     // Decision rule
-    public static final int MINMAX                      = 0;                    // minmax
-    public static final int ALPHA_BETA                  = 1;                    // alpha beta pruning
+    public static final int MINMAX                      = 0;
+    public static final int ALPHA_BETA                  = 1;  
     public static final int DEFAULT_DECISION_RULE       = ALPHA_BETA;
       
     // Play mode
@@ -39,7 +40,6 @@ public class Settings
     // Empty "" so indices start from 1
     public static final String[] positionMap = 
     {
-        "", 
         "New", 
         "Pawn", 
         "En passant", 
@@ -51,31 +51,20 @@ public class Settings
         "Three Move Mate"
     };
     
-    public static void Settings(int[][] Pos)
-    {
-        ShowPosition(HEADER);
-        ShowMaxMoves(HEADER);
-        ShowMaxMoveDepth(HEADER);
-        ShowMaxSeconds(HEADER);
-        ShowDecisionRule(HEADER);
-        ShowMoveColor(Pos, HEADER);
-        ShowPlayMode(HEADER); 
-        ShowFirstMove (HEADER);
-    }
-    
     public static void Initiate(int[][] Pos)
     {
-        Chess.ShowStatus        = LOW;                                          // Show criteria, implemented ZERO, LOW, MEDIUM, HIGH
-        Chess.DebugLevel        = LOW;                                          // Debug level, implemented ZERO, LOW, MEDIUM, HIGH  
-        Position.SetFromFile(Pos, stringToFilename(positionMap[Position.NEW_POSITION]));          // Initiate starting postion        
-        Chess.MaxMoves          = DEFAULT_MAX_MOVES;                            // Initiate MaxMoves
-        Chess.MaxMoveDepth      = DEFAULT_MAX_MOVE_DEPTH;                       // Initiate MaxMoveDepth
-        Chess.MaxSeconds        = DEFAULT_MAX_SECONDS;                          // Initiate Maxseconds
-        Chess.DecisionRule      = DEFAULT_DECISION_RULE;                        // Initiate DecisionRule                          
-        Chess.PlayMode          = DEFAULT_PLAY_MODE;                            // Initiate PlayMode
-        Chess.FirstMove         = DEFAULT_FIRST_MOVE;                           // Initiate FirstMove 
-        Chess.WhiteBoard        = Chess.SetBoard(Pos);                          // Set WhiteBoard
-        Chess.ui.repaintWindow(Pos);                                            // Draw beginning position
+        Chess.ShowStatus        = LOW;  // Show criteria, implemented ZERO, LOW, MEDIUM, HIGH
+        Chess.DebugLevel        = LOW;  // Debug level, implemented ZERO, LOW, MEDIUM, HIGH  
+        // Initiate starting postion        
+        Position.SetFromFile(Pos, stringToFilename(positionMap[Position.NEW_POSITION]));         
+        Chess.MaxMoves          = DEFAULT_MAX_MOVES;        // Initiate MaxMoves
+        Chess.MaxMoveDepth      = DEFAULT_MAX_MOVE_DEPTH;   // Initiate MaxMoveDepth
+        Chess.MaxSeconds        = DEFAULT_MAX_SECONDS;      // Initiate Maxseconds
+        Chess.DecisionRule      = DEFAULT_DECISION_RULE;    // Initiate DecisionRule                          
+        Chess.PlayMode          = DEFAULT_PLAY_MODE;        // Initiate PlayMode
+        Chess.FirstMove         = DEFAULT_FIRST_MOVE;       // Initiate FirstMove 
+        Chess.WhiteBoard        = Chess.SetBoard(Pos);      // Set WhiteBoard
+        Chess.ui.repaintWindow(Pos);                        // Draw beginning position
     } 
 
     public static boolean GetUserInput(int[][] Pos)    
@@ -215,8 +204,6 @@ public class Settings
        
     public static void SetPosition(int[][] Pos)
     {  
-		
-		
         boolean InputValid;
         String inputString;
         Scanner scanner     = new Scanner(System.in);
@@ -231,15 +218,15 @@ public class Settings
             ClearScreen(Pos);
           
             System.out.println("Enter \t\t Position");
-            for (i = 1; i < positionMap.length; i++)
+            for (i = 0; i < positionMap.length; i++)
             {
-		System.out.println(i + " \t\t " + positionMap[i]);
+		System.out.format("%1d  \t\t %s\n", i+1, positionMap[i]);
             }
             
             inputString = scanner.nextLine();     
-            UserInput = Character.getNumericValue(inputString.charAt(0));
+            UserInput = Character.getNumericValue(inputString.charAt(0)) - 1;
 
-            if((UserInput < 1) || (UserInput > 9))
+            if((UserInput < 0) || (UserInput >= positionMap.length))
             {
                 InputValid = false;
                 continue;
@@ -247,9 +234,8 @@ public class Settings
             {
                 InputValid = true;
             }
-            
+    
             Position.SetFromFile(Pos, stringToFilename(positionMap[UserInput]));
-            
             
             if (Position.Validate(Pos) == false)
             {
@@ -277,8 +263,8 @@ public class Settings
                     System.out.println(" has insufficient material to win. Draw!");
                     InputValid = false;
             }
-            
-            if (Position.Check(Pos, Position.GIVING_CHECK) == true)             // Check if the opponent King could be taken in the next move         
+            // Check if the opponent King could be taken in the next move        
+            if (Position.Check(Pos, Position.GIVING_CHECK) == true)              
             {         
                 System.out.println("Opponent can take");
                 Position.DisplayMoveColor(Pos);   
@@ -293,6 +279,7 @@ public class Settings
         }
         while(!InputValid);
         
+        Position.BeginPosition = UserInput; // Sets new begin position 
         if(Position.GetMoveColor(Pos) == Position.WHITE_MOVE)
         {
             Chess.WhiteBoard = true;
@@ -484,8 +471,8 @@ public class Settings
         }
         while (!InputValid);  
         
-        Chess.WhiteBoard = Chess.SetBoard(Pos);                                 // Sets WhiteBoard to true or false;
-        Chess.ui.repaintWindow(Pos);                                            // Draws beginning position
+        Chess.WhiteBoard = Chess.SetBoard(Pos); // Sets WhiteBoard to true or false;
+        Chess.ui.repaintWindow(Pos);            // Draws beginning position
     }
     
     public static void SetPlayMode(int[][] Pos)
@@ -556,11 +543,11 @@ public class Settings
         }
         while (!InputValid);  
         
-        Chess.WhiteBoard = Chess.SetBoard(Pos);                                 // Sets WhiteBoard to true or false;
+        Chess.WhiteBoard = Chess.SetBoard(Pos); // Sets WhiteBoard to true or false;
         Chess.ui.repaintWindow(Pos);                                            // Draws beginning position     
     }
     
-    public static char GetUserMove(int[][] Pos, int[][] MovePath, int[][] MoveBest, boolean Back) //throws java.io.IOException
+    public static char GetUserMove(int[][] Pos, int[][] MovePath, int[][] MoveBest, boolean Back)
     {
         int col = 0;
         int col_p_n = 0;
@@ -808,44 +795,7 @@ public class Settings
         {
             System.out.print("Position:\t\t\t ");
         }
-        switch(Position.BeginPosition)
-        {                
-            case Position.NEW_POSITION:
-                System.out.println("New");
-                break;
-                    
-            case Position.PAWN_POSITION:
-                System.out.println("Pawn");
-                break;
-                
-            case Position.EN_PASSANT_POSITION:
-                System.out.println("En passant");
-                break;
-             
-            case Position.PROMOTION_POSITION:
-                System.out.println("Promotion");
-                break;
-                    
-            case Position.CASTLING_POSITION:
-                System.out.println("Castling");
-                break;   
-                
-            case Position.INSUFFICIENT_MATERIAL_POSITION:
-                System.out.println("Insufficient material draw");
-                break;
-                    
-            case Position.ONE_MOVE_MATE_POSITION:
-                System.out.println("One move mate");
-                break;
-             
-            case Position.TWO_MOVE_MATE_POSITION:
-                System.out.println("Two move mate");
-                break;
-                    
-            case Position.THREE_MOVE_MATE_POSITION:
-                System.out.println("Three move mate");
-                break;                
-        }  
+        System.out.println(positionMap[Position.BeginPosition]);
     }
     
     public static void ShowMaxMoves(int type)
@@ -976,7 +926,7 @@ public class Settings
         UserTime /= 1000;
         ComputerTime /= 1000;
         
-        //System.out.print('\u000C');  // Clears console
+        //System.out.print('\u000C');  // Clears console in Java
         Chess.Info();
         System.out.format("Player time \t Computer time \n");
         System.out.format("%.3f sec \t %.3f sec \n", UserTime, ComputerTime);        
