@@ -1,0 +1,15 @@
+8 r - - - - - - - 
+7 - p - b - - - q 
+6 - - - p - n k - 
+5 - - - P p - p - 
+4 - P - - P p n - 
+3 R - - - - P - - 
+2 P - B - - - K - 
+1 - - Q - N - B  - 
+  a b c d e f g  h  
+BLACK_MOVE
+0
+WRA1_OR_WKE1_DID_MOVE
+WRH1_OR_WKE1_DID_MOVE
+BRA8_OR_BKE8_DID_MOVE
+BRH8_OR_BKE8_DID_MOVE

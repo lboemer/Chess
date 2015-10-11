@@ -61,15 +61,7 @@ public class Rating
         switch (PositionStatus)
         {
             case Position.CHECKMATE:
-                switch(Position.GetMoveColor(Pos))
-                {
-                    case Position.WHITE_MOVE:
-                        return CHECKMATE_RATING;
-                        
-                    case Position.BLACK_MOVE:
-                        return -CHECKMATE_RATING;
-                }
-                break;
+                return ((Position.GetMoveColor(Pos)) == Position.WHITE_MOVE) ? CHECKMATE_RATING : -CHECKMATE_RATING;
                 
             case Position.STALEMATE:
             case Position.INSUFFICIENT_MATERIAL:
@@ -82,19 +74,6 @@ public class Rating
         {
             for (col = 1; col <= Position.COLS; col++)              
             {
-                /*if (Pos[row][col] == Position.WHITE_PAWN)
-                {
-                    Rating += PawnRating.PawnRating(Pos, row, col, OPENING_GAME);
-                }
-                else if (Pos[row][col] == Position.BLACK_PAWN)
-                {
-                    Rating -= PawnRating.PawnRating(Pos, row, col, OPENING_GAME);
-                }
-                else
-                {
-                    Rating += Piece.Pieces[Pos[row][col]].getRating();
-                }*/
-                
                 switch(Pos[row][col])
                 {
                     case Position.WHITE_PAWN:
@@ -134,7 +113,6 @@ public class Rating
                 }
             }
         }
-        
         // Chess.PositionCache.put(Position.PositionToString(Pos), Rating);
         return(Rating);
     }       

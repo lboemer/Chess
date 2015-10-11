@@ -151,15 +151,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             
             for(i = 0; i < NUMBER_OF_PROMOTION_FIGURES; i++)
             {
-                if(WhitePromotionFigure) // Select white promotion image
-                {
-                    chessPieceImage = new ImageIcon( Piece.WhitePromotionFigures[i].getImageString() ).getImage();
-                }
-            
-                if(BlackPromotionFigure) // Select black promotion image
-                {
-                    chessPieceImage = new ImageIcon( Piece.BlackPromotionFigures[i].getImageString() ).getImage();
-                }            
+                chessPieceImage = (WhitePromotionFigure) ? new ImageIcon( Piece.WhitePromotionFigures[i].getImageString() ).getImage() : new ImageIcon( Piece.BlackPromotionFigures[i].getImageString() ).getImage();
                 g.drawImage
                 (
                     chessPieceImage,     // Draw promotion image
@@ -171,17 +163,8 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
                 );
             }
         }        
+        Chess.str = (Position.GetMoveColor(PosDrawBuffer) == Position.WHITE_MOVE) ? "White move" : "Black move";
         
-        switch(Position.GetMoveColor(PosDrawBuffer) )
-        {
-            case Position.WHITE_MOVE:
-                Chess.str = "White move";
-                break;
-                
-            case Position.BLACK_MOVE:
-                Chess.str = "Black move";
-                break;
-        }
         g.drawString(Chess.str, 20, 15 + 8 * SQUARE_SIZE);        
            
         //srt ="cde";  

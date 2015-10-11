@@ -2,6 +2,7 @@ import java.util.*; // For scanner
 
 public class Settings
 {
+    //Debug and Show settings
     public static final int ZERO                        = 0;
     public static final int LOW                         = 1;
     public static final int MEDIUM                      = 2;
@@ -78,13 +79,8 @@ public class Settings
             System.out.println("x \t Exit Program");
             
             inputString = scanner.nextLine(); 
-     
-            for(i = 0; i < inputString.length(); i++)  
-            {  
-                ch[i] = inputString.charAt(i);             
-            }  
-            
-            switch(ch[0])
+
+            switch(inputString.charAt(0))     
             {
                  case '1':
                     Set(Pos);
@@ -94,7 +90,7 @@ public class Settings
                     return false;
             }
         } 
-        while(ch[0] != '2');
+        while(inputString.charAt(0) != '2');
         
         return true;
     }
@@ -102,24 +98,19 @@ public class Settings
     public static boolean NewGame(int[][] Pos, int[][] MoveHistory)    
     {
         int i;
-        char UserInput;
         String inputString;
         Scanner scanner             = new Scanner(System.in);
         
         do{
             ClearScreen(Pos);
                                 
-            //Move.DisplayMoveList(MoveHistory, Move.ALL, 0, Move.TABLE, Move.SHOW_NO_RATING);
-            
             System.out.println();
             System.out.println("Enter");
             System.out.println("1  \t\t\t New game");
             System.out.println("x  \t\t\t Exit program");
 
             inputString = scanner.nextLine(); 
-            UserInput  = inputString.charAt(0);         
-             
-            switch(UserInput)
+            switch(inputString.charAt(0))
             {
                  case '1':
                     return true;
@@ -135,7 +126,7 @@ public class Settings
     {  
         Scanner scanner = new Scanner(System.in);
         String inputString;
-        char UserInput;
+        //char UserInput;
                 
         do 
         {            
@@ -147,15 +138,13 @@ public class Settings
             System.out.print("3 \t Set Max Computer Move Depth\t ");    ShowMaxMoveDepth();
             System.out.print("4 \t Set Max Computer Seconds\t ");       ShowMaxSeconds();
             System.out.print("5 \t Set Decision Rule\t\t ");            ShowDecisionRule();
-            System.out.print("6 \t Set Move Color\t\t\t ");             ShowMoveColor(Pos);
+            System.out.print("6 \t Set Move Color\t\t\t ");             Position.DisplayMoveColor(Pos);
             System.out.print("7 \t Set Play Mode\t\t\t ");              ShowPlayMode(); 
             System.out.print("8 \t Set First Move\t\t\t ");             ShowFirstMove ();
             System.out.println("x \t Exit");
                     
             inputString = scanner.nextLine(); 
-            UserInput  = inputString.charAt(0);            
-
-            switch(UserInput)
+            switch(inputString.charAt(0))
             {
                     case '1':
                         SetPosition(Pos);
@@ -190,13 +179,13 @@ public class Settings
                         break;
             }
         }
-        while (UserInput != 'x');
+        while (inputString.charAt(0) != 'x');
     }
     
     public static String stringToFilename(String str)
     {
-		return str.replace(" ", "_").concat(".txt");
-	}
+        return str.replace(" ", "_").concat(".txt");
+    }
        
     public static void SetPosition(int[][] Pos)
     {  
@@ -570,17 +559,7 @@ public class Settings
             Move.Display(MovePath, Move.ALL, 0, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);
             
             System.out.print("\nEnter \t ");
-           
-            switch (Position.GetMoveColor(Pos))
-            {
-                case Position.WHITE_MOVE:
-                    System.out.print("White");
-                    break;
-                    
-                case Position.BLACK_MOVE:
-                    System.out.print("Black");
-                    break;
-            }
+            Position.DisplayMoveColor(Pos);
             System.out.println(" move");
             
             System.out.println("Move \t E.g. e2e4 or e7e8B for pawn promotion");
@@ -821,25 +800,7 @@ public class Settings
                 break; 
         }
     }
-    
-    public static void ShowMoveColor(int[][] Pos)
-    {     
-        switch (Position.GetMoveColor(Pos))
-        {
-            case Position.WHITE_MOVE:
-                System.out.println("White");
-                break;
-                
-            case Position.BLACK_MOVE:
-                System.out.println("Black");
-                break;
-                                     
-            default:
-                System.out.println("Error in ShowMoveColor() MoveColor =" + Position.GetMoveColor(Pos));
-                break;     
-        }
-    }
-    
+  
     public static void ShowPlayMode()
     {
         switch (Chess.PlayMode)

@@ -25,7 +25,6 @@ public class King
         { -50, -20,   0,   0,   0,   0, -20, -50 }, // 8                              
     };     
   
-    
     public static int Rating(int[][] Pos, int row, int col, int GamePhase)
     {
         /* Debug messages begin

@@ -193,16 +193,7 @@ public class Move
                 (MovePath[l][COL] == Position.E) && 
                 ((MovePath[l][COL_N] == Position.C) || (MovePath[l][COL_N] == Position.G)))
             {
-                switch(MovePath[l][COL_N])
-                {
-                    case Position.C:
-                        MoveTable[t] = MoveTable[t].concat(" 0-0-0");                    
-                        break;
-
-                    case Position.G:
-                        MoveTable[t] = MoveTable[t].concat("   0-0");                                       
-                        break;
-                }
+                MoveTable[t] = ((MovePath[l][COL_N]) == Position.C) ? MoveTable[t].concat(" 0-0-0") : MoveTable[t].concat("   0-0");
             }                
             else
             {            
@@ -288,15 +279,11 @@ public class Move
     
     public static void DisplayType(String[] MoveTable, int t, int Figure, int Figure_p, int col, int col_n)
     {      
-        if((Figure_p != Position.EMPTY) ||                                      // Took opponent figure away
-            (((Figure_p == Position.EMPTY) && ((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n))))
-        {
-            MoveTable[t] = MoveTable[t].concat("x");                
-        }
-        else
-        {
-            MoveTable[t] = MoveTable[t].concat("-");                
-        }
+        
+        MoveTable[t] = ((Figure_p != Position.EMPTY) ||                                      // Took opponent figure away
+            (((Figure_p == Position.EMPTY) && ((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n)))) ?
+                MoveTable[t].concat("x") : MoveTable[t].concat("-");
+        
     }
         
     public static void DisplayEnPassantStatus(String[] MoveTable, int t, int EnPassant)
@@ -374,7 +361,7 @@ public class Move
         }                
     } 
  
-    public static void Set(int[][] Move, int m, int[][] MovePath, int l)        // Copies Move[m][] to MovePath[l][]
+    public static void Set(int[][] Move, int m, int[][] MovePath, int l) // Copies Move[m][] to MovePath[l][]
     {
         int i;
         
@@ -383,7 +370,7 @@ public class Move
             MovePath[l][i] = Move[m][i];
         }
        
-        for(l++; l < MovePath.length; l++)                                      // Sets remainder of MovePath to 0
+        for(l++; l < MovePath.length; l++) // Sets remainder of MovePath to 0
         {
             for(i = 0; i < ENTRIES_MOVE_LIST; i++)
             {
@@ -406,9 +393,9 @@ public class Move
     {
         int i;
           
-        for(i = 0; MovePath[i][FIGURE] != Position.EMPTY; i++)                  //  Move to end of list
+        for(i = 0; MovePath[i][FIGURE] != Position.EMPTY; i++) // Move to end of list
         {
-        }                                                                       // Total of i moves in move list  
+        }   // Total of i moves in move list  
         i--; 
         return(i);                                                              
     }
@@ -460,18 +447,9 @@ public class Move
     {
         int list = 0;
         int row = 0;
-
-        switch(Position.GetMoveColor(Pos))
-        {
-            case Position.WHITE_MOVE:
-                row = Position.WHITE_CASTLING_ROW; 
-                break;
-                
-            case Position.BLACK_MOVE:
-                row = Position.BLACK_CASTLING_ROW; 
-                break;
-        }  
-       
+    
+        row = ((Position.GetMoveColor(Pos)) == Position.WHITE_MOVE) ? Position.WHITE_CASTLING_ROW : Position.BLACK_CASTLING_ROW;
+        
         if(((Position.GetMoveColor(Pos)                     == Position.WHITE_MOVE)                 && 
             (Position.GetWhiteLongCastling(Pos)             == Position.WRA1_AND_WKE1_DID_NOT_MOVE) && 
             (Pos[Position.WHITE_CASTLING_ROW][Position.A]   == Position.WHITE_ROOK)                 && 
@@ -523,27 +501,8 @@ public class Move
         int KingColumnStep          = 0; 
         boolean CastlingPossible    = true;
         
-        switch(CastlingType)
-        {
-            case Position.LONG_CASTLING:
-                KingColumnStep = Position.COLUMN_DOWN; 
-                break;
-                
-            case Position.SHORT_CASTLING:
-                KingColumnStep = Position.COLUMN_UP; 
-                break;
-        } 
-
-        switch(Position.GetMoveColor(Pos))
-        {
-            case Position.WHITE_MOVE:
-                row = Position.WHITE_CASTLING_ROW; 
-                break;
-                
-            case Position.BLACK_MOVE:
-                row = Position.BLACK_CASTLING_ROW; 
-                break;
-        } 
+        KingColumnStep = ((CastlingType) == Position.LONG_CASTLING) ? Position.COLUMN_DOWN : Position.COLUMN_UP; 
+        row = ((Position.GetMoveColor(Pos)) == Position.WHITE_MOVE) ? Position.WHITE_CASTLING_ROW : Position.BLACK_CASTLING_ROW; 
         
         for(NewKingColumn = KingColumn; (Math.abs(NewKingColumn - KingColumn) <= Position.KING_CASTLING_STEPS) && CastlingPossible; NewKingColumn += KingColumnStep)
         {                                    
@@ -802,7 +761,7 @@ public class Move
         int row_n;
         int col_n;
 
-        if(m == -1)                                                             // No move 
+        if(m == -1)    // No move 
         {
             return;
         }  

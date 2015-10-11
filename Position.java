@@ -114,15 +114,15 @@ public class Position
     public static final int WHITE_PAWN_INITIAL_ROW      = 2;  
     public static final int BLACK_PAWN_INITIAL_ROW      = 7;  
     
-    // Begin en passant status
+    // En passant status
     public static final int NO_EN_PASSANT               = 0;
     public static final int EN_PASSANT                  = 1;    
     
-    // Begin check status
+    // Check status
     public static final int NO_CHECK                    = 0;
     public static final int CHECK                       = 1;   
     
-    // Begin position status
+    // Position status
     public static final int NO_CONDITION                = 0;
     public static final int CHECKMATE                   = 1;
     public static final int STALEMATE                   = 2;
@@ -132,7 +132,7 @@ public class Position
     
     public static final int REVERSABLE_MOVES_LIMIT      = 50;    
     
-    // Begin position names
+    // Psition names
     public static final int NEW_POSITION                = 0;
     public static final int PAWN_POSITION               = 1;    
     public static final int EN_PASSANT_POSITION         = 2;
@@ -143,7 +143,7 @@ public class Position
     public static final int TWO_MOVE_MATE_POSITION      = 7;
     public static final int THREE_MOVE_MATE_POSITION    = 8;    
   
-    // Parameter for Check()
+    // Check parameter
     public static final int GIVING_CHECK                = 0;
     public static final int RECEIVING_CHECK             = 1;    
 
@@ -186,16 +186,15 @@ public class Position
     
     public static final String[] colStr = // used to display column notation
     {
-        "a  ",
-        "b  ",
-        "c  ",
-        "d  ",
-        "e  ",
-        "f  ",
-        "g  ",
-        "h  "
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h"
     };
-    
     
     public static String ToString(int[][] Pos)
     {
@@ -280,13 +279,13 @@ public class Position
         }    
     }
     
-    public static void Copy(int[][] Pos, int[][] PosStore)  // Copies Pos to PosStore
+    public static void Copy(int[][] FromPos, int[][] ToPos)  // Copies FromPos to ToPos
     {
         for(int row = 0; row <= ROWS; row++)                // Loop over total ROWS + 1
         {   
             for(int col = 0; col <= COLS; col++)            // Loop over total COLS + 1 
             {
-                PosStore[row][col] = Pos[row][col];
+                ToPos[row][col] = FromPos[row][col];
             }
         }
     }   
@@ -344,9 +343,6 @@ public class Position
             System.out.print(row + " ");
             for(col = 1; col <= COLS; col++)
             {
-                //System.out.println("Piece.Pieces[Pos[" + row +"][" + col + "]].getConsoleNotation() = ");
-                //System.out.println("Pos[" + row + "][" + col + "] = " + Pos[row][col]);
-                //System.out.print(Piece.Pieces[Pos[row][col]].getConsoleNotation());
                 System.out.print(" " + Piece.Pieces[Pos[row][col]].getConsoleNotation() + " ");
             }
             System.out.print ("\n");
@@ -356,7 +352,7 @@ public class Position
         System.out.print("   ");
         for(col = 0; col < COLS; col++) // colStr starts at 0
         {
-            System.out.print(colStr[col]); 
+            System.out.print(colStr[col] + "  "); 
         }
         
         if(Chess.ShowStatus > Settings.HIGH)
@@ -417,16 +413,7 @@ public class Position
     
     public static void DisplayMoveColor(int Pos[][])
     {
-        switch(GetMoveColor(Pos))
-        {
-              case WHITE_MOVE:
-                System.out.println("White");
-                break;
-                
-              case BLACK_MOVE:
-                System.out.println("Black");              
-                break;
-        }
+        System.out.println((GetMoveColor(Pos) == WHITE_MOVE) ? "White" : "Black");
     }
     
     public static void SetWhiteLongCastling(int[][]Pos, int set)
@@ -545,14 +532,7 @@ public class Position
                     {
                         case WHITE_PAWN:
                         case BLACK_PAWN:
-                            if(Pos[row][col] == WHITE_PAWN)
-                            {
-                                row_s = 1;
-                            }
-                            else
-                            {
-                                row_s = -1;
-                            }
+                            row_s = (Pos[row][col] == WHITE_PAWN) ? 1 : -1;
                             if(((row + row_s) == row_K) && (Math.abs(col - col_K) == 1))
                             {
                                 CanTakeKing = true; // Pawn can capture king
@@ -758,14 +738,7 @@ public class Position
         SwitchMoveColor(Pos);   
         if(!AnyMovePossible(Pos, MovePath))
         {
-            if(Check(Pos, RECEIVING_CHECK))
-            {
-                Status = CHECKMATE;
-            }
-            else
-            {
-                Status = STALEMATE;
-            }
+            Status = (Check(Pos, RECEIVING_CHECK)) ? CHECKMATE : STALEMATE;
         }
         Position.SwitchMoveColor(Pos);  
         
@@ -789,84 +762,28 @@ public class Position
     
     public static int GetCheckStatus(int[][] Pos, int PositionStatus)
     {   
-        if(Check(Pos, GIVING_CHECK) && (PositionStatus  != CHECKMATE))        
-        {
-            return CHECK;
-        }
-        return NO_CHECK;
+        return(Check(Pos, GIVING_CHECK) && (PositionStatus  != CHECKMATE)) ? CHECK : NO_CHECK;
     }
     
     public static boolean End(int[][] Pos, int[][] MovePath)
     {
-        //System.out.println("Entering EndPosition()... Move Color = " + GetMoveColor(Pos));
-        if(Checkmate(Pos, MovePath) || Draw(Pos, MovePath))
-        {
-           return true;
-        }
-        return false;
+        return(Checkmate(Pos, MovePath) || Draw(Pos, MovePath)) ? true : false;
     }
     
     public static boolean Checkmate(int[][] Pos, int[][] MovePath)
     {
-        if(Chess.DebugLevel >= Settings.MEDIUM)
-        {
-            System.out.println();
-            System.out.println("In Checkmate(): DisplayPosition()");
-            
-            if(GetMoveColor(Pos) == WHITE_MOVE)
-            {
-                System.out.println(" In Checkmate(): White");
-            }
-            else
-            {
-                System.out.println(" In Checkmate(): Black");
-            }
-            Display(Pos);
-        
-            if(AnyMovePossible(Pos, MovePath))
-            {
-                System.out.println("In Checkmate(): AnyMovePossible = true");
-            }
-            
-            if(!AnyMovePossible(Pos, MovePath))
-            {
-                System.out.println("In Checkmate(): AnyMovePossible = false");
-            }
-            
-            if(Check(Pos, RECEIVING_CHECK))
-            {
-                System.out.println("In Checkmate(): ReceivingCheck(Pos) = true");
-            }
-            
-            if(!Check(Pos, RECEIVING_CHECK))
-            {
-                System.out.println("In Checkmate(): ReceivingCheck(Pos) = false");
-            }
-        }
-            
-        if(!AnyMovePossible(Pos, MovePath) && Check(Pos, RECEIVING_CHECK))
-        {
-            return true;
-        }       
-        return false;
+        return(!AnyMovePossible(Pos, MovePath) && Check(Pos, RECEIVING_CHECK)) ? true : false;
     }
     
     public static boolean Draw(int[][] Pos, int[][] MovePath)
     {   
-        if(Stalemate(Pos, MovePath) || InsufficientMaterial(Pos) || ThreePositionRepetition(Pos, MovePath) || FiftyMove(Pos))
-        {
-            return true;
-        }        
-        return false;
+        return (Stalemate(Pos, MovePath) || InsufficientMaterial(Pos) || ThreePositionRepetition(Pos, MovePath) || FiftyMove(Pos)) ? true : false;
     }
     
     public static boolean Stalemate(int[][] Pos, int[][] MovePath)
     {
-        if((!AnyMovePossible(Pos, MovePath) == true) && (Check(Pos, RECEIVING_CHECK) == false))        
-        {
-            return true;
-        }
-        return false;
+        return ((!AnyMovePossible(Pos, MovePath) == true) && (Check(Pos, RECEIVING_CHECK) == false)) ? true : false;  
+      
     }
 
     public static boolean ThreePositionRepetition(int[][] Pos, int[][] MovePath)
@@ -1038,17 +955,7 @@ public class Position
             {
                 case WHITE_PAWN:
                 case BLACK_PAWN:
-                    switch(GetMoveColor(Pos))
-                    {
-                        case WHITE_MOVE:
-                            PawnStep = 1;
-                            break;
-                
-                        case BLACK_MOVE:
-                            PawnStep = -1;
-                            break;
-                    }                
-               
+                    PawnStep = ((GetMoveColor(Pos)) == WHITE_MOVE) ? 1 : -1;
                     col_n = col;    // Move Pawn one field forward
                     row_n = row + PawnStep;      
                     if(Pos[row_n][col_n] == Position.EMPTY)                                                    
@@ -1059,16 +966,7 @@ public class Position
                             for(i = 0; i < WhitePromotionFigure.length; i++)    
                             {                                                   
                                 // Loop for Queen, Rook, Knight, Bishop
-                                switch(GetMoveColor(Pos))
-                                {
-                                    case WHITE_MOVE:
-                                        Figure_n = WhitePromotionFigure[i];
-                                        break;
-
-                                    case BLACK_MOVE:
-                                        Figure_n = BlackPromotionFigure[i];
-                                        break;
-                                }
+                                Figure_n = ((GetMoveColor(Pos)) == WHITE_MOVE) ? WhitePromotionFigure[i] : BlackPromotionFigure[i];
                                 MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure_n, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
                                 if(ReturnOnFirstMovePossible && MoveAdded)
                                 {
@@ -1113,16 +1011,7 @@ public class Position
                                 // Take away opponent figure and promote pawn
                                 for(i = 0; i < WhitePromotionFigure.length; i++)    
                                 {        
-                                    switch(GetMoveColor(Pos))
-                                    {
-                                        case WHITE_MOVE:
-                                            Figure_n = WhitePromotionFigure[i];
-                                            break;
-                                        
-                                            case BLACK_MOVE:
-                                            Figure_n = BlackPromotionFigure[i];
-                                            break;
-                                    }     
+                                    Figure_n = ((GetMoveColor(Pos)) == WHITE_MOVE) ? WhitePromotionFigure[i] : BlackPromotionFigure[i];
                                     MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure_n, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
                                     if(ReturnOnFirstMovePossible && MoveAdded)
                                     {
@@ -1180,30 +1069,9 @@ public class Position
                     list = Move.Castling(Pos, CastlingList);
                     for(i = 0; i < list; i++)
                     {
-                        switch(CastlingList[i])
-                        {
-                            case Position.LONG_CASTLING:
-                                col_n           = Position.C; //For King
-                                break;
-                                        
-                            case Position.SHORT_CASTLING:
-                                col_n           = Position.G; //For King
-                                break;
-                        }
-                                
-                        switch(Position.GetMoveColor(Pos))
-                        {
-                            case Position.WHITE_MOVE:
-                                row     = Position.WHITE_CASTLING_ROW;
-                                row_n   = Position.WHITE_CASTLING_ROW;
-                                break;
-                                        
-                            case Position.BLACK_MOVE:
-                                row     = Position.BLACK_CASTLING_ROW;
-                                row_n   = Position.BLACK_CASTLING_ROW;
-                                break;
-                        }
-                        MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
+                        col_n = (CastlingList[i] == Position.LONG_CASTLING) ? Position.C : Position.G;
+                        row = ((Position.GetMoveColor(Pos)) == Position.WHITE_MOVE) ? Position.WHITE_CASTLING_ROW : Position.BLACK_CASTLING_ROW;
+                        MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
                         if(Figure == Position.BLACK_KING && col_n == Position.F) {
                             System.out.println("now3;" + MoveAdded);
                         }
@@ -1230,7 +1098,10 @@ public class Position
         {
             for(i = 1;!OffBoardOrOwnFigure(Pos, row + Direction[dir][0] * i, col + Direction[dir][1] * i); i++)      
             {
-                if( i > piece_move.max_steps) { break; }
+                if( i > piece_move.max_steps) 
+                { 
+                    break; 
+                }
                 MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row + Direction[dir][0] * i, col + Direction[dir][1] * i, MovesPosition, MovePath, ReturnOnFirstMovePossible);
                 if(ReturnOnFirstMovePossible && MoveAdded)
                 {
@@ -1258,14 +1129,8 @@ public class Position
         Copy(Pos, PosStore);    // Store position
         Figure              = Pos[row][col]; 
         Figure_p            = Pos[row_n][col_n];
-        if(((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n) && (Figure_p == Position.EMPTY))
-        {
-            EnPassantStatus = Position.EN_PASSANT;
-        }
-        else
-        {
-            EnPassantStatus = Position.NO_EN_PASSANT; 
-        }        
+        EnPassantStatus = (((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n) && (Figure_p == Position.EMPTY)) ? Position.EN_PASSANT : Position.NO_EN_PASSANT;
+        
         // Create new position which needs to be investigated if own king can be captured 
         Move.Make(Pos, row, col, Figure_n, row_n, col_n, MovePath, Move.DO_NOT_ADD_TO_MOVE_HISTORY);    
         AddMove = !Check(Pos, Position.RECEIVING_CHECK); // Check for receiving check

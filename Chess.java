@@ -143,7 +143,10 @@ public class Chess
             Iteration_Move_Counter[0] = 1;
             MoveNumber        = 0;
             Settings.Initiate(Pos);
-            Settings.GetUserInput(Pos);
+            if(!Settings.GetUserInput(Pos))
+            { 
+                System.exit(0); //return does not end the program
+            }
             UserTotal_ms = 0;
             ComputerTotal_ms = 0;
                           
@@ -174,7 +177,7 @@ public class Chess
                                 Back = false;
                                 break;  // Leaves switch()
                          
-                            case '2':            
+                            case '2':   // Take move back         
                                 Move.Revert(Pos, MovePath);                                
                                 ui.repaintWindow(Pos);
                                 
@@ -375,31 +378,8 @@ public class Chess
              
         // Sort the move list and place best move first
         Move.SortList(MovesPosition);                                         
-
-        switch(DecisionRule)
-        {  
-            case Settings.MINMAX:
-                if(Position.GetMoveColor(Pos) == Position.WHITE_MOVE)  // Max node
-                {                                                               
-                    minmax = - (Rating.CHECKMATE_RATING + 1);
-                    if(ShowStatus > Settings.LOW)
-                    {                    
-                        System.out.println("Iteration " + Iteration + " Set minmax to " + minmax);  
-                    }
-                }
-                else                                               // Min node
-                {                                                                                           
-                    minmax = Rating.CHECKMATE_RATING + 1;
-                    if(ShowStatus > Settings.LOW)
-                    {                     
-                        System.out.println("Iteration " + Iteration + " Set minmax to " + minmax);
-                    }
-                }
-                break;
             
-            case Settings.ALPHA_BETA:
-                break;
-        }        
+        minmax = (Position.GetMoveColor(Pos) == Position.WHITE_MOVE) ? - (Rating.CHECKMATE_RATING + 1) : Rating.CHECKMATE_RATING + 1;
         
         loop_over_all_moves_in_one_position:               // Set break point
         // Loop over all possible moves in one position
@@ -503,20 +483,13 @@ public class Chess
         switch(DecisionRule)
         {
             case Settings.MINMAX:
-                return minmax;
+                ReturnValue = minmax;
                           
             case Settings.ALPHA_BETA:
-                if(Position.GetMoveColor(Pos) == Position.WHITE_MOVE)  // Max node
-                {                                 
-                    return alpha;              
-                }
-                if(Position.GetMoveColor(Pos) == Position.BLACK_MOVE)   // Min node                              
-                {                                    
-                    return beta;
-                } 
+                ReturnValue = (Position.GetMoveColor(Pos) == Position.WHITE_MOVE) ? alpha : beta;
                 break;  
         }
-        return 0; // This statement is not reached and is added to make compiler happy  
+        return ReturnValue; 
     }    
 
     public static boolean SetBoard(int[][] Pos)
