@@ -92,9 +92,16 @@ public class Position
     public static final int COLUMN_REPETITIVE_POSITIONS = 0;
     public static final int ROW_REPETITIVE_POSITIONS    = 7;
 
-    public static final int WHITE_MOVE                  = 1;
-    public static final int BLACK_MOVE                  = -1;
-    
+    public static final int WHITE_MOVE                  = 0;
+    public static final int BLACK_MOVE                  = 1;
+          
+    public static final String[] MoveColorMenu = 
+    {
+        "Move Color", 
+        "White move", 
+        "Black move" 
+    };           
+            
     public static final int WHITE_FIGURE                = 1;
     public static final int BLACK_FIGURE                = -1;    
     
@@ -130,6 +137,16 @@ public class Position
     public static final int THREE_POSITION_REPETITION   = 4;    
     public static final int FIFTY_MOVE                  = 5;
     
+    public static final String[] PositionStatusText = 
+    {
+        "No condition", 
+        "Checkmate", 
+        "Stalemate", 
+        "Insufficient material",
+        "Three position repetition", 
+        "Fifty move rule" 
+    };
+    
     public static final int REVERSABLE_MOVES_LIMIT      = 50;    
     
     // Psition names
@@ -142,7 +159,22 @@ public class Position
     public static final int ONE_MOVE_MATE_POSITION      = 6;
     public static final int TWO_MOVE_MATE_POSITION      = 7;
     public static final int THREE_MOVE_MATE_POSITION    = 8;    
-  
+      
+    public static final String[] positionMap = 
+    {
+        "New", 
+        "Pawn", 
+        "En passant", 
+        "Promotion",
+        "Castling", 
+        "Insufficient material", 
+        "One Move Mate",
+        "Two Move Mate", 
+        "Three Move Mate"
+    };
+    
+    
+    
     // Check parameter
     public static final int GIVING_CHECK                = 0;
     public static final int RECEIVING_CHECK             = 1;    

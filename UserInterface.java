@@ -31,12 +31,9 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         
     public static String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
     
-    public void repaintWindow(int[][] Pos) {
-        int row;
-        int col;
-        
+    public void repaintWindow(int[][] Pos) 
+    {
         Position.Copy(Pos, PosDrawBuffer);
-        
         repaint();  // Draw position from PosDrawBuffer[][]
     }
 
@@ -132,7 +129,8 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         {
             //System.out.println("In paint() WhitePromotionFigure = " + WhitePromotionFigure + "BlackPromotionFigure = " + BlackPromotionFigure);
             g.setColor(new Color(100, 150, 100)); // Draw background frame for Promotion figures
-            g.fillRect(
+            g.fillRect
+            (
                 X_PROMOTION_FRAME_SQUARE_OFFSET * SQUARE_SIZE + SQUARE_SIZE / 2, 
                 Y_PROMOTION_FRAME_SQUARE_OFFSET * SQUARE_SIZE,                     
                 PROMOTION_FRAME_SQUARE_LENGTH * SQUARE_SIZE, 
@@ -142,7 +140,8 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             if(LeftMouseButtonPressed) // Draw background for selected promotion figure
             {
                 g.setColor(new Color(255, 100, 100));  // Red
-                g.fillRect(
+                g.fillRect
+                (
                     (col_p - 1) * SQUARE_SIZE, 
                     3 * SQUARE_SIZE + SQUARE_SIZE /2, 
                     SQUARE_SIZE, SQUARE_SIZE

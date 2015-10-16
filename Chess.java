@@ -30,7 +30,7 @@ public class Chess
     // Setting variables
     public static int       MaxMoves;                          
     public static int       MaxMoveDepth;
-    public static long      MaxSeconds;    
+    public static int       MaxSeconds;    
     public static int       DecisionRule; 
     public static int       PlayMode;
     public static int       FirstMove; 
@@ -145,7 +145,7 @@ public class Chess
             Settings.Initiate(Pos);
             if(!Settings.GetUserInput(Pos))
             { 
-                System.exit(0); //return does not end the program
+                break;  // To end the program
             }
             UserTotal_ms = 0;
             ComputerTotal_ms = 0;
@@ -336,9 +336,10 @@ public class Chess
                         ComputerEnd_ms = System.currentTimeMillis( );                  
                         ComputerTotal_ms += (ComputerEnd_ms - ComputerBegin_ms);                 
                 
-                        ui.repaintWindow(Pos);                           
-                        
-                        break;    
+                        ui.repaintWindow(Pos);       
+                        Settings.ClearScreen(Pos); 
+                        Move.Display(MovePath, Move.STOP, Chess.Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);    
+                        break;    // Breaks out of do while loop
                     }
                 }
                 
@@ -353,7 +354,8 @@ public class Chess
         }
         while(Settings.NewGame(Pos, MovePath));
         
-        System.out.println("Ended Program");   
+        System.out.println("Ended Program");  
+        System.exit(0);
     } 
 
     public static int Iterate(int[][] Pos, int alpha, int beta, int[][] MovePath, int[][] MoveBestUpper)
