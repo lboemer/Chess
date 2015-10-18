@@ -12,7 +12,6 @@ public class Settings
     // Java int:int is 32 bit signed type ranges from –2,147,483,648 to 2,147,483,647.
     public static final int ABSOLUTE_MAX_MOVES          = 2147483000;           
     public static final int DEFAULT_MAX_MOVES           = 10000000; 
-     
     public static final String[] MaxComputerMoveMenu = 
     {
         "Max Computer Moves"
@@ -20,27 +19,22 @@ public class Settings
     
     public static final int ABSOLUTE_MAX_MOVE_DEPTH     = 50; 
     public static final int DEFAULT_MAX_MOVE_DEPTH      = 50;   
-    
     public static final String[] MaxMoveDepthMenu = 
     {
         "Max Move Depth"
     };
     
-    
     public static final int ABSOLUTE_MAX_SECONDS       = 60 * 60 * 24; // 24 h 
-    public static final int DEFAULT_MAX_SECONDS        = 10;  // per computer move 
-    
+    public static final int DEFAULT_MAX_SECONDS        = 3;  // per computer move 
     public static final String[] MaxSecondsMenu = 
     {
         "Max seconds per computer move"
     };
     
-    
     // Decision rule
     public static final int MINMAX                      = 0;
     public static final int ALPHA_BETA                  = 1;  
     public static final int DEFAULT_DECISION_RULE       = ALPHA_BETA;
-    
     public static final String[] DecisionRuleMenu = 
     {
         "Decision Rule", 
@@ -53,7 +47,6 @@ public class Settings
     public static final int PLAYER_COMPUTER             = 1;
     public static final int COMPUTER_COMPUTER           = 2;
     public static final int DEFAULT_PLAY_MODE           = PLAYER_COMPUTER;
-     
     public static final String[] PlayModeMenu = 
     {
         "Play Mode", 
@@ -66,7 +59,6 @@ public class Settings
     public static final int PLAYER                      = 0;
     public static final int COMPUTER                    = 1;
     public static final int DEFAULT_FIRST_MOVE          = PLAYER;
-    
     public static final String[] FirstMoveMenu = 
     {
         "First Move", 
@@ -76,10 +68,11 @@ public class Settings
     
     public static void Initiate(int[][] Pos)
     {
+        Position.BeginPosition = Position.NEW_POSITION;
         Chess.ShowStatus        = LOW;  // Show criteria, implemented ZERO, LOW, MEDIUM, HIGH
         Chess.DebugLevel        = LOW;  // Debug level, implemented ZERO, LOW, MEDIUM, HIGH  
         // Initiate starting postion        
-        Position.SetFromFile(Pos, stringToFilename(Position.positionMap[Position.NEW_POSITION]));         
+        Position.SetFromFile(Pos, stringToFilename(Position.positionMap[Position.BeginPosition]));         
         Chess.MaxMoves          = DEFAULT_MAX_MOVES;        // Initiate MaxMoves
         Chess.MaxMoveDepth      = DEFAULT_MAX_MOVE_DEPTH;   // Initiate MaxMoveDepth
         Chess.MaxSeconds        = DEFAULT_MAX_SECONDS;      // Initiate Maxseconds
@@ -90,74 +83,13 @@ public class Settings
         Chess.ui.repaintWindow(Pos);                        // Draw beginning position
     } 
 
-    public static boolean GetUserInput(int[][] Pos)    
-    {
-        int i;
-        char[] ch                   = new char[100];  
-        String inputString;
-        Scanner scanner             = new Scanner(System.in);
-        
-        do{
-            ClearScreen(Pos);
-            System.out.println("Enter \t Next Step");
-            System.out.println("1 \t Get user input");
-            System.out.println("2 \t Make move");
-            System.out.println("x \t Exit Program");
-            
-            inputString = scanner.nextLine(); 
-
-            switch(inputString.charAt(0))     
-            {
-                 case '1':
-                    Set(Pos);
-                    continue;
-                   
-                 case 'x':
-                    return false;
-            }
-        } 
-        while(inputString.charAt(0) != '2');
-        
-        return true;
-    }
-    
-    public static boolean NewGame(int[][] Pos, int[][] MoveHistory)    
-    {
-        int i;
-        String inputString;
-        Scanner scanner             = new Scanner(System.in);
-        
-        
-        
-        do{
-            //ClearScreen(Pos);
-                                
-            System.out.println();
-            System.out.println("Enter");
-            System.out.println("1  \t\t\t New game");
-            System.out.println("x  \t\t\t Exit program");
-
-            inputString = scanner.nextLine(); 
-            switch(inputString.charAt(0))
-            {
-                 case '1':
-                    return true;
-                    
-                 case 'x':
-                    return false;
-            }
-        } 
-        while(true);
-    }
-    
-    public static void Set(int[][] Pos)
+    public static boolean Set(int[][] Pos)
     {  
+        int UserInput = 0;
         Scanner scanner = new Scanner(System.in);
-        String inputString;
-        //char UserInput;
-                
+        
         do 
-        {            
+        {          
             ClearScreen(Pos);
             
             System.out.println("Enter\t Settings \t\t\t Current setting");
@@ -169,49 +101,67 @@ public class Settings
             System.out.print("6 \t Set Move Color\t\t\t ");             Position.DisplayMoveColor(Pos);
             System.out.print("7 \t Set Play Mode\t\t\t ");              System.out.println(PlayModeMenu[Chess.PlayMode + 1]);
             System.out.print("8 \t Set First Move\t\t\t ");             System.out.println(FirstMoveMenu[Chess.FirstMove + 1]);
-            System.out.println("x \t Exit");
+            System.out.println("9 \t Make Move"); 
+            System.out.println("10 \t Exit");
                     
-            inputString = scanner.nextLine(); 
-            switch(inputString.charAt(0))
+            try 
             {
-                    case '1':
-                        SetPosition(Pos);
-                        break;
-                                        
-                    case '2':
-                        Chess.MaxMoves = UserSetParameter(Pos, MaxComputerMoveMenu, ABSOLUTE_MAX_MOVES + 1);
-                        break;                           
-                        
-                    case '3':
-                        Chess.MaxMoveDepth = UserSetParameter(Pos, MaxMoveDepthMenu, ABSOLUTE_MAX_MOVE_DEPTH + 1);
-                        break;
-                        
-                    case '4':
-                        Chess.MaxSeconds = UserSetParameter(Pos, MaxSecondsMenu, ABSOLUTE_MAX_SECONDS + 1);
-                        break;
-                    
-                    case '5':
-                        Chess.DecisionRule = UserSetParameter(Pos, DecisionRuleMenu, DecisionRuleMenu.length) - 1;
-                        break;                        
-                        
-                    case '6':
-                        Position.SetMoveColor(Pos, UserSetParameter(Pos, Position.MoveColorMenu, Position.MoveColorMenu.length) - 1); 
-                        Chess.WhiteBoard = Chess.SetBoard(Pos); // Sets WhiteBoard to true or false;
-                        Chess.ui.repaintWindow(Pos); // Draws beginning position
-                        break;                                         
-                    
-                    case '7':
-                        Chess.PlayMode = UserSetParameter(Pos, PlayModeMenu, PlayModeMenu.length) - 1;
-                        break; 
-                            
-                    case '8':
-                        Chess.FirstMove = UserSetParameter(Pos, FirstMoveMenu, FirstMoveMenu.length) - 1;
-                        Chess.WhiteBoard = Chess.SetBoard(Pos); // Sets WhiteBoard to true or false;
-                        Chess.ui.repaintWindow(Pos); // Draws beginning position                        
-                        break;
+                UserInput = Integer.parseInt(scanner.nextLine());
+            } 
+            catch (NumberFormatException e) 
+            {
+                System.out.println("Can't convert to integer. Please try again.");
+                continue;
+            }
+            switch(UserInput)
+            {
+                case 1:
+                    SetPosition(Pos);
+                    break;
+
+                case 2:
+                    Chess.MaxMoves = UserSetParameter(Pos, MaxComputerMoveMenu, ABSOLUTE_MAX_MOVES + 1);
+                    break;                           
+
+                case 3:
+                    Chess.MaxMoveDepth = UserSetParameter(Pos, MaxMoveDepthMenu, ABSOLUTE_MAX_MOVE_DEPTH + 1);
+                    break;
+
+                case 4:
+                    Chess.MaxSeconds = UserSetParameter(Pos, MaxSecondsMenu, ABSOLUTE_MAX_SECONDS + 1);
+                    break;
+
+                case 5:
+                    Chess.DecisionRule = UserSetParameter(Pos, DecisionRuleMenu, DecisionRuleMenu.length) - 1;
+                    break;                        
+
+                case 6:
+                    Position.SetMoveColor(Pos, UserSetParameter(Pos, Position.MoveColorMenu, Position.MoveColorMenu.length) - 1); 
+                    Chess.WhiteBoard = Chess.SetBoard(Pos); // Sets WhiteBoard to true or false;
+                    Chess.ui.repaintWindow(Pos); // Draws beginning position
+                    break;                                         
+
+                case 7:
+                    Chess.PlayMode = UserSetParameter(Pos, PlayModeMenu, PlayModeMenu.length) - 1;
+                    break; 
+
+                case 8:
+                    Chess.FirstMove = UserSetParameter(Pos, FirstMoveMenu, FirstMoveMenu.length) - 1;
+                    Chess.WhiteBoard = Chess.SetBoard(Pos); // Sets WhiteBoard to true or false;
+                    Chess.ui.repaintWindow(Pos); // Draws beginning position                        
+                    break;
+
+                case 9:
+                    System.out.println("Entered Make Move");  
+                    break;
+
+                case 10:
+                    System.out.println("Entered Exit");  
+                    return false;
             }
         }
-        while (inputString.charAt(0) != 'x');
+        while (UserInput != 9);
+        return true;
     }
     
     public static String stringToFilename(String str)

@@ -94,7 +94,6 @@ public class Position
 
     public static final int WHITE_MOVE                  = 0;
     public static final int BLACK_MOVE                  = 1;
-          
     public static final String[] MoveColorMenu = 
     {
         "Move Color", 
@@ -136,7 +135,6 @@ public class Position
     public static final int INSUFFICIENT_MATERIAL       = 3;
     public static final int THREE_POSITION_REPETITION   = 4;    
     public static final int FIFTY_MOVE                  = 5;
-    
     public static final String[] PositionStatusText = 
     {
         "No condition", 
@@ -159,7 +157,6 @@ public class Position
     public static final int ONE_MOVE_MATE_POSITION      = 6;
     public static final int TWO_MOVE_MATE_POSITION      = 7;
     public static final int THREE_MOVE_MATE_POSITION    = 8;    
-      
     public static final String[] positionMap = 
     {
         "New", 
@@ -172,8 +169,6 @@ public class Position
         "Two Move Mate", 
         "Three Move Mate"
     };
-    
-    
     
     // Check parameter
     public static final int GIVING_CHECK                = 0;

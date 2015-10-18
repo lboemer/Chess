@@ -143,7 +143,7 @@ public class Chess
             Iteration_Move_Counter[0] = 1;
             MoveNumber        = 0;
             Settings.Initiate(Pos);
-            if(!Settings.GetUserInput(Pos))
+            if(!Settings.Set(Pos))            
             { 
                 break;  // To end the program
             }
@@ -201,7 +201,9 @@ public class Chess
 
                     if(Position.End(Pos, MovePath))
                     {
-                        System.out.println("After user move: Game ended!");
+                        System.out.println("After user move: Game ended!\n");
+                        System.out.println("Please press enter to continue\n");
+                        scanner.nextLine(); 
                         break;
                     }
                 }
@@ -339,6 +341,10 @@ public class Chess
                         ui.repaintWindow(Pos);       
                         Settings.ClearScreen(Pos); 
                         Move.Display(MovePath, Move.STOP, Chess.Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);    
+                        
+                        System.out.println("After computer move: Game ended!\n");
+                        System.out.println("Please press enter to continue\n");
+                        scanner.nextLine(); 
                         break;    // Breaks out of do while loop
                     }
                 }
@@ -352,8 +358,7 @@ public class Chess
             
             ui.repaintWindow(Pos);                    
         }
-        while(Settings.NewGame(Pos, MovePath));
-        
+        while(true);
         System.out.println("Ended Program");  
         System.exit(0);
     } 
