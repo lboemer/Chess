@@ -308,9 +308,9 @@ public class Position
     
     public static void Copy(int[][] FromPos, int[][] ToPos)  // Copies FromPos to ToPos
     {
-        for(int row = 0; row <= ROWS; row++)                // Loop over total ROWS + 1
+        for(int row = 0; row <= ROWS; row++)        // Loop over total ROWS + 1
         {   
-            for(int col = 0; col <= COLS; col++)            // Loop over total COLS + 1 
+            for(int col = 0; col <= COLS; col++)    // Loop over total COLS + 1 
             {
                 ToPos[row][col] = FromPos[row][col];
             }
@@ -529,7 +529,16 @@ public class Position
         int col_K = 0;      // Column of opponent king
 
         boolean CanTakeKing = false;    // False initialization is required
-       
+              
+        /*
+        Scanner scanner   = new Scanner(System.in);
+        Scanner user_input = new Scanner(System.in);        
+        
+        System.out.println("In Check() beginning ... \n");
+        System.out.println("Please press enter to continue\n");
+        scanner.nextLine();   
+        */
+        
         if(Type == RECEIVING_CHECK)
         {
             SwitchMoveColor(Pos);       // Switch to opponent move   
@@ -623,6 +632,13 @@ public class Position
         {
             SwitchMoveColor(Pos);   // Switch back to own move   
         }   
+        
+        /*
+        System.out.println("In Check() end ... \n");
+        System.out.println("Please press enter to continue\n");
+        scanner.nextLine();   
+        */
+        
         return CanTakeKing;
     }
         
@@ -951,7 +967,8 @@ public class Position
     
     public static boolean GenerateMoveList(int[][] Pos, int[][] MovesPosition, int[][] MovePath, boolean ReturnOnFirstMovePossible)
     {                                                                           
-        // Generates move list or returns on first move found    
+        // Generates move list and stores moves into MovesPosition[][] 
+        // or returns on first move found    
         int col;
         int col_n = 0;
         int row;
@@ -1099,10 +1116,6 @@ public class Position
                         col_n = (CastlingList[i] == Position.LONG_CASTLING) ? Position.C : Position.G;
                         row = ((Position.GetMoveColor(Pos)) == Position.WHITE_MOVE) ? Position.WHITE_CASTLING_ROW : Position.BLACK_CASTLING_ROW;
                         MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
-                        if(Figure == Position.BLACK_KING && col_n == Position.F) {
-                            System.out.println("now3;" + MoveAdded);
-                        }
-                        
                         if(ReturnOnFirstMovePossible && MoveAdded)
                         {
                             return true;
@@ -1124,9 +1137,12 @@ public class Position
         for(dir = 0; dir < Direction.length; dir++)  // Loop over all directions
         {
             for(i = 1;!OffBoardOrOwnFigure(Pos, row + Direction[dir][0] * i, col + Direction[dir][1] * i); i++)      
-            {
+            {   
+                // Move to field is on board and (empty or opponent figure)
                 if( i > piece_move.max_steps) 
                 { 
+                    // Controls knight and king to only make 1 step
+                    // Bishop, rook, queen can make more steps
                     break; 
                 }
                 MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row + Direction[dir][0] * i, col + Direction[dir][1] * i, MovesPosition, MovePath, ReturnOnFirstMovePossible);
@@ -1153,14 +1169,50 @@ public class Position
         int MoveNumber;
         int[][] PosStore = new int[Position.ROWS + 1][Position.COLS + 1];
         
-        Copy(Pos, PosStore);    // Store position
+        /*
+        Scanner scanner   = new Scanner(System.in);
+        Scanner user_input = new Scanner(System.in);        
+        
+        
+        System.out.println("In AddMoveToMoveListIfNoReceivingCheckGetUserMoveFromMouseInput() beginning ... \n");
+        System.out.println("Please press enter to continue\n");
+        scanner.nextLine();        
+        */
+        
+        Copy(Pos, PosStore);    // Store position from Pos into PosStore
         Figure              = Pos[row][col]; 
         Figure_p            = Pos[row_n][col_n];
         EnPassantStatus = (((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN)) && (col != col_n) && (Figure_p == Position.EMPTY)) ? Position.EN_PASSANT : Position.NO_EN_PASSANT;
         
+        /*
+        System.out.println("In AddMoveToMoveListIfNoReceivingCheckGetUserMoveFromMouseInput() before !Make() ... \n");
+        System.out.println("Please press enter to continue\n");
+        scanner.nextLine();       
+        */
+        
         // Create new position which needs to be investigated if own king can be captured 
         Move.Make(Pos, row, col, Figure_n, row_n, col_n, MovePath, Move.DO_NOT_ADD_TO_MOVE_HISTORY);    
+        
+        /*
+        System.out.println("In AddMoveToMoveListIfNoReceivingCheckGetUserMoveFromMouseInput() after !Make() ... \n");
+        System.out.println("Please press enter to continue\n");
+        scanner.nextLine();  
+        
+        
+        System.out.println("In AddMoveToMoveListIfNoReceivingCheckGetUserMoveFromMouseInput() before !Check() ... \n");
+        System.out.println("Please press enter to continue\n");
+        scanner.nextLine();        
+        */       
+        
+        
         AddMove = !Check(Pos, Position.RECEIVING_CHECK); // Check for receiving check
+        
+        /*
+        System.out.println("In AddMoveToMoveListIfNoReceivingCheckGetUserMoveFromMouseInput() after !Check()eginning ... \n");
+        System.out.println("Please press enter to continue\n");
+        scanner.nextLine();        
+        */
+        
         if(!ReturnOnFirstMovePossible && AddMove)                                                  
         {   
             // No receiving check, add move to MovesPosition
@@ -1174,14 +1226,21 @@ public class Position
             MovesPosition[MoveNumber][Move.COL_N]               = col_n;
             // Need EN_PASSANT_STATUS to display e.p. as part of move  
             MovesPosition[MoveNumber][Move.EN_PASSANT_STATUS]   = EnPassantStatus;  
-            // Need POSITION_STATUS to display checkmate of draw as part of move 
+            // Need POSITION_STATUS to display checkmate or draw as part of move 
             MovesPosition[MoveNumber][Move.POSITION_STATUS]     = GetStatus(Pos, MovePath);    
             // Need CHECK_STATUS to display check as part of move
             MovesPosition[MoveNumber][Move.CHECK_STATUS]        = Position.GetCheckStatus(Pos, MovesPosition[MoveNumber][Move.POSITION_STATUS]);   
             // Needed to display rating as part of move
             MovesPosition[MoveNumber][Move.RATING]              = Rating.Rating(Pos, MovesPosition[MoveNumber][Move.POSITION_STATUS]);           
         }
-        Copy(PosStore, Pos);    // Restore position
+        Copy(PosStore, Pos);    // Restore position from PosStore into Pos
+           
+        /*
+        System.out.println("In AddMoveToMoveListIfNoReceivingCheckGetUserMoveFromMouseInput() end ... \n");
+        System.out.println("Please press enter to continue\n");
+        scanner.nextLine();
+        */
+        
         return AddMove;         // Returns true if move was added
     }
 }

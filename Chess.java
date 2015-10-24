@@ -382,9 +382,12 @@ public class Chess
         
         // Generate all possible moves for one position into MovesPosition
         Position.GenerateMoveList(Pos, MovesPosition, MovePath, ReturnOnFirstMovePossible);                  
-             
+        //Move.Display(MovesPosition, Move.ALL, Chess.Ply, MoveTable, Move.LIST, Move.SHOW_RATING_EVERY_MOVE);    
         // Sort the move list and place best move first
-        Move.SortList(MovesPosition);                                         
+        Move.SortList(MovesPosition);     
+        //Move.Display(MovesPosition, Move.ALL, Chess.Ply, MoveTable, Move.LIST, Move.SHOW_RATING_EVERY_MOVE);           
+        
+        
             
         minmax = (Position.GetMoveColor(Pos) == Position.WHITE_MOVE) ? - (Rating.CHECKMATE_RATING + 1) : Rating.CHECKMATE_RATING + 1;
         
@@ -496,6 +499,8 @@ public class Chess
                 ReturnValue = (Position.GetMoveColor(Pos) == Position.WHITE_MOVE) ? alpha : beta;
                 break;  
         }
+        
+        //System.out.println("ReturnValue = " + ReturnValue);
         return ReturnValue; 
     }    
 

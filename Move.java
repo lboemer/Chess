@@ -131,6 +131,11 @@ public class Move
             {                                                                   // White move is first move
                 switch(ListFormat)
                 {
+                    case LIST:
+                        t = l;
+                        MoveTable[t] = String.format("%2d. ", l + 1);
+                        break;
+                        
                     case LINE:
                         t = 0;
                         if((l % 2) == 0)
@@ -160,6 +165,11 @@ public class Move
             {                                                                   // Black is first move
                 switch(ListFormat)
                 {
+                    case LIST:
+                        t = l;
+                        MoveTable[t] = String.format("%2d. ", l + 1);
+                        break;
+                        
                     case LINE:
                         t = 0;
                         if(l == 0)
@@ -340,7 +350,9 @@ public class Move
         
     public static void DisplayRating(String[] MoveTable, int t, int[][] MoveList, int l, int Rating, int RatingFormat)
     {      
-        float RatingFloat = Rating / 100;;
+        float RatingFloat = (float) Rating / 100;
+        
+        //System.out.format(" Rating = %d RatingFloat = %.2f\n", Rating, RatingFloat);
         String str = String.format(" Rating = %.2f", RatingFloat);
         
         switch(RatingFormat)
@@ -524,8 +536,10 @@ public class Move
     }
     
     public static void Make(int[][] Pos, int row, int col, int Figure_n, int row_n, int col_n, int[][] MovePath, int AddMoveToHistory)
-    {                                                                           // Makes the move by updating the position in Pos[][] 
-        int m;                                                                  // Is called by user makes move or by computer makes move and move is added to move path
+    {                                                                           
+        // Makes the move by updating the position in Pos[][] 
+        // If called by user makes move or by computer makes move, move is added to move path
+        int m;                                                              
         int Figure;
         int Figure_p;
         int EnPassantStatus;
@@ -538,8 +552,10 @@ public class Move
         int RepetitivePositionCounterPreviousPosition   = 0;
         int FifyMoveCounterPreviousPosition             = 0;
        
-        if(AddMoveToHistory == ADD_TO_MOVE_HISTORY)                             // Save postion status information from the previous position before move is made to local variables
-        {                                                                       // The position status information from the previous position is used to reconstruct the previoosu position if moves are going backwards             
+        if(AddMoveToHistory == ADD_TO_MOVE_HISTORY)                             
+        {                                                                      
+            // Save postion status information from the previous position before move is made to local variables ...
+            // ... which is used to reconstruct the previous position for backward moves             
             WhiteLongCastlingPreviousPosition                       = Position.GetWhiteLongCastling(Pos);
             WhiteShortCastlingPreviousPosition                      = Position.GetWhiteShortCastling(Pos);
             BlackLongCastlingPreviousPosition                       = Position.GetBlackLongCastling(Pos);
@@ -569,12 +585,12 @@ public class Move
         {
             switch(col_n)
             {
-                case Position.C:                                                // Long white castling, move rook
+                case Position.C:    // Long white castling, move rook
                     Pos[Position.WHITE_CASTLING_ROW][Position.A] = Position.EMPTY;
                     Pos[Position.WHITE_CASTLING_ROW][Position.D] = Position.WHITE_ROOK;
                     break;
                         
-                case Position.G:                                                // Short white castling, move rook
+                case Position.G:    // Short white castling, move rook
                     Pos[Position.WHITE_CASTLING_ROW][Position.H] = Position.EMPTY;              
                     Pos[Position.WHITE_CASTLING_ROW][Position.F] = Position.WHITE_ROOK;
                     break;
@@ -585,12 +601,12 @@ public class Move
         {
             switch(col_n)
             {
-                case Position.C:                                                // Long black castling, move rook
+                case Position.C:    // Long black castling, move rook
                     Pos[Position.BLACK_CASTLING_ROW][Position.A] = Position.EMPTY;
                     Pos[Position.BLACK_CASTLING_ROW][Position.D] = Position.BLACK_ROOK;
                     break;
                         
-                case Position.G:                                                // Short white castling, move rook
+                case Position.G:    // Short white castling, move rook
                     Pos[Position.BLACK_CASTLING_ROW][Position.H] = Position.EMPTY;
                     Pos[Position.BLACK_CASTLING_ROW][Position.F] = Position.BLACK_ROOK;
                     break;
@@ -598,33 +614,39 @@ public class Move
         }               
                                                 
         if((Figure == Position.WHITE_ROOK) && (col == Position.A) && (row == Position.WHITE_CASTLING_ROW))        
-        {                                                                       // WRa1 moved
+        {                                                                       
+            // WRa1 moved
             Position.SetWhiteLongCastling(Pos, Position.WRA1_OR_WKE1_DID_MOVE);
         }        
                     
         if((Figure == Position.WHITE_ROOK) && (col == Position.H) && (row == Position.WHITE_CASTLING_ROW))          
-        {                                                                       // WRa8 moved
+        {                                                                       
+            // WRa8 moved
             Position.SetWhiteShortCastling(Pos, Position.WRH1_OR_WKE1_DID_MOVE);
         }
                 
         if((Figure == Position.BLACK_ROOK) && (col == Position.A) && (row == Position.BLACK_CASTLING_ROW))          
-        {                                                                       // BRa8 moved
+        {                                                                       
+            // BRa8 moved
             Position.SetBlackLongCastling(Pos, Position.BRA8_OR_BKE8_DID_MOVE);
         }        
                 
         if((Figure == Position.BLACK_ROOK) && (col == Position.H) && (row == Position.BLACK_CASTLING_ROW))         
-        {                                                                       // BRa8 moved
+        {                                                                       
+            // BRa8 moved
             Position.SetBlackShortCastling(Pos, Position.BRH8_OR_BKE8_DID_MOVE);
         }  
                 
         if((Figure == Position.WHITE_KING) && (col == Position.E) && (row == Position.WHITE_CASTLING_ROW))     
-        {                                                                       // WKe1 moved, White short and long castling not possible anymore
+        {                                                                       
+            // WKe1 moved, White short and long castling not possible anymore
             Position.SetWhiteLongCastling(Pos, Position.WRA1_OR_WKE1_DID_MOVE);
             Position.SetWhiteShortCastling(Pos, Position.WRA1_OR_WKE1_DID_MOVE);
         }
                                         
         if((Figure == Position.BLACK_KING) && (col == Position.E) && (row == Position.BLACK_CASTLING_ROW))        
-        {                                                                       // BKe8 moved, Black short and long castling not possible anymore
+        {                                                                       
+            // BKe8 moved, Black short and long castling not possible anymore
             Position.SetBlackLongCastling(Pos, Position.BRA8_OR_BKE8_DID_MOVE);
             Position.SetBlackShortCastling(Pos, Position.BRA8_OR_BKE8_DID_MOVE); 
         }    
@@ -632,7 +654,8 @@ public class Move
         if(((Figure == Position.WHITE_PAWN) && (row == 2) &&  (row_n == 4)) ||
             ((Figure == Position.BLACK_PAWN) && (row == 7) &&  (row_n == 5)))
         {
-            Position.SetColumnPawnMovedTwoRows(Pos, col);                       // Save new column where pawn moved two steps in ColumnPawnMovedTwoRows             
+            // Save new column where pawn moved two steps in ColumnPawnMovedTwoRows  
+            Position.SetColumnPawnMovedTwoRows(Pos, col);                                
         }
         else
         {
@@ -640,7 +663,8 @@ public class Move
         } 
 
         if((Figure == Position.WHITE_PAWN) || (Figure == Position.BLACK_PAWN) || (Figure_p != Position.EMPTY))   
-        {                                                                       // Pawn move or capture
+        {                                                                       
+            // Pawn move or capture
             Position.SetNumberOfMovesWithNoPawnMoveOrCapture(Pos,0);
         }
         else
@@ -707,8 +731,9 @@ public class Move
                 
         if(Position.GetFigureColor(MoveList[0][FIGURE]) == Position.WHITE_FIGURE)
         {
-            for(m = 0; MoveList[m][FIGURE] != Position.EMPTY; m++)              // Go to next available Move
+            for(m = 0; MoveList[m][FIGURE] != Position.EMPTY; m++)              
             {
+                // Go to next available Move
                 MaxRating = MoveList[m][RATING];
                 for(n = m + 1; MoveList[n][FIGURE] != Position.EMPTY; n++)
                 {           
@@ -722,8 +747,9 @@ public class Move
         }
         else
         {
-            for(m = 0; MoveList[m][FIGURE] != Position.EMPTY; m++)              // Go to next available Move
+            for(m = 0; MoveList[m][FIGURE] != Position.EMPTY; m++)              
             {
+                // Go to next available Move
                 MaxRating = MoveList[m][RATING];
                 for(n = m + 1; MoveList[n][FIGURE] != Position.EMPTY; n++)
                 {          

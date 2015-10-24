@@ -193,7 +193,12 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         int col;
         int i;
         boolean ReturnOnFirstMovePossible = false;
-
+        
+        /*
+        Scanner scanner   = new Scanner(System.in);
+        Scanner user_input = new Scanner(System.in);
+        */
+        
         Settings.ClearScreen(Pos);  
         if(!Back)
         {
@@ -206,7 +211,21 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         Position.Copy(Pos, PosDrawBuffer);  // Copies Pos[][] into PosDrawBuffer[][]
         
         Move.EmptyList(FillMoveList);   // Paint uses FillMoveList to draw possible move to fields green
+        
+        /*
+        System.out.println("In GetUserMoveFromMouseInput() before GenerateMoveList... \n");
+        System.out.println("Please press enter to continue\n");
+        scanner.nextLine();
+        */
+        
         Position.GenerateMoveList(Pos, FillMoveList, MovePath, ReturnOnFirstMovePossible);              // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
+        
+        /*
+        System.out.println("In GetUserMoveFromMouseInput() after GenerateMoveList... \n");
+        System.out.println("Please press enter to continue\n");
+        scanner.nextLine();       
+        */
+        
         do
         {
             MouseInputActive = true;    // Get mouse input
