@@ -163,8 +163,10 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             }
         }        
         Chess.str = (Position.GetMoveColor(PosDrawBuffer) == Position.WHITE_MOVE) ? "White move" : "Black move";
+        Chess.frame.setTitle(Chess.str);
         
-        g.drawString(Chess.str, 20, 15 + 8 * SQUARE_SIZE);        
+        
+        //g.drawString(Chess.str, 20, 15 + 8 * SQUARE_SIZE);        
            
         //srt ="cde";  
         //Chess.str = Chess.str.concat(srt);
@@ -208,6 +210,9 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         // Display MoveHistory
         Move.Display(MovePath, Move.STOP, Chess.Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);                    
         
+        // Display MoveHistory into a Window
+        Move.DisplayIntoHistoryWindow(MoveTable);
+        
         Position.Copy(Pos, PosDrawBuffer);  // Copies Pos[][] into PosDrawBuffer[][]
         
         Move.EmptyList(FillMoveList);   // Paint uses FillMoveList to draw possible move to fields green
@@ -237,6 +242,10 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         }while(!Move.UserSuccessful(Pos, row_f, col_f, Figure_n, row_n, col_n, MovePath));
         repaint();                      // Draws position from PosDrawBuffer[][]
         Settings.ClearScreen(Pos); 
+        // Display MoveHistory into a Window
+        //Move.DisplayIntoWindow(MoveTable);        
+        
+        
         return '0';
     }
     

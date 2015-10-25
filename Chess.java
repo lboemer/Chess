@@ -3,6 +3,7 @@ import java.util.Scanner;      // Import Scanner class
 import javax.swing.*;       //notice javax
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.Point;
 import javax.swing.JFrame;
 import java.util.Hashtable;
 
@@ -57,17 +58,37 @@ public class Chess
 
     public static String str = "Leo test \n new line";
     
-    public static JFrame frame     = new JFrame("Leo Java Chess");
- 
     public static UserInterface ui = new UserInterface();
      
     public static Scanner scanner   = new Scanner(System.in);
+    
+    // Set board window
+    public static JFrame frame     = new JFrame("Leo Java Chess");
+    
+    public static final JTextArea moveHistoryTextArea = new JTextArea(30, 20); // rows, columns
+    public static final JTextArea moveAnalysisTextArea = new JTextArea(5, 200); // rows, columns
+    
+    public static int sizeWindowHeader = 25;
     
     public static void Info()
     { 
         System.out.println("Chess Program by Fabian Boemer and Leopold Boemer");
         System.out.println("Date 2015-09-27");        
         System.out.println();
+    }
+    
+    public static void appendHistory(JTextArea area, String newText)
+    {
+        area.setText(area.getText() + newText + "\n");
+        // Makes window scroll automatically to show latest text
+        moveHistoryTextArea.setCaretPosition(moveHistoryTextArea.getDocument().getLength());
+    }
+     
+    public static void appendAnalysis(JTextArea area, String newText)
+    {
+        area.setText(area.getText() + newText);
+        // Makes window scroll automatically to show latest text
+        //moveAnalysisTextArea.setCaretPosition(moveAnalysisTextArea.getDocument().getLength());
     }
     
     public static void main(String[] args) throws FileNotFoundException
@@ -81,26 +102,57 @@ public class Chess
         boolean NewGame             = false;
         boolean GetNewUserMove      = false;    
         String inputString;
+        String anaStr;
         int LocalRating             = 0;
         int Iteration_Finished      = 0;
         Start                       = System.currentTimeMillis( );
         char[] ch                   = new char[100];  
         int[][] Pos                 = new int[Position.ROWS + 1][Position.COLS + 1];
-        // ==========
-        Scanner user_input = new Scanner(System.in);
-        JFrame window = new JFrame("Move History");
-        String all = new Scanner(new File("textExample.txt")).useDelimiter("\\A").next(); 
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        final JTextArea textArea = new JTextArea(10, 20);
-        JScrollPane scroll = new JScrollPane(textArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        textArea.setText(all);
-        textArea.setLineWrap(false);
-        textArea.setWrapStyleWord(true);
-        window.add(scroll);
-        window.setSize(200, 500);
-        window.setVisible(true);
-        window.setLocationRelativeTo(null);
-        // ==========
+        
+        int xSizeBoardWindow = Position.COLS * UserInterface.SQUARE_SIZE;
+        int ySizeBoardWindow = Position.COLS * UserInterface.SQUARE_SIZE + sizeWindowHeader;
+        
+        int xSizeHistoryWindow = 200;
+        int ySizeHistoryWindow = ySizeBoardWindow;
+        
+        int xSizeAnalysisWindow = xSizeBoardWindow + xSizeHistoryWindow;
+        int ySizeAnalysisWindow = 100;      
+        
+        // Set up font for move history and alalysis window
+        Font font = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+        
+        // Set up move history window
+        JFrame windowHistory = new JFrame("Move History");
+        windowHistory.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JScrollPane scrollHistory = new JScrollPane(moveHistoryTextArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        moveHistoryTextArea.setFont(font);
+        moveHistoryTextArea.setLineWrap(false);
+        moveHistoryTextArea.setWrapStyleWord(true);
+        windowHistory.add(scrollHistory);
+        windowHistory.setSize(xSizeHistoryWindow, ySizeBoardWindow);
+        windowHistory.setLocation(xSizeBoardWindow, 0);
+        windowHistory.setVisible(true);
+        
+        // Set up move analysis window
+        JFrame windowAnalysis = new JFrame("Move Analysis");
+        windowAnalysis.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JScrollPane scrollAnalysis = new JScrollPane(moveAnalysisTextArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        moveAnalysisTextArea.setFont(font);
+        moveAnalysisTextArea.setLineWrap(false);
+        moveAnalysisTextArea.setWrapStyleWord(true);
+        windowAnalysis.add(scrollAnalysis);
+        windowAnalysis.setSize(xSizeAnalysisWindow, ySizeAnalysisWindow);
+        windowAnalysis.setLocation(0, ySizeBoardWindow + sizeWindowHeader);
+        windowAnalysis.setVisible(true);
+        
+        // Set up board window
+        //frame.setTitle(str);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(ui);
+        frame.setSize(xSizeBoardWindow, ySizeBoardWindow);
+        windowAnalysis.setLocation(0, ySizeBoardWindow + sizeWindowHeader);
+        frame.setVisible(true);
+        
         boolean ShowPositionStatus;
         Scanner scanner             = new Scanner(System.in);
         
@@ -114,22 +166,19 @@ public class Chess
         long ComputerEnd_ms;
         
         float SecondsUsedFloat;
-        float RatingFloat;
-        
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(ui);
-        
-        frame.setSize(Position.COLS * UserInterface.SQUARE_SIZE + 100, Position.ROWS * UserInterface.SQUARE_SIZE + 200);
-        frame.setVisible(true);
+        float RatingFloat = .3f;
        
         System.out.println(new Date( ));
         System.out.println();
         Info();        
         ShowPositionStatus = true;
         
-        int[][] MovePath                    = new int[Move.MAX_NUMBER_MOVE_LIST + Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds move history and move that the computer is currently analyzing 
-        int[][] MoveBest                    = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds best move
-        int[][] MoveBestFinishedIteration   = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds best move        
+        // Hold move history and move that the computer is currently analyzing 
+        int[][] MovePath = new int[Move.MAX_NUMBER_MOVE_LIST + Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST]; 
+        
+        // Hold best move
+        int[][] MoveBest                    = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];   
+        int[][] MoveBestFinishedIteration   = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];       
         boolean Back = false;
         
         String[] MoveTable = new String[Move.MAX_NUMBER_MOVE_LIST];
@@ -164,6 +213,10 @@ public class Chess
                         {
                             case '0':   // User made a valid move
                                 Move.Display(MovePath, Move.STOP, Ply, MoveTable, Move.TABLE, Move.SHOW_NO_RATING);  
+                                
+                                // Display MoveHistory into a Window
+                                Move.DisplayIntoHistoryWindow(MoveTable);
+                                
                                 Position.SwitchMoveColor(Pos); 
                                 ui.repaintWindow(Pos); 
                                 NewGame = false;
@@ -283,8 +336,12 @@ public class Chess
                         {
                             System.out.format("   %+.3f   ", RatingFloat);   
                         }
-                        Move.Display(MoveBest, Move.ALL, Ply, MoveTable, Move.LINE, Move.SHOW_NO_RATING);   
-
+                        Move.Display(MoveBest, Move.ALL, Ply, MoveTable, Move.LINE, Move.SHOW_NO_RATING);
+                        
+                        anaStr = String.valueOf(RatingFloat);
+                        Chess.moveAnalysisTextArea.setText("Rating = " + anaStr + "  ");
+                        Move.DisplayIntoAnalysisWindow(MoveTable);
+                        
                         if((LocalRating == Rating.CHECKMATE_RATING) || (LocalRating == -Rating.CHECKMATE_RATING))
                         {
                             break;      // ?? May I need EndPosition()   ?
@@ -365,8 +422,11 @@ public class Chess
 
     public static int Iterate(int[][] Pos, int alpha, int beta, int[][] MovePath, int[][] MoveBestUpper)
     {    
-        int[][] MoveRating          = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    // Holds move that the computer is currently analyzing 
-        int[][] MovesPosition       = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];           // Holds all possible moves for one position
+        // Holds move that the computer is currently analyzing 
+        int[][] MoveRating          = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH][Move.ENTRIES_MOVE_LIST];    
+        
+        // Holds all possible moves for one position
+        int[][] MovesPosition       = new int[Move.MAX_NUMBER_MOVE_LIST][Move.ENTRIES_MOVE_LIST];          
         int minmax                  = 0;
         int RatingScore;
         int ReturnValue             = 0;      
@@ -387,8 +447,6 @@ public class Chess
         Move.SortList(MovesPosition);     
         //Move.Display(MovesPosition, Move.ALL, Chess.Ply, MoveTable, Move.LIST, Move.SHOW_RATING_EVERY_MOVE);           
         
-        
-            
         minmax = (Position.GetMoveColor(Pos) == Position.WHITE_MOVE) ? - (Rating.CHECKMATE_RATING + 1) : Rating.CHECKMATE_RATING + 1;
         
         loop_over_all_moves_in_one_position:               // Set break point

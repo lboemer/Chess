@@ -89,7 +89,7 @@ public class Move
         }
     }
     
-    //Write move from MovePath[][] as string into MoveTable[]
+    // Write move from MovePath[][] as string into MoveTable[]
     public static void Display(int[][] MovePath, int BoundryType, int BoundryValue, String[] MoveTable, int ListFormat, int RatingFormat)    
     {                                                                           
         int l;
@@ -203,7 +203,7 @@ public class Move
                 (MovePath[l][COL] == Position.E) && 
                 ((MovePath[l][COL_N] == Position.C) || (MovePath[l][COL_N] == Position.G)))
             {
-                MoveTable[t] = ((MovePath[l][COL_N]) == Position.C) ? MoveTable[t].concat(" 0-0-0") : MoveTable[t].concat("   0-0");
+                MoveTable[t] = ((MovePath[l][COL_N]) == Position.C) ? MoveTable[t].concat(" 0-0-0  ") : MoveTable[t].concat("   0-0  ");
             }                
             else
             {            
@@ -231,12 +231,35 @@ public class Move
     {
         int t;  
      
-        for(t = 0; MoveTable[t] != "0"; t++)
+        for(t = 0; !"0".equals(MoveTable[t]); t++)
         {      
             System.out.println(MoveTable[t]);
         }
     }
-   
+
+    public static void DisplayIntoHistoryWindow(String[] MoveTable)                       //Display MoveTable[] wich is a list of strings to console
+    {
+        int t;  
+        String testString = "hello\n";
+        int len;
+        
+        Chess.moveHistoryTextArea.setText("");
+        for(t = 0; !"0".equals(MoveTable[t]); t++)
+        {      
+            Chess.appendHistory(Chess.moveHistoryTextArea, MoveTable[t]);
+        }
+    }    
+      
+    public static void DisplayIntoAnalysisWindow(String[] MoveTable)
+    {
+        int t;  
+      
+        for(t = 0; !"0".equals(MoveTable[t]); t++)
+        {      
+            Chess.appendAnalysis(Chess.moveAnalysisTextArea, MoveTable[t]);
+        }
+    }   
+      
     public static void DisplayFigure(String[] MoveTable, int t, int figure)
     {
         MoveTable[t] = MoveTable[t].concat(Piece.Pieces[figure].getNotation());
@@ -244,40 +267,7 @@ public class Move
         
     public static void DisplayCol(String[] MoveTable, int t, int col)
     {
-        switch (col)
-        {
-            case Position.A:
-                MoveTable[t] = MoveTable[t].concat("a");                                
-                break;
-                
-            case Position.B:
-                MoveTable[t] = MoveTable[t].concat("b");                
-                break;        
-                
-            case Position.C:
-                MoveTable[t] = MoveTable[t].concat("c");                
-                break;
-                
-            case Position.D:
-                MoveTable[t] = MoveTable[t].concat("d");                
-                break;    
-                
-            case Position.E:
-                MoveTable[t] = MoveTable[t].concat("e");                
-                break;
-                
-            case Position. F:
-                MoveTable[t] = MoveTable[t].concat("f");                
-                break;      
-                
-            case Position.G:
-                MoveTable[t] = MoveTable[t].concat("g");                
-                break;
-                
-            case Position.H:
-                MoveTable[t] = MoveTable[t].concat("h");                
-                break;     
-        }
+        MoveTable[t] = MoveTable[t].concat(Position.colStr[col-1]); 
     }
     
     public static void DisplayRow(String[] MoveTable, int t, int row)
@@ -308,13 +298,13 @@ public class Move
     {      
         if(Check == Position.CHECK)             
         {
-            MoveTable[t] = MoveTable[t].concat("+");                
+            MoveTable[t] = MoveTable[t].concat("+ ");                
         }
         else
         {
             if(Mate != Position.CHECKMATE)
             {
-                MoveTable[t] = MoveTable[t].concat(" ");                
+                MoveTable[t] = MoveTable[t].concat("  ");                
             }
         }
     }
@@ -327,7 +317,7 @@ public class Move
                 break;
                 
             case Position.CHECKMATE:
-                MoveTable[t] = MoveTable[t].concat("#");                
+                MoveTable[t] = MoveTable[t].concat("# ");                
                 break;
 
            case Position.STALEMATE:   
@@ -508,9 +498,9 @@ public class Move
     {
         int NewKingColumn;
         int temp_figure;
-        int row                     = 0;
+        int row;
         int KingColumn              = Position.E;
-        int KingColumnStep          = 0; 
+        int KingColumnStep; 
         boolean CastlingPossible    = true;
         
         KingColumnStep = ((CastlingType) == Position.LONG_CASTLING) ? Position.COLUMN_DOWN : Position.COLUMN_UP; 
@@ -716,6 +706,10 @@ public class Move
                (UserMovesPosition[m][COL_N]     == col_n))
             {
                 Move.Make(Pos, row, col, Figure_n, row_n, col_n, MovePath, Move.ADD_TO_MOVE_HISTORY);
+                
+                // Display MoveHistory into a Window
+            //    Move.DisplayIntoWindow(MoveTable);
+                
                 return true;
             }   
         }

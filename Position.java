@@ -1193,25 +1193,7 @@ public class Position
         // Create new position which needs to be investigated if own king can be captured 
         Move.Make(Pos, row, col, Figure_n, row_n, col_n, MovePath, Move.DO_NOT_ADD_TO_MOVE_HISTORY);    
         
-        /*
-        System.out.println("In AddMoveToMoveListIfNoReceivingCheckGetUserMoveFromMouseInput() after !Make() ... \n");
-        System.out.println("Please press enter to continue\n");
-        scanner.nextLine();  
-        
-        
-        System.out.println("In AddMoveToMoveListIfNoReceivingCheckGetUserMoveFromMouseInput() before !Check() ... \n");
-        System.out.println("Please press enter to continue\n");
-        scanner.nextLine();        
-        */       
-        
-        
         AddMove = !Check(Pos, Position.RECEIVING_CHECK); // Check for receiving check
-        
-        /*
-        System.out.println("In AddMoveToMoveListIfNoReceivingCheckGetUserMoveFromMouseInput() after !Check()eginning ... \n");
-        System.out.println("Please press enter to continue\n");
-        scanner.nextLine();        
-        */
         
         if(!ReturnOnFirstMovePossible && AddMove)                                                  
         {   
@@ -1235,12 +1217,6 @@ public class Position
         }
         Copy(PosStore, Pos);    // Restore position from PosStore into Pos
            
-        /*
-        System.out.println("In AddMoveToMoveListIfNoReceivingCheckGetUserMoveFromMouseInput() end ... \n");
-        System.out.println("Please press enter to continue\n");
-        scanner.nextLine();
-        */
-        
         return AddMove;         // Returns true if move was added
     }
 }
