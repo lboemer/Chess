@@ -681,7 +681,7 @@ public class Position
         
         Move.EmptyList(MovesPosition); 
         
-        return(GenerateMoveList(Pos, MovesPosition, MovePath, ReturnOnFirstMovePossible));       
+        return(GenerateMoveList(Pos, MovesPosition, MovePath, ReturnOnFirstMovePossible, false));       
     }
    
     public static boolean InsufficientMaterial(int[][] Pos)                      
@@ -965,7 +965,7 @@ public class Position
         return((col_n >= 1) && (col_n <= COLS) && (row_n >= 1) && (row_n <= ROWS));    
     }
     
-    public static boolean GenerateMoveList(int[][] Pos, int[][] MovesPosition, int[][] MovePath, boolean ReturnOnFirstMovePossible)
+    public static boolean GenerateMoveList(int[][] Pos, int[][] MovesPosition, int[][] MovePath, boolean ReturnOnFirstMovePossible, boolean AddRating)
     {                                                                           
         // Generates move list and stores moves into MovesPosition[][] 
         // or returns on first move found    
@@ -1011,7 +1011,7 @@ public class Position
                             {                                                   
                                 // Loop for Queen, Rook, Knight, Bishop
                                 Figure_n = ((GetMoveColor(Pos)) == WHITE_MOVE) ? WhitePromotionFigure[i] : BlackPromotionFigure[i];
-                                MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure_n, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
+                                MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure_n, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible, AddRating);
                                 if(ReturnOnFirstMovePossible && MoveAdded)
                                 {
                                     return true;
@@ -1021,7 +1021,7 @@ public class Position
                         }
                         else
                         {
-                            MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
+                            MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible, AddRating);
                             if(ReturnOnFirstMovePossible && MoveAdded)
                             {
                                 return true;
@@ -1036,7 +1036,7 @@ public class Position
                     {
                         if((Pos[row+PawnStep][col] == Position.EMPTY) && (Pos[row_n][col] == Position.EMPTY))         
                         { 
-                            MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
+                            MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible, AddRating);
                             if(ReturnOnFirstMovePossible && MoveAdded)
                             {
                                 return true;
@@ -1056,7 +1056,7 @@ public class Position
                                 for(i = 0; i < WhitePromotionFigure.length; i++)    
                                 {        
                                     Figure_n = ((GetMoveColor(Pos)) == WHITE_MOVE) ? WhitePromotionFigure[i] : BlackPromotionFigure[i];
-                                    MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure_n, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
+                                    MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure_n, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible, AddRating);
                                     if(ReturnOnFirstMovePossible && MoveAdded)
                                     {
                                         return true;
@@ -1066,7 +1066,7 @@ public class Position
                             else
                             {
                                 // Take away opponent figure
-                                MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
+                                MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible, AddRating);
                                 if(ReturnOnFirstMovePossible && MoveAdded)
                                 {
                                     return true;
@@ -1079,7 +1079,7 @@ public class Position
                         {                                                                                                 
                             if(col_n == GetColumnPawnMovedTwoRows(Pos))        //Workaround: Compiler ssems to miss this if this is added to line beforE
                             {
-                                MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
+                                MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible, AddRating);
                                 if(ReturnOnFirstMovePossible && MoveAdded)
                                 {
                                     return true;
@@ -1097,7 +1097,7 @@ public class Position
                 case BLACK_BISHOP:
                 case WHITE_QUEEN:
                 case BLACK_QUEEN:        
-                    if(DirectionMoves(Piece.Pieces[Figure].getPieceMove(), Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible))
+                    if(DirectionMoves(Piece.Pieces[Figure].getPieceMove(), Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible, AddRating))
                     {
                         return true;
                     }
@@ -1105,7 +1105,7 @@ public class Position
 
                 case WHITE_KING:
                 case BLACK_KING:
-                    if(DirectionMoves(Piece.Pieces[Figure].getPieceMove(), Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible))
+                    if(DirectionMoves(Piece.Pieces[Figure].getPieceMove(), Pos, row, col, Figure, row_n, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible, AddRating))
                     {
                         return true;
                     }   
@@ -1115,7 +1115,7 @@ public class Position
                     {
                         col_n = (CastlingList[i] == Position.LONG_CASTLING) ? Position.C : Position.G;
                         row = ((Position.GetMoveColor(Pos)) == Position.WHITE_MOVE) ? Position.WHITE_CASTLING_ROW : Position.BLACK_CASTLING_ROW;
-                        MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible);
+                        MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row, col_n, MovesPosition, MovePath, ReturnOnFirstMovePossible, AddRating);
                         if(ReturnOnFirstMovePossible && MoveAdded)
                         {
                             return true;
@@ -1127,7 +1127,7 @@ public class Position
         return false;   // Only used by AnyMovePossible()
     }       
     
-    public static boolean DirectionMoves(Piece.PieceMove piece_move, int[][]Pos, int row, int col, int Figure, int row_n, int col_n, int[][] MovesPosition, int[][]MovePath, boolean ReturnOnFirstMovePossible)
+    public static boolean DirectionMoves(Piece.PieceMove piece_move, int[][]Pos, int row, int col, int Figure, int row_n, int col_n, int[][] MovesPosition, int[][]MovePath, boolean ReturnOnFirstMovePossible, boolean AddRating)
     {
         int [][] Direction = piece_move.direction;
         int dir;
@@ -1145,7 +1145,7 @@ public class Position
                     // Bishop, rook, queen can make more steps
                     break; 
                 }
-                MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row + Direction[dir][0] * i, col + Direction[dir][1] * i, MovesPosition, MovePath, ReturnOnFirstMovePossible);
+                MoveAdded = AddMoveToMoveListIfNoReceivingCheck(Pos, row, col, Figure, row + Direction[dir][0] * i, col + Direction[dir][1] * i, MovesPosition, MovePath, ReturnOnFirstMovePossible, AddRating);
                 if(ReturnOnFirstMovePossible && MoveAdded)
                 {
                     return true;
@@ -1160,7 +1160,7 @@ public class Position
         return false;               
     }
 
-    public static boolean AddMoveToMoveListIfNoReceivingCheck(int[][] Pos, int row, int col, int Figure_n, int row_n, int col_n, int[][] MovesPosition, int[][] MovePath, boolean ReturnOnFirstMovePossible)
+    public static boolean AddMoveToMoveListIfNoReceivingCheck(int[][] Pos, int row, int col, int Figure_n, int row_n, int col_n, int[][] MovesPosition, int[][] MovePath, boolean ReturnOnFirstMovePossible, boolean AddRating)
     {
         boolean AddMove;
         int EnPassantStatus;
@@ -1213,7 +1213,10 @@ public class Position
             // Need CHECK_STATUS to display check as part of move
             MovesPosition[MoveNumber][Move.CHECK_STATUS]        = Position.GetCheckStatus(Pos, MovesPosition[MoveNumber][Move.POSITION_STATUS]);   
             // Needed to display rating as part of move
-            MovesPosition[MoveNumber][Move.RATING]              = Rating.Rating(Pos, MovesPosition[MoveNumber][Move.POSITION_STATUS]);           
+            if(AddRating)
+            {
+                MovesPosition[MoveNumber][Move.RATING]              = Rating.Rating(Pos, MovesPosition[MoveNumber][Move.POSITION_STATUS]);  
+            }
         }
         Copy(PosStore, Pos);    // Restore position from PosStore into Pos
            

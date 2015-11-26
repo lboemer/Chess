@@ -19,6 +19,9 @@ public class Chess
     public static final int MOVE_NOT_POSSIBLE           = 100000;
 
     public static int Total_Move_Counter                = 0;
+      
+    public static int RatingCounter;
+    public static int HashMapCounter;  
 
     public static int[]     Iteration_Move_Counter      = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH];
     public static int[]     Display_Move_Counter        = new int[Settings.ABSOLUTE_MAX_MOVE_DEPTH];
@@ -35,6 +38,8 @@ public class Chess
     public static int       DecisionRule; 
     public static int       PlayMode;
     public static int       FirstMove; 
+    public static int       HashmapUse;
+    public static int       RatingMethod;
     
     public static int       Iteration;
     public static int       Ply;
@@ -198,6 +203,10 @@ public class Chess
             }
             UserTotal_ms = 0;
             ComputerTotal_ms = 0;
+            
+            RatingCounter = 0;
+            HashMapCounter = 0;
+            
                           
             do
             {
@@ -277,8 +286,8 @@ public class Chess
                     {
                         AlphaBetaCounter[i] = 0;
                     }
-            
-                    System.out.println("\nDepth  Moves   Rating   MoveBest") ;
+                    //System.out.println("Chess.HashmapUse = " + Chess.HashmapUse);
+                    System.out.println("\nRatingCtr HashmaCtr Depth     Moves Rating   MoveBest") ;
                  
                     for(MoveDepth = 1; MoveDepth <= MaxMoveDepth; MoveDepth++)  // Generate Computer move
                     {
@@ -320,24 +329,28 @@ public class Chess
                             break;
                         }
   
-                        Move.CopyList(MoveBest, 0, MoveBestFinishedIteration);                              
-                                              
-                        System.out.print(MoveDepth);  // Only show finished MoveDepth evaluation
-                        System.out.format("  %9d", Total_Move_Counter); 
+                        Move.CopyList(MoveBest, 0, MoveBestFinishedIteration);      
+                 
+                        System.out.format("%9d", RatingCounter);
+                        System.out.format("%10d", HashMapCounter);    
+                        System.out.format("%6d", MoveDepth);  // Only show finished MoveDepth evaluation
+                        System.out.format(" %9d", Total_Move_Counter); 
                         
                         RatingFloat = LocalRating;
                         RatingFloat /= 100;   
                         
                         if((LocalRating == Rating.CHECKMATE_RATING) || (LocalRating == -Rating.CHECKMATE_RATING))
                         {
-                            System.out.format("   #        ");
+                            System.out.format("       #  ");
                         }                         
                         else
                         {
-                            System.out.format("   %+.3f   ", RatingFloat);   
+                            System.out.format(" %+2.3f   ", RatingFloat);   
                         }
                         Move.Display(MoveBest, Move.ALL, Ply, MoveTable, Move.LINE, Move.SHOW_NO_RATING);
                         
+     
+           
                         anaStr = String.valueOf(RatingFloat);
                         Chess.moveAnalysisTextArea.setText("Rating = " + anaStr + "  ");
                         Move.DisplayIntoAnalysisWindow(MoveTable);
@@ -441,7 +454,7 @@ public class Chess
         Move.MoveListIteration  = 1;   
         
         // Generate all possible moves for one position into MovesPosition
-        Position.GenerateMoveList(Pos, MovesPosition, MovePath, ReturnOnFirstMovePossible);                  
+        Position.GenerateMoveList(Pos, MovesPosition, MovePath, ReturnOnFirstMovePossible, true);                  
         //Move.Display(MovesPosition, Move.ALL, Chess.Ply, MoveTable, Move.LIST, Move.SHOW_RATING_EVERY_MOVE);    
         // Sort the move list and place best move first
         Move.SortList(MovesPosition);     

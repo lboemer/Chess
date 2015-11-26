@@ -25,7 +25,7 @@ public class Settings
     };
     
     public static final int ABSOLUTE_MAX_SECONDS       = 60 * 60 * 24; // 24 h 
-    public static final int DEFAULT_MAX_SECONDS        = 3;  // per computer move 
+    public static final int DEFAULT_MAX_SECONDS        = 5;  // per computer move 
     public static final String[] MaxSecondsMenu = 
     {
         "Max seconds per computer move"
@@ -66,6 +66,28 @@ public class Settings
         "Computer to make first move"
     };   
     
+    // Hashmap use
+    public static final int DO_NOT_USE_HASHMAP          = 0;
+    public static final int USE_HASHMAP                 = 1;
+    public static final int DEFAULT_HASHMAP_USE         = USE_HASHMAP;
+    public static final String[] HashmapMenu = 
+    {
+        "Hashmap",
+        "Do not use Hashmap", 
+        "Use Hashmap"
+    };  
+    
+    // Rating method
+    public static final int MATERIAL_ONLY               = 0;
+    public static final int MATERIAL_AND_POSITION       = 1;
+    public static final int DEFAULT_RATING_METHOD       = MATERIAL_AND_POSITION;
+    public static final String[] RatingMenu = 
+    {
+        "Rating method",
+        "Use material only", 
+        "Use material and position"
+    };
+    
     public static void Initiate(int[][] Pos)
     {
         Position.BeginPosition = Position.NEW_POSITION;
@@ -79,6 +101,8 @@ public class Settings
         Chess.DecisionRule      = DEFAULT_DECISION_RULE;    // Initiate DecisionRule                          
         Chess.PlayMode          = DEFAULT_PLAY_MODE;        // Initiate PlayMode
         Chess.FirstMove         = DEFAULT_FIRST_MOVE;       // Initiate FirstMove 
+        Chess.HashmapUse        = DEFAULT_HASHMAP_USE;      // Initiate FirstMove        
+        Chess.RatingMethod      = DEFAULT_RATING_METHOD;    // Initiate RatingMethod      
         Chess.WhiteBoard        = Chess.SetBoard(Pos);      // Set WhiteBoard
         Chess.ui.repaintWindow(Pos);                        // Draw beginning position
     } 
@@ -93,16 +117,18 @@ public class Settings
             ClearScreen(Pos);
             
             System.out.println("Enter\t Settings \t\t\t Current setting");
-            System.out.print("1 \t Set Position\t\t\t ");               System.out.println(Position.positionMap[Position.BeginPosition]);
-            System.out.print("2 \t Set Max Computer Moves\t\t ");       System.out.println(Chess.MaxMoves);    
-            System.out.print("3 \t Set Max Computer Move Depth\t ");    System.out.println(Chess.MaxMoveDepth);
-            System.out.print("4 \t Set Max Computer Seconds\t ");       System.out.println(Chess.MaxSeconds);
-            System.out.print("5 \t Set Decision Rule\t\t ");            System.out.println(DecisionRuleMenu[Chess.DecisionRule + 1]);
-            System.out.print("6 \t Set Move Color\t\t\t ");             Position.DisplayMoveColor(Pos);
-            System.out.print("7 \t Set Play Mode\t\t\t ");              System.out.println(PlayModeMenu[Chess.PlayMode + 1]);
-            System.out.print("8 \t Set First Move\t\t\t ");             System.out.println(FirstMoveMenu[Chess.FirstMove + 1]);
-            System.out.println("9 \t Make Move"); 
-            System.out.println("10 \t Exit");
+            System.out.println("1 \t Make Move"); 
+            System.out.print("2 \t Set First Move\t\t\t ");             System.out.println(FirstMoveMenu[Chess.FirstMove + 1]);
+            System.out.print("3 \t Set Move Color\t\t\t ");             Position.DisplayMoveColor(Pos);
+            System.out.print("4 \t Set Play Mode\t\t\t ");              System.out.println(PlayModeMenu[Chess.PlayMode + 1]);
+            System.out.print("5 \t Set Max Computer Seconds\t ");       System.out.println(Chess.MaxSeconds);
+            System.out.print("6 \t Set Max Computer Move Depth\t ");    System.out.println(Chess.MaxMoveDepth);
+            System.out.print("7 \t Set Max Computer Moves\t\t ");       System.out.println(Chess.MaxMoves);    
+            System.out.print("8 \t Set Decision Rule\t\t ");            System.out.println(DecisionRuleMenu[Chess.DecisionRule + 1]);
+            System.out.print("9 \t Set Hashmap Use\t\t ");              System.out.println(HashmapMenu[Chess.HashmapUse + 1]);        
+            System.out.print("10 \t Set Rating Method\t\t ");           System.out.println(RatingMenu[Chess.RatingMethod + 1]);           
+            System.out.print("11 \t Set Position\t\t\t ");              System.out.println(Position.positionMap[Position.BeginPosition]);
+            System.out.println("12 \t Exit");
                     
             try 
             {
@@ -115,52 +141,60 @@ public class Settings
             }
             switch(UserInput)
             {
-                case 1:
-                    SetPosition(Pos);
-                    break;
-
+                //case 1:
+                    //System.out.println("Entered Make Move");  
+                //    break;
+                                    
                 case 2:
-                    Chess.MaxMoves = UserSetParameter(Pos, MaxComputerMoveMenu, ABSOLUTE_MAX_MOVES + 1);
-                    break;                           
-
-                case 3:
-                    Chess.MaxMoveDepth = UserSetParameter(Pos, MaxMoveDepthMenu, ABSOLUTE_MAX_MOVE_DEPTH + 1);
-                    break;
-
-                case 4:
-                    Chess.MaxSeconds = UserSetParameter(Pos, MaxSecondsMenu, ABSOLUTE_MAX_SECONDS + 1);
-                    break;
-
-                case 5:
-                    Chess.DecisionRule = UserSetParameter(Pos, DecisionRuleMenu, DecisionRuleMenu.length) - 1;
-                    break;                        
-
-                case 6:
-                    Position.SetMoveColor(Pos, UserSetParameter(Pos, Position.MoveColorMenu, Position.MoveColorMenu.length) - 1); 
-                    Chess.WhiteBoard = Chess.SetBoard(Pos); // Sets WhiteBoard to true or false;
-                    Chess.ui.repaintWindow(Pos); // Draws beginning position
-                    break;                                         
-
-                case 7:
-                    Chess.PlayMode = UserSetParameter(Pos, PlayModeMenu, PlayModeMenu.length) - 1;
-                    break; 
-
-                case 8:
                     Chess.FirstMove = UserSetParameter(Pos, FirstMoveMenu, FirstMoveMenu.length) - 1;
                     Chess.WhiteBoard = Chess.SetBoard(Pos); // Sets WhiteBoard to true or false;
                     Chess.ui.repaintWindow(Pos); // Draws beginning position                        
+                    break;            
+                                    
+                case 3:
+                    Position.SetMoveColor(Pos, UserSetParameter(Pos, Position.MoveColorMenu, Position.MoveColorMenu.length) - 1); 
+                    Chess.WhiteBoard = Chess.SetBoard(Pos); // Sets WhiteBoard to true or false;
+                    Chess.ui.repaintWindow(Pos); // Draws beginning position
+                    break;                                      
+
+                case 4:
+                    Chess.PlayMode = UserSetParameter(Pos, PlayModeMenu, PlayModeMenu.length) - 1;
+                    break; 
+
+                case 5:
+                    Chess.MaxSeconds = UserSetParameter(Pos, MaxSecondsMenu, ABSOLUTE_MAX_SECONDS + 1);
+                    break;            
+ 
+                case 6:
+                    Chess.MaxMoveDepth = UserSetParameter(Pos, MaxMoveDepthMenu, ABSOLUTE_MAX_MOVE_DEPTH + 1);
                     break;
+                    
+                case 7:
+                    Chess.MaxMoves = UserSetParameter(Pos, MaxComputerMoveMenu, ABSOLUTE_MAX_MOVES + 1);
+                    break;                       
+
+                case 8:
+                    Chess.DecisionRule = UserSetParameter(Pos, DecisionRuleMenu, DecisionRuleMenu.length) - 1;
+                    break;                        
 
                 case 9:
-                    System.out.println("Entered Make Move");  
+                    Chess.HashmapUse = UserSetParameter(Pos, HashmapMenu, HashmapMenu.length) - 1;                    
+                    break;                                     
+                 
+                case 10:
+                    Chess.RatingMethod = UserSetParameter(Pos, RatingMenu, RatingMenu.length) - 1;                    
+                    break;                      
+                
+                case 11:
+                    SetPosition(Pos);
                     break;
 
-                case 10:
+                case 12:
                     System.out.println("Entered Exit");  
                     return false;
             }
         }
-        while (UserInput != 9);
+        while (UserInput != 1);
         return true;
     }
     

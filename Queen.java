@@ -1,7 +1,7 @@
 // YouTube Video = Programmng a Chess Engine in C 
 public class Queen
 {
-    public static int FieldValueOpeningGame[][] =               // by Leo, need to think about it more, he idea is to not get the queen out too early
+    public static int FieldValueOpeningGame[][] =               // by Leo, need to think about it more, the idea is to not get the queen out too early
     {  //   A    B    C,   D,   E,   F,  G,   H    Rank         // The idea is to not get the queen out too early
         {   0,   0,   0,   0,   0,   0,   0,   0 }, // 1                            
         { -10, -10, -10, -10, -10, -10, -10, -10 }, // 2 

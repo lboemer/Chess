@@ -223,7 +223,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
         scanner.nextLine();
         */
         
-        Position.GenerateMoveList(Pos, FillMoveList, MovePath, ReturnOnFirstMovePossible);              // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
+        Position.GenerateMoveList(Pos, FillMoveList, MovePath, ReturnOnFirstMovePossible, false);              // When called with PosDrawBuffer[][] it will draw changed initial position wrong like one move was made
         
         /*
         System.out.println("In GetUserMoveFromMouseInput() after GenerateMoveList... \n");

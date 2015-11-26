@@ -1,4 +1,9 @@
+//import static Chess.HashMapCounter;
+//import static Chess.RatingCounter;
+//import static Position.DirectionMoves;
 import java.lang.*;                                                             // used for max()
+import java.util.Enumeration;
+import java.util.*;
 
 public class Rating
 {
@@ -13,7 +18,6 @@ public class Rating
     public static final int AVERAGE                         = 4;
     public static final int CLOSED                          = 5;    
     public static final int BLOCKED                         = 6;
-    
     // Game phase
     public static final int OPENING_GAME                    = 0;
     public static final int MIDDLE_GAME                     = 1;
@@ -57,7 +61,28 @@ public class Rating
         int Type = PositionType(Pos);
         int Phase = GamePhase(Pos);
         int rat;
+        
 
+        Chess.RatingCounter++;
+        //System.out.println("RatingCounter = " + Chess.RatingCounter);
+        //System.out.println("PositionCache has key");
+        if(Chess.HashmapUse == Settings.USE_HASHMAP)
+        {
+            if(Chess.PositionCache.containsKey(Position.ToString(Pos)))
+            {
+                Chess.HashMapCounter++;
+                //System.out.println("HashMapCounter = " + Chess.HashMapCounter);
+                //System.out.print("  //System.out.println("PositionCache has key");
+                //System.out.print("Rating from HashMap = " + (Chess.PositionCache.get(Position.ToString(Pos))));
+                return(Chess.PositionCache.get(Position.ToString(Pos)));
+
+            }
+        }
+
+        //System.out.println("RatingCounter = " + Chess.RatingCounter + "\t HashMapCounter = " + Chess.HashMapCounter);      
+        
+        
+        
         //Position.Display(Pos);
         switch (PositionStatus)
         {
@@ -70,97 +95,122 @@ public class Rating
             case Position.FIFTY_MOVE: 
                 return DRAW_RATING;
         }
-
-        for (row = 1; row <= Position.ROWS; row++)
+        
+        switch(Chess.RatingMethod)
         {
-            for (col = 1; col <= Position.COLS; col++)              
-            {
-                switch(Pos[row][col])
+            case Settings.MATERIAL_ONLY:
+                for (row = 1; row <= Position.ROWS; row++)
                 {
-                    /*
-                    case Position.WHITE_PAWN:
-                    case Position.BLACK_PAWN:     
-                        rat = Pawn.Rating(Pos, row, col, Phase);
-                        System.out.println(" In rating Pawn[" + row + "][" + col + "] = " + rat);                    
-                        Rating += Pawn.Rating(Pos, row, col, Phase);
-                        break;
-                            
-                    case Position.WHITE_ROOK:
-                    case Position.BLACK_ROOK:        
-                        rat = Rook.Rating(Pos, row, col, Type, Phase);
-                        System.out.println(" In rating Rook[" + row + "][" + col + "] = " + rat);
-                        Rating += Rook.Rating(Pos, row, col, Type, Phase);
-                        break;
-                        
-                    case Position.WHITE_KNIGHT:
-                    case Position.BLACK_KNIGHT:        
-                        rat = Knight.Rating(Pos, row, col, Type, Phase);
-                        System.out.println(" In rating Knight[" + row + "][" + col + "] = " + rat);
-                        Rating += Knight.Rating(Pos, row, col, Type, Phase);
-                        break;
-                        
-                    case Position.WHITE_BISHOP:
-                    case Position.BLACK_BISHOP:
-                        rat = Bishop.Rating(Pos, row, col, Type, Phase);
-                        System.out.println(" In rating Bishop[" + row + "][" + col + "] = " + rat);                
-                        Rating += Bishop.Rating(Pos, row, col, Type, Phase);
-                        break;
-        
-                    case Position.WHITE_QUEEN:
-                    case Position.BLACK_QUEEN:                    
-                        rat = Queen.Rating(Pos, row, col, Type, Phase);
-                        System.out.println(" In rating Queen[" + row + "][" + col + "] = " + rat);
-                        Rating += Queen.Rating(Pos, row, col, Type, Phase);
-                        break;
-
-                    case Position.WHITE_KING:
-                    case Position.BLACK_KING:                       
-                        rat = King.Rating(Pos, row, col, Phase);
-                        System.out.println(" In rating King[" + row + "][" + col + "] = " + rat);                
-                        Rating += King.Rating(Pos, row, col, Phase);
-                        break;   
-                    */
-                    
-                                        
-                    case Position.WHITE_PAWN:
-                    case Position.BLACK_PAWN:     
-                        Rating += Pawn.Rating(Pos, row, col, Phase);
-                        break;
-                            
-                    case Position.WHITE_ROOK:
-                    case Position.BLACK_ROOK:        
-                        Rating += Rook.Rating(Pos, row, col, Type, Phase);
-                        break;
-                        
-                    case Position.WHITE_KNIGHT:
-                    case Position.BLACK_KNIGHT:        
-                        Rating += Knight.Rating(Pos, row, col, Type, Phase);
-                        break;
-                        
-                    case Position.WHITE_BISHOP:
-                    case Position.BLACK_BISHOP:
-                        Rating += Bishop.Rating(Pos, row, col, Type, Phase);
-                        break;
-        
-                    case Position.WHITE_QUEEN:
-                    case Position.BLACK_QUEEN:                    
-                        Rating += Queen.Rating(Pos, row, col, Type, Phase);
-                        break;
-
-                    case Position.WHITE_KING:
-                    case Position.BLACK_KING:                       
-                        Rating += King.Rating(Pos, row, col, Phase);
-                        break;   
-                    
+                    for (col = 1; col <= Position.COLS; col++)              
+                    {
+                        Rating += Piece.Pieces[Pos[row][col]].getRating();
+                        /*
+                        System.out.println("Pos[" + Position.colStr[col-1]  + "][" + row + "] = " + 
+                            Piece.Pieces[Pos[row][col]].getConsoleNotation() + 
+                            "\tRating = " + Piece.Pieces[Pos[row][col]].getRating() +
+                            "\tNew Total Ratring =  " + Rating);
+                        */
+                    }
                 }
-                    
-                    
-                    
-                    
-                    
-            }
+                break;               
+                
+            case  Settings.MATERIAL_AND_POSITION:   
+                for (row = 1; row <= Position.ROWS; row++)
+                {
+                    for (col = 1; col <= Position.COLS; col++)              
+                    {
+                        switch(Pos[row][col])
+                        {
+                            /*
+                            case Position.WHITE_PAWN:
+                            case Position.BLACK_PAWN:     
+                                rat = Pawn.Rating(Pos, row, col, Phase);
+                                System.out.println(" In rating Pawn[" + row + "][" + col + "] = " + rat);                    
+                                Rating += Pawn.Rating(Pos, row, col, Phase);
+                                break;
+
+                            case Position.WHITE_ROOK:
+                            case Position.BLACK_ROOK:        
+                                rat = Rook.Rating(Pos, row, col, Type, Phase);
+                                System.out.println(" In rating Rook[" + row + "][" + col + "] = " + rat);
+                                Rating += Rook.Rating(Pos, row, col, Type, Phase);
+                                break;
+
+                            case Position.WHITE_KNIGHT:
+                            case Position.BLACK_KNIGHT:        
+                                rat = Knight.Rating(Pos, row, col, Type, Phase);
+                                System.out.println(" In rating Knight[" + row + "][" + col + "] = " + rat);
+                                Rating += Knight.Rating(Pos, row, col, Type, Phase);
+                                break;
+
+                            case Position.WHITE_BISHOP:
+                            case Position.BLACK_BISHOP:
+                                rat = Bishop.Rating(Pos, row, col, Type, Phase);
+                                System.out.println(" In rating Bishop[" + row + "][" + col + "] = " + rat);                
+                                Rating += Bishop.Rating(Pos, row, col, Type, Phase);
+                                break;
+
+                            case Position.WHITE_QUEEN:
+                            case Position.BLACK_QUEEN:                    
+                                rat = Queen.Rating(Pos, row, col, Type, Phase);
+                                System.out.println(" In rating Queen[" + row + "][" + col + "] = " + rat);
+                                Rating += Queen.Rating(Pos, row, col, Type, Phase);
+                                break;
+
+                            case Position.WHITE_KING:
+                            case Position.BLACK_KING:                       
+                                rat = King.Rating(Pos, row, col, Phase);
+                                System.out.println(" In rating King[" + row + "][" + col + "] = " + rat);                
+                                Rating += King.Rating(Pos, row, col, Phase);
+                                break;   
+                            */
+
+
+                            case Position.WHITE_PAWN:
+                            case Position.BLACK_PAWN:     
+                                Rating += Pawn.Rating(Pos, row, col, Phase);
+                                break;
+
+                            case Position.WHITE_ROOK:
+                            case Position.BLACK_ROOK:        
+                                Rating += Rook.Rating(Pos, row, col, Type, Phase);
+                                break;
+
+                            case Position.WHITE_KNIGHT:
+                            case Position.BLACK_KNIGHT:        
+                                Rating += Knight.Rating(Pos, row, col, Type, Phase);
+                                break;
+
+                            case Position.WHITE_BISHOP:
+                            case Position.BLACK_BISHOP:
+                                Rating += Bishop.Rating(Pos, row, col, Type, Phase);
+                                break;
+
+                            case Position.WHITE_QUEEN:
+                            case Position.BLACK_QUEEN:                    
+                                Rating += Queen.Rating(Pos, row, col, Type, Phase);
+                                break;
+
+                            case Position.WHITE_KING:
+                            case Position.BLACK_KING:                       
+                                Rating += King.Rating(Pos, row, col, Phase);
+                                break;   
+                        }
+                    }
+                }
+                break;
         }
-        //Chess.PositionCache.put(Position.PositionToString(Pos), Rating);
+                
+                
+        if(Chess.HashmapUse == Settings.USE_HASHMAP)
+        {
+          //  if(Chess.PositionCache.containsKey(Position.ToString(Pos)))
+           // {
+                Chess.PositionCache.put(Position.ToString(Pos), Rating);
+           // }
+        }
+         //names = Chess.PositionCache.keys();
+        //System.out.println("PositionCache size  = " + Chess.PositionCache.size()); 
         //System.out.println("Total rating = " + Rating); 
         return(Rating);
     }       

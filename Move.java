@@ -695,7 +695,7 @@ public class Move
         boolean ReturnOnFirstMovePossible = false;
 
         EmptyList(UserMovesPosition);       
-        Position.GenerateMoveList(Pos, UserMovesPosition, MovePath, ReturnOnFirstMovePossible);
+        Position.GenerateMoveList(Pos, UserMovesPosition, MovePath, ReturnOnFirstMovePossible, false);
         //Move.DisplayMoveList(UserMovesPosition, Move.ALL, 0, Move.LIST, Move.SHOW_NO_RATING); 
         for(m = 0; UserMovesPosition[m][Move.FIGURE] != Position.EMPTY; m++)
         {
